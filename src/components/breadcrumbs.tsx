@@ -12,7 +12,9 @@ import { IconSlash } from '@tabler/icons-react';
 import { Fragment } from 'react';
 
 export function Breadcrumbs() {
-  const items = useBreadcrumbs();
+  const allItems = useBreadcrumbs();
+  const items = allItems.slice(1);
+
   if (items.length === 0) return null;
 
   return (

@@ -1,7 +1,8 @@
 'use client';
 
-import { Check, ChevronsUpDown, GalleryVerticalEnd } from 'lucide-react';
+import { Check, ChevronsUpDown, Sparkles } from 'lucide-react';
 import * as React from 'react';
+import { motion } from 'framer-motion';
 
 import {
   DropdownMenu,
@@ -33,6 +34,13 @@ export function OrgSwitcher({
     Tenant | undefined
   >(defaultTenant || (tenants.length > 0 ? tenants[0] : undefined));
 
+  // Sync selectedTenant with defaultTenant prop changes
+  React.useEffect(() => {
+    if (defaultTenant) {
+      setSelectedTenant(defaultTenant);
+    }
+  }, [defaultTenant]);
+
   const handleTenantSwitch = (tenant: Tenant) => {
     setSelectedTenant(tenant);
     if (onTenantSwitch) {
@@ -53,10 +61,29 @@ export function OrgSwitcher({
               className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
             >
               <div className='bg-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg'>
-                <GalleryVerticalEnd className='size-4' />
+                <motion.div
+                  animate={{
+                    rotate: [0, 360],
+                    scale: [1, 1.05, 1]
+                  }}
+                  transition={{
+                    rotate: {
+                      duration: 6,
+                      repeat: Infinity,
+                      ease: 'easeInOut'
+                    },
+                    scale: {
+                      duration: 1.5,
+                      repeat: Infinity,
+                      ease: 'easeInOut'
+                    }
+                  }}
+                >
+                  <Sparkles className='h-6 w-6 text-white' />
+                </motion.div>
               </div>
               <div className='flex flex-col gap-0.5 leading-none'>
-                <span className='font-semibold'>Next Starter</span>
+                <span className='font-semibold'>Select AI</span>
                 <span className=''>{selectedTenant.name}</span>
               </div>
               <ChevronsUpDown className='ml-auto' />
@@ -70,6 +97,12 @@ export function OrgSwitcher({
               <DropdownMenuItem
                 key={tenant.id}
                 onSelect={() => handleTenantSwitch(tenant)}
+                disabled={tenant.id === selectedTenant.id}
+                className={
+                  tenant.id === selectedTenant.id
+                    ? 'cursor-not-allowed opacity-50'
+                    : ''
+                }
               >
                 {tenant.name}{' '}
                 {tenant.id === selectedTenant.id && (

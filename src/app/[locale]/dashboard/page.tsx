@@ -13,5 +13,5 @@ export default async function Dashboard() {
   // }
 
   // Temporarily redirect all users to overview without authentication
-  redirect('/dashboard/overview');
+  return <div>Redirecting to overview...</div>;
 }

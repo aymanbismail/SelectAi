@@ -156,3 +156,32 @@
   /* Apply the reveal animation */
   animation: reveal 0.4s ease-in-out forwards;
 }
+
+/* Custom scrollbar styles for categories container */
+.categories-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(75 85 99) transparent;
+}
+
+.categories-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.categories-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 3px;
+}
+
+.categories-scrollbar::-webkit-scrollbar-thumb {
+  background: rgb(75 85 99);
+  border-radius: 3px;
+  transition: background-color 0.2s ease;
+}
+
+.categories-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgb(107 114 128);
+}
+
+.categories-scrollbar::-webkit-scrollbar-thumb:active {
+  background: rgb(156 163 175);
+}

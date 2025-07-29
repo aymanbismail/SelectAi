@@ -29,14 +29,17 @@ export const fakeProducts = {
     const sampleProducts: Product[] = [];
     function generateRandomProductData(id: number): Product {
       const categories = [
-        'Electronics',
-        'Furniture',
-        'Clothing',
-        'Toys',
-        'Groceries',
-        'Books',
-        'Jewelry',
-        'Beauty Products'
+        'design',
+        'marketing',
+        'productivity',
+        'development',
+        'analytics',
+        'finance',
+        'communication',
+        'education',
+        'health',
+        'travel',
+        'photography'
       ];
 
       return {
@@ -54,7 +57,7 @@ export const fakeProducts = {
     }
 
     // Generate remaining records
-    for (let i = 1; i <= 20; i++) {
+    for (let i = 1; i <= 100; i++) {
       sampleProducts.push(generateRandomProductData(i));
     }
 

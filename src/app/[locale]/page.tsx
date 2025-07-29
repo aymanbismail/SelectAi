@@ -1,17 +1,17 @@
 import { redirect } from 'next/navigation';
 
 interface HomePageProps {
-  params: {
+  params: Promise<{
     locale: string;
-  };
+  }>;
 }
 
 export default async function HomePage({ params }: HomePageProps) {
-  const { locale } = params;
+  const { locale } = await params;
 
   if (locale === 'ar' || locale === 'en') {
-    redirect(`/${locale}/dashboard/overview`);
+    redirect(`/${locale}/chat`);
   } else {
-    redirect('/en/dashboard/overview');
+    redirect('/en/chat');
   }
 }

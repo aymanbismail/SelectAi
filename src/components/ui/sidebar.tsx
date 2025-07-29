@@ -598,6 +598,17 @@ function SidebarMenuBadge({
   );
 }
 
+const SIDEBAR_SKELETON_WIDTHS = [
+  '50%',
+  '60%',
+  '70%',
+  '80%',
+  '65%',
+  '75%',
+  '55%',
+  '85%'
+];
+
 function SidebarMenuSkeleton({
   className,
   showIcon = false,
@@ -605,9 +616,16 @@ function SidebarMenuSkeleton({
 }: React.ComponentProps<'div'> & {
   showIcon?: boolean;
 }) {
-  // Random width between 50 to 90%.
-  const width = React.useMemo(() => {
-    return `${Math.floor(Math.random() * 40) + 50}%`;
+  // Use a predefined set of widths to avoid hydration mismatch
+  // These widths will be consistent between server and client
+  const [width, setWidth] = React.useState('70%'); // Default width
+
+  React.useEffect(() => {
+    // Only set random width on client side to avoid hydration mismatch
+    const randomIndex = Math.floor(
+      Math.random() * SIDEBAR_SKELETON_WIDTHS.length
+    );
+    setWidth(SIDEBAR_SKELETON_WIDTHS[randomIndex]);
   }, []);
 
   return (
