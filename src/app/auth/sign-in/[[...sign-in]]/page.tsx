@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import Link from 'next/link';
 // TEMPORARILY DISABLED FOR LARAVEL AUTH MIGRATION
 // import SignInViewPage from '@/features/auth/components/sign-in-view';
 
@@ -40,12 +41,12 @@ export default async function Page() {
         <p className='text-muted-foreground text-sm'>
           You can access the dashboard directly without authentication.
         </p>
-        <a
+        <Link
           href='/dashboard/overview'
           className='bg-primary text-primary-foreground hover:bg-primary/90 mt-4 inline-block rounded-md px-4 py-2'
         >
           Go to Dashboard
-        </a>
+        </Link>
       </div>
     </div>
   );
