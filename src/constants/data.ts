@@ -227,10 +227,10 @@ export const aiAgentsCategories: Category[] = [
 export const demoCategories = aiToolsCategories;
 
 //Info: Navigation items for AI Tools tenant
-export const aiToolsNavItems: NavItem[] = [
+export const getAiToolsNavItems = (locale: string = 'en'): NavItem[] => [
   {
     title: 'Chat',
-    url: '/chat',
+    url: `/${locale}/chat`,
     icon: 'chat',
     isActive: false,
     shortcut: ['c', 'c'],
@@ -238,7 +238,7 @@ export const aiToolsNavItems: NavItem[] = [
   },
   {
     title: 'AI Tools',
-    url: '/ai-tools',
+    url: `/${locale}/ai-tools`,
     icon: 'dashboard',
     shortcut: ['a', 'i'],
     isActive: false,
@@ -246,7 +246,7 @@ export const aiToolsNavItems: NavItem[] = [
   },
   {
     title: 'Categories',
-    url: '/categories',
+    url: `/${locale}/categories`,
     icon: 'dashboard',
     shortcut: ['c', 't'],
     isActive: false,
@@ -255,10 +255,10 @@ export const aiToolsNavItems: NavItem[] = [
 ];
 
 //Info: Navigation items for AI Agents tenant
-export const aiAgentsNavItems: NavItem[] = [
+export const getAiAgentsNavItems = (locale: string = 'en'): NavItem[] => [
   {
     title: 'Chat',
-    url: '/chat',
+    url: `/${locale}/chat`,
     icon: 'chat',
     isActive: false,
     shortcut: ['c', 'c'],
@@ -266,7 +266,7 @@ export const aiAgentsNavItems: NavItem[] = [
   },
   {
     title: 'AI Agents',
-    url: '/agents',
+    url: `/${locale}/agents`,
     icon: 'dashboard',
     shortcut: ['a', 'i'],
     isActive: false,
@@ -274,7 +274,7 @@ export const aiAgentsNavItems: NavItem[] = [
   },
   {
     title: 'Categories',
-    url: '/agents/categories',
+    url: `/${locale}/agents/categories`,
     icon: 'dashboard',
     shortcut: ['c', 't'],
     isActive: false,
@@ -282,37 +282,67 @@ export const aiAgentsNavItems: NavItem[] = [
   }
 ];
 
+// Backward compatibility - these will use 'en' as default
+export const aiToolsNavItems: NavItem[] = getAiToolsNavItems('en');
+export const aiAgentsNavItems: NavItem[] = getAiAgentsNavItems('en');
+
 // Default export for backward compatibility
 export const navItems = aiToolsNavItems;
 
 // Categories that will be displayed in the scrollable container for AI Tools
-export const aiToolsAdditionalCategories: NavItem[] = aiToolsCategories.map(
-  (category) => ({
+export const getAiToolsAdditionalCategories = (
+  locale: string = 'en'
+): NavItem[] =>
+  aiToolsCategories.map((category) => ({
     title: category.name.charAt(0).toUpperCase() + category.name.slice(1),
-    url: `/${category.name}`,
+    url: `/${locale}/${category.name}`,
     icon: 'dashboard' as const,
     shortcut: ['a', 'i'] as [string, string],
     isActive: false,
     items: []
-  })
-);
+  }));
 
 // Categories that will be displayed in the scrollable container for AI Agents
-export const aiAgentsAdditionalCategories: NavItem[] = aiAgentsCategories.map(
-  (category) => ({
+export const getAiAgentsAdditionalCategories = (
+  locale: string = 'en'
+): NavItem[] =>
+  aiAgentsCategories.map((category) => ({
     title:
       category.name.charAt(0).toUpperCase() +
       category.name.slice(1).replace('-', ' '),
-    url: `/agents/${category.name}`,
+    url: `/${locale}/agents/${category.name}`,
     icon: 'chat' as const,
     shortcut: ['a', 'g'] as [string, string],
     isActive: false,
     items: []
-  })
-);
+  }));
+
+// Backward compatibility - these will use 'en' as default
+export const aiToolsAdditionalCategories: NavItem[] =
+  getAiToolsAdditionalCategories('en');
+export const aiAgentsAdditionalCategories: NavItem[] =
+  getAiAgentsAdditionalCategories('en');
 
 // Default export for backward compatibility
 export const additionalCategories = aiToolsAdditionalCategories;
+
+// Helper function to get all navigation data for a specific locale and tenant
+export function getNavigationData(
+  locale: string = 'en',
+  tenantName: string = 'AI Tools'
+) {
+  const isAiTools = tenantName === 'AI Tools';
+
+  return {
+    navItems: isAiTools
+      ? getAiToolsNavItems(locale)
+      : getAiAgentsNavItems(locale),
+    additionalCategories: isAiTools
+      ? getAiToolsAdditionalCategories(locale)
+      : getAiAgentsAdditionalCategories(locale),
+    categoryLabel: isAiTools ? 'Categories' : 'Agent Types'
+  };
+}
 
 export interface SaleUser {
   id: number;

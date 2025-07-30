@@ -31,10 +31,10 @@ import {
 } from '@/components/ui/sidebar';
 import { UserAvatarProfile } from '@/components/user-avatar-profile';
 import {
-  aiToolsNavItems,
-  aiAgentsNavItems,
-  aiToolsAdditionalCategories,
-  aiAgentsAdditionalCategories
+  getAiToolsNavItems,
+  getAiAgentsNavItems,
+  getAiToolsAdditionalCategories,
+  getAiAgentsAdditionalCategories
 } from '@/constants/data';
 import {
   SidebarNavSkeleton,
@@ -137,11 +137,13 @@ export default function AppSidebar() {
 
   // Get navigation items and categories based on active tenant
   const currentNavItems =
-    activeTenant.name === 'AI Tools' ? aiToolsNavItems : aiAgentsNavItems;
+    activeTenant.name === 'AI Tools'
+      ? getAiToolsNavItems(locale)
+      : getAiAgentsNavItems(locale);
   const currentCategories =
     activeTenant.name === 'AI Tools'
-      ? aiToolsAdditionalCategories
-      : aiAgentsAdditionalCategories;
+      ? getAiToolsAdditionalCategories(locale)
+      : getAiAgentsAdditionalCategories(locale);
   const categoryLabel =
     activeTenant.name === 'AI Tools' ? 'Categories' : 'Agent Types';
 

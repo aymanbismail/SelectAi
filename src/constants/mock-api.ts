@@ -29,6 +29,7 @@ export const fakeProducts = {
     const sampleProducts: Product[] = [];
     function generateRandomProductData(id: number): Product {
       const categories = [
+        // AI Tools categories
         'design',
         'marketing',
         'productivity',
@@ -39,7 +40,24 @@ export const fakeProducts = {
         'education',
         'health',
         'travel',
-        'photography'
+        'photography',
+        'music',
+        'gaming',
+        'security',
+        'automation',
+        'ecommerce',
+        'social',
+        'news',
+        'weather',
+        'food',
+        // AI Agents categories
+        'conversational',
+        'analysis',
+        'content',
+        'customer-service',
+        'research',
+        'scheduling',
+        'monitoring'
       ];
 
       return {
