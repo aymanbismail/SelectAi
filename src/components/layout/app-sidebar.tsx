@@ -82,7 +82,7 @@ const demoUser = {
 export default function AppSidebar() {
   const pathname = usePathname();
   const { isOpen } = useMediaQuery();
-  const { open } = useSidebar();
+  const { state, isMobile } = useSidebar();
   // TEMPORARILY DISABLED FOR LARAVEL AUTH MIGRATION
   // const { user } = useUser();
   const user = demoUser; // Using demo user instead
@@ -263,8 +263,8 @@ export default function AppSidebar() {
           </SidebarGroup>
         )}
 
-        {/* Scrollable Categories Container with Loading State - Only show when sidebar is open */}
-        {open &&
+        {/* Scrollable Categories Container with Loading State - Visible on mobile or when sidebar is expanded */}
+        {(isMobile || state === 'expanded') &&
           (isLoadingCategories ? (
             <SidebarCategoriesSkeleton categoriesCount={8} />
           ) : (
