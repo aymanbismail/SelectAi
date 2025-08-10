@@ -41,6 +41,7 @@ import {
   SidebarCategoriesSkeleton
 } from './sidebar-skeleton';
 import { useMediaQuery } from '@/hooks/use-media-query';
+import { useWindowHeight } from '@/hooks/use-window-height';
 // TEMPORARILY DISABLED FOR LARAVEL AUTH MIGRATION
 // import { useUser } from '@clerk/nextjs';
 import {
@@ -74,8 +75,8 @@ const tenants = [
 
 // Demo user for testing without authentication
 const demoUser = {
-  fullName: 'Demo User',
-  emailAddresses: [{ emailAddress: 'demo@example.com' }],
+  fullName: 'Ayman Ismail',
+  emailAddresses: [{ emailAddress: 'ayman@example.com' }],
   imageUrl: ''
 };
 
@@ -83,11 +84,15 @@ export default function AppSidebar() {
   const pathname = usePathname();
   const { isOpen } = useMediaQuery();
   const { state, isMobile } = useSidebar();
+  const windowHeight = useWindowHeight();
   // TEMPORARILY DISABLED FOR LARAVEL AUTH MIGRATION
   // const { user } = useUser();
   const user = demoUser; // Using demo user instead
   const router = useRouter();
   const locale = useLocale();
+
+  // Determine if we should use fixed header behavior (when height >= 700px)
+  const isLargeViewport = windowHeight >= 700;
 
   // State for active tenant - always start with first tenant to avoid hydration mismatch
   const [activeTenant, setActiveTenant] = React.useState(tenants[0]);
@@ -185,128 +190,255 @@ export default function AppSidebar() {
 
   return (
     <Sidebar collapsible='icon' side={sidebarSide}>
-      <SidebarHeader>
+      <SidebarHeader className='border-sidebar-border bg-sidebar/95 supports-[backdrop-filter]:bg-sidebar/60 backdrop-blur'>
         <OrgSwitcher
           tenants={tenants}
           defaultTenant={activeTenant}
           onTenantSwitch={handleSwitchTenant}
         />
       </SidebarHeader>
-      <SidebarContent className='overflow-x-hidden'>
-        {/* Navigation Items with Loading State */}
-        {isLoadingNavItems ? (
-          <SidebarNavSkeleton navItemsCount={3} />
-        ) : (
-          <SidebarGroup>
-            <SidebarGroupLabel>Overview</SidebarGroupLabel>
-            <SidebarMenu>
-              {currentNavItems.map((item) => {
-                const Icon = item.icon ? Icons[item.icon] : Icons.logo;
-                return item?.items && item?.items?.length > 0 ? (
-                  <Collapsible
-                    key={item.title}
-                    asChild
-                    defaultOpen={item.isActive}
-                    className='group/collapsible'
-                  >
-                    <SidebarMenuItem>
-                      <CollapsibleTrigger asChild>
+
+      {/* Dynamic layout based on viewport height:
+          - Height >= 700px: Fixed header with scrollable categories
+          - Height < 700px: Single scrollable container for all content */}
+      {isLargeViewport ? (
+        // Large viewport: Fixed header with scrollable content
+        <>
+          <div className='bg-sidebar/95 supports-[backdrop-filter]:bg-sidebar/60 sidebar-fixed-header flex-shrink-0 backdrop-blur'>
+            {/* Fixed Navigation Items (Chat, AI Tools, Categories) */}
+            {isLoadingNavItems ? (
+              <div className='p-2'>
+                <SidebarNavSkeleton navItemsCount={3} />
+              </div>
+            ) : (
+              <SidebarGroup>
+                <SidebarGroupLabel>Overview</SidebarGroupLabel>
+                <SidebarMenu>
+                  {currentNavItems.map((item) => {
+                    const Icon = item.icon ? Icons[item.icon] : Icons.logo;
+                    return item?.items && item?.items?.length > 0 ? (
+                      <Collapsible
+                        key={item.title}
+                        asChild
+                        defaultOpen={item.isActive}
+                        className='group/collapsible'
+                      >
+                        <SidebarMenuItem>
+                          <CollapsibleTrigger asChild>
+                            <SidebarMenuButton
+                              tooltip={item.title}
+                              isActive={pathname === item.url}
+                            >
+                              {item.icon && <Icon />}
+                              <span>{item.title}</span>
+                              <IconChevronRight
+                                className={cn(
+                                  'ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90',
+                                  locale === 'ar' &&
+                                    'mr-auto ml-0 rotate-180 group-data-[state=open]/collapsible:rotate-270'
+                                )}
+                              />
+                            </SidebarMenuButton>
+                          </CollapsibleTrigger>
+                          <CollapsibleContent>
+                            <SidebarMenuSub>
+                              {item.items?.map((subItem) => (
+                                <SidebarMenuSubItem key={subItem.title}>
+                                  <SidebarMenuSubButton
+                                    asChild
+                                    isActive={pathname === subItem.url}
+                                  >
+                                    <Link href={subItem.url}>
+                                      <span>{subItem.title}</span>
+                                    </Link>
+                                  </SidebarMenuSubButton>
+                                </SidebarMenuSubItem>
+                              ))}
+                            </SidebarMenuSub>
+                          </CollapsibleContent>
+                        </SidebarMenuItem>
+                      </Collapsible>
+                    ) : (
+                      <SidebarMenuItem key={item.title}>
                         <SidebarMenuButton
+                          asChild
                           tooltip={item.title}
                           isActive={pathname === item.url}
                         >
-                          {item.icon && <Icon />}
-                          <span>{item.title}</span>
-                          <IconChevronRight
-                            className={cn(
-                              'ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90',
-                              locale === 'ar' &&
-                                'mr-auto ml-0 rotate-180 group-data-[state=open]/collapsible:rotate-270'
-                            )}
-                          />
+                          <Link href={item.url}>
+                            <Icon />
+                            <span>{item.title}</span>
+                          </Link>
                         </SidebarMenuButton>
-                      </CollapsibleTrigger>
-                      <CollapsibleContent>
-                        <SidebarMenuSub>
-                          {item.items?.map((subItem) => (
-                            <SidebarMenuSubItem key={subItem.title}>
-                              <SidebarMenuSubButton
-                                asChild
-                                isActive={pathname === subItem.url}
-                              >
-                                <Link href={subItem.url}>
-                                  <span>{subItem.title}</span>
-                                </Link>
-                              </SidebarMenuSubButton>
-                            </SidebarMenuSubItem>
-                          ))}
-                        </SidebarMenuSub>
-                      </CollapsibleContent>
-                    </SidebarMenuItem>
-                  </Collapsible>
-                ) : (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton
-                      asChild
-                      tooltip={item.title}
-                      isActive={pathname === item.url}
-                    >
-                      <Link href={item.url}>
-                        <Icon />
-                        <span>{item.title}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                );
-              })}
-            </SidebarMenu>
-          </SidebarGroup>
-        )}
+                      </SidebarMenuItem>
+                    );
+                  })}
+                </SidebarMenu>
+              </SidebarGroup>
+            )}
+          </div>
 
-        {/* Scrollable Categories Container with Loading State - Visible on mobile or when sidebar is expanded */}
-        {(isMobile || state === 'expanded') &&
-          (isLoadingCategories ? (
-            <SidebarCategoriesSkeleton categoriesCount={8} />
-          ) : (
-            <SidebarGroup>
-              <SidebarGroupLabel>{categoryLabel}</SidebarGroupLabel>
-              <div className='relative'>
-                <div className='categories-scrollbar max-h-[50vh] min-h-[100px] overflow-y-auto pr-2'>
-                  <SidebarMenu className='space-y-1'>
-                    {currentCategories.map((category) => {
-                      const CategoryIcon = category.icon
-                        ? Icons[category.icon]
-                        : Icons.logo;
-                      return (
-                        <SidebarMenuItem key={category.title}>
+          <SidebarContent className='sidebar-content-transition flex min-h-0 flex-1 flex-col overflow-x-hidden'>
+            {/* Scrollable Categories Container */}
+            {(isMobile || state === 'expanded') &&
+              (isLoadingCategories ? (
+                <SidebarCategoriesSkeleton categoriesCount={8} />
+              ) : (
+                <SidebarGroup className='min-h-0 flex-1'>
+                  <SidebarGroupLabel>{categoryLabel}</SidebarGroupLabel>
+                  <div className='relative min-h-0 flex-1'>
+                    <div className='categories-scrollbar absolute inset-0 overflow-y-auto pr-2 pb-2'>
+                      <SidebarMenu className='space-y-1'>
+                        {currentCategories.map((category) => {
+                          const CategoryIcon = category.icon
+                            ? Icons[category.icon]
+                            : Icons.logo;
+                          return (
+                            <SidebarMenuItem key={category.title}>
+                              <SidebarMenuButton
+                                asChild
+                                tooltip={category.title}
+                                isActive={pathname === category.url}
+                                className='hover:bg-sidebar-accent hover:text-sidebar-accent-foreground w-full justify-start transition-colors duration-200'
+                              >
+                                <Link href={category.url}>
+                                  <CategoryIcon className='h-4 w-4' />
+                                  <span>{category.title}</span>
+                                </Link>
+                              </SidebarMenuButton>
+                            </SidebarMenuItem>
+                          );
+                        })}
+                      </SidebarMenu>
+                    </div>
+                  </div>
+                </SidebarGroup>
+              ))}
+          </SidebarContent>
+        </>
+      ) : (
+        // Small viewport: Single scrollable container
+        <SidebarContent className='sidebar-content-transition flex flex-col overflow-x-hidden'>
+          <div className='min-h-0 flex-1'>
+            <div className='categories-scrollbar sidebar-scrollable-container h-full overflow-y-auto pr-2 pb-2'>
+              {/* Navigation Items */}
+              {isLoadingNavItems ? (
+                <div className='p-2'>
+                  <SidebarNavSkeleton navItemsCount={3} />
+                </div>
+              ) : (
+                <SidebarGroup className='flex-shrink-0'>
+                  <SidebarGroupLabel>Overview</SidebarGroupLabel>
+                  <SidebarMenu>
+                    {currentNavItems.map((item) => {
+                      const Icon = item.icon ? Icons[item.icon] : Icons.logo;
+                      return item?.items && item?.items?.length > 0 ? (
+                        <Collapsible
+                          key={item.title}
+                          asChild
+                          defaultOpen={item.isActive}
+                          className='group/collapsible'
+                        >
+                          <SidebarMenuItem>
+                            <CollapsibleTrigger asChild>
+                              <SidebarMenuButton
+                                tooltip={item.title}
+                                isActive={pathname === item.url}
+                              >
+                                {item.icon && <Icon />}
+                                <span>{item.title}</span>
+                                <IconChevronRight
+                                  className={cn(
+                                    'ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90',
+                                    locale === 'ar' &&
+                                      'mr-auto ml-0 rotate-180 group-data-[state=open]/collapsible:rotate-270'
+                                  )}
+                                />
+                              </SidebarMenuButton>
+                            </CollapsibleTrigger>
+                            <CollapsibleContent>
+                              <SidebarMenuSub>
+                                {item.items?.map((subItem) => (
+                                  <SidebarMenuSubItem key={subItem.title}>
+                                    <SidebarMenuSubButton
+                                      asChild
+                                      isActive={pathname === subItem.url}
+                                    >
+                                      <Link href={subItem.url}>
+                                        <span>{subItem.title}</span>
+                                      </Link>
+                                    </SidebarMenuSubButton>
+                                  </SidebarMenuSubItem>
+                                ))}
+                              </SidebarMenuSub>
+                            </CollapsibleContent>
+                          </SidebarMenuItem>
+                        </Collapsible>
+                      ) : (
+                        <SidebarMenuItem key={item.title}>
                           <SidebarMenuButton
                             asChild
-                            tooltip={category.title}
-                            isActive={pathname === category.url}
-                            className='w-full justify-start transition-colors duration-200'
+                            tooltip={item.title}
+                            isActive={pathname === item.url}
                           >
-                            <Link href={category.url}>
-                              <CategoryIcon className='h-4 w-4' />
-                              <span>{category.title}</span>
+                            <Link href={item.url}>
+                              <Icon />
+                              <span>{item.title}</span>
                             </Link>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
                       );
                     })}
                   </SidebarMenu>
-                </div>
-              </div>
-            </SidebarGroup>
-          ))}
-      </SidebarContent>
-      <SidebarFooter>
+                </SidebarGroup>
+              )}
+
+              {/* Categories Container */}
+              {(isMobile || state === 'expanded') &&
+                (isLoadingCategories ? (
+                  <div className='p-2'>
+                    <SidebarCategoriesSkeleton categoriesCount={8} />
+                  </div>
+                ) : (
+                  <SidebarGroup>
+                    <SidebarGroupLabel>{categoryLabel}</SidebarGroupLabel>
+                    <SidebarMenu className='space-y-1'>
+                      {currentCategories.map((category) => {
+                        const CategoryIcon = category.icon
+                          ? Icons[category.icon]
+                          : Icons.logo;
+                        return (
+                          <SidebarMenuItem key={category.title}>
+                            <SidebarMenuButton
+                              asChild
+                              tooltip={category.title}
+                              isActive={pathname === category.url}
+                              className='hover:bg-sidebar-accent hover:text-sidebar-accent-foreground w-full justify-start transition-colors duration-200'
+                            >
+                              <Link href={category.url}>
+                                <CategoryIcon className='h-4 w-4' />
+                                <span>{category.title}</span>
+                              </Link>
+                            </SidebarMenuButton>
+                          </SidebarMenuItem>
+                        );
+                      })}
+                    </SidebarMenu>
+                  </SidebarGroup>
+                ))}
+            </div>
+          </div>
+        </SidebarContent>
+      )}
+
+      <SidebarFooter className='border-sidebar-border bg-sidebar/95 supports-[backdrop-filter]:bg-sidebar/60 backdrop-blur'>
         <SidebarMenu>
           <SidebarMenuItem>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton
                   size='lg'
-                  className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
+                  className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors duration-200'
                 >
                   {user && (
                     <UserAvatarProfile
@@ -315,17 +447,17 @@ export default function AppSidebar() {
                       user={user}
                     />
                   )}
-                  <IconChevronsDown className='ml-auto size-4' />
+                  <IconChevronsDown className='ml-auto size-4 transition-transform duration-200' />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
               <DropdownMenuContent
-                className='w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg'
+                className='border-sidebar-border bg-sidebar w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg shadow-lg'
                 side='bottom'
                 align='end'
                 sideOffset={4}
               >
                 <DropdownMenuLabel className='p-0 font-normal'>
-                  <div className='px-1 py-1.5'>
+                  <div className='px-1 py-1.5 text-sm'>
                     {user && (
                       <UserAvatarProfile
                         className='h-8 w-8 rounded-lg'
@@ -335,26 +467,27 @@ export default function AppSidebar() {
                     )}
                   </div>
                 </DropdownMenuLabel>
-                <DropdownMenuSeparator />
+                <DropdownMenuSeparator className='bg-sidebar-border' />
 
                 <DropdownMenuGroup>
                   <DropdownMenuItem
                     onClick={() => router.push('/dashboard/profile')}
+                    className='hover:bg-sidebar-accent hover:text-sidebar-accent-foreground cursor-pointer transition-colors duration-200'
                   >
                     <IconUserCircle className='mr-2 h-4 w-4' />
                     Profile
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
+                  <DropdownMenuItem className='hover:bg-sidebar-accent hover:text-sidebar-accent-foreground cursor-pointer transition-colors duration-200'>
                     <IconCreditCard className='mr-2 h-4 w-4' />
                     Billing
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
+                  <DropdownMenuItem className='hover:bg-sidebar-accent hover:text-sidebar-accent-foreground cursor-pointer transition-colors duration-200'>
                     <IconBell className='mr-2 h-4 w-4' />
                     Notifications
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
+                <DropdownMenuSeparator className='bg-sidebar-border' />
+                <DropdownMenuItem className='hover:bg-destructive hover:text-destructive-foreground cursor-pointer transition-colors duration-200'>
                   <IconLogout className='mr-2 h-4 w-4' />
                   {/* TEMPORARILY DISABLED FOR LARAVEL AUTH MIGRATION */}
                   {/* <SignOutButton redirectUrl='/auth/sign-in' /> */}

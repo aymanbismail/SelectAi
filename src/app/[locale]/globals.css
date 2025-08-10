@@ -185,3 +185,19 @@
 .categories-scrollbar::-webkit-scrollbar-thumb:active {
   background: rgb(156 163 175);
 }
+
+/* Smooth transitions for sidebar layout changes */
+.sidebar-content-transition {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar-fixed-header {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: rgba(var(--sidebar), 0.95);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.sidebar-scrollable-container {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
