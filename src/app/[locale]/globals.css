@@ -201,3 +201,49 @@
 .sidebar-scrollable-container {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+/* Marquee animations */
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes marquee-reverse {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee var(--marquee-duration, 50s) linear infinite;
+}
+
+.animate-marquee-reverse {
+  animation: marquee-reverse var(--marquee-duration, 50s) linear infinite;
+}
+
+/* Prevent horizontal overflow issues */
+html,
+body {
+  overflow-x: hidden;
+}
+
+/* RTL (Arabic) adjustment: place custom Radix ScrollArea vertical scrollbar on the left */
+[dir='rtl'] [data-slot='scroll-area-scrollbar'][data-orientation='vertical'] {
+  right: auto !important;
+  left: 0 !important;
+  border-left: none !important;
+  border-right: 1px solid transparent;
+}
+
+/* Optional: ensure viewport doesn't get covered by left scrollbar by adding inline-start padding if needed */
+[dir='rtl'] [data-slot='scroll-area'] > [data-slot='scroll-area-viewport'] {
+  padding-inline-start: 0.25rem; /* tweak if overlap occurs */
+}

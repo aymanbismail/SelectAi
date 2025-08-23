@@ -60,7 +60,7 @@ export function OrgSwitcher({
               size='lg'
               className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
             >
-              <div className='bg-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg'>
+              <div className='flex aspect-square size-8 items-center justify-center rounded-lg bg-transparent'>
                 <motion.div
                   animate={{
                     rotate: [0, 360],
@@ -79,7 +79,7 @@ export function OrgSwitcher({
                     }
                   }}
                 >
-                  <Sparkles className='h-6 w-6 text-white' />
+                  <Sparkles className='h-6 w-6 text-current' />
                 </motion.div>
               </div>
               <div className='flex flex-col gap-0.5 leading-none'>

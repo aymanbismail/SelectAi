@@ -1,10 +1,8 @@
 import Providers from '@/components/layout/providers';
 import { Toaster } from '@/components/ui/sonner';
-import { fontVariables } from '@/lib/font';
 import ThemeProvider from '@/components/layout/ThemeToggle/theme-provider';
 import { cn } from '@/lib/utils';
 import type { Metadata, Viewport } from 'next';
-import { cookies } from 'next/headers';
 import NextTopLoader from 'nextjs-toploader';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import './globals.css';
@@ -12,6 +10,7 @@ import './theme.css';
 import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
+import DarkVeil from '@/components/DarkVeil';
 
 const META_THEME_COLORS = {
   light: '#ffffff',
@@ -34,9 +33,6 @@ export default async function RootLayout({
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
 }) {
-  const cookieStore = await cookies();
-  const activeThemeValue = cookieStore.get('active_theme')?.value;
-  const isScaled = activeThemeValue?.endsWith('-scaled');
   // Ensure that the incoming `locale` is valid
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) {
@@ -60,12 +56,20 @@ export default async function RootLayout({
       </head>
       <body
         className={cn(
-          'bg-background overflow-hidden overscroll-none font-sans antialiased',
-          activeThemeValue ? `theme-${activeThemeValue}` : '',
-          isScaled ? 'theme-scaled' : '',
-          fontVariables
+          'bg-background overflow-hidden overscroll-none font-sans antialiased'
         )}
       >
+        {/* Global animated background (both themes) */}
+        <div className='pointer-events-none fixed inset-0 -z-10 block'>
+          <DarkVeil
+            resolutionScale={1}
+            speed={0.5}
+            noiseIntensity={0.03}
+            scanlineIntensity={0.08}
+            scanlineFrequency={20}
+            warpAmount={0.02}
+          />
+        </div>
         <NextTopLoader showSpinner={false} />
         <NuqsAdapter>
           <NextIntlClientProvider>
@@ -76,7 +80,7 @@ export default async function RootLayout({
               disableTransitionOnChange
               enableColorScheme
             >
-              <Providers activeThemeValue={activeThemeValue as string}>
+              <Providers>
                 <Toaster />
                 {children}
               </Providers>

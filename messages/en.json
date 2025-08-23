@@ -2,5 +2,44 @@
   "chat": {
     "title": "Discover the best AI tool for your task",
     "description": "Chat with your AI assistant and ask for help with your daily tasks."
+  },
+  "hero": {
+    "badge": "Discover AI Tools",
+    "title": "Find the Perfect",
+    "titleHighlight": "AI Tool",
+    "titleSuffix": "for Every Task",
+    "description": "Explore our curated collection of cutting-edge AI tools across text, image, video, code, audio, and business categories.",
+    "exploreButton": "Explore All Tools",
+    "requestButton": "Request a Tool"
+  },
+  "categories": {
+    "text": "Text",
+    "image": "Image",
+    "video": "Video",
+    "audio": "Audio",
+    "code": "Code",
+    "business": "Business",
+    "design": "Design",
+    "productivity": "Productivity",
+    "education": "Education",
+    "marketing": "Marketing",
+    "research": "Research",
+    "writing": "Writing",
+    "chatbot": "Chatbot",
+    "translation": "Translation",
+    "seo": "SEO",
+    "social": "Social Media"
+  },
+  "trending": {
+    "title": "Trending AI Tools",
+    "description": "Discover the most popular AI tools trending right now"
+  },
+  "categoryDescriptions": {
+    "textai": "Discover the latest AI tools for text",
+    "imageai": "Discover the latest AI tools for images",
+    "videoai": "Discover the latest AI tools for videos",
+    "codeai": "Discover the latest AI tools for coding",
+    "audioai": "Discover the latest AI tools for audio",
+    "businessai": "Discover the latest AI tools for business"
   }
 }

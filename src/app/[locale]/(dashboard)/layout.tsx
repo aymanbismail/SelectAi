@@ -22,7 +22,7 @@ export default async function DashboardLayout({
     <KBar>
       <SidebarProvider defaultOpen={defaultOpen}>
         <AppSidebar />
-        <SidebarInset>
+        <SidebarInset className='h-screen'>
           <Header />
           {/* page main content */}
           {children}

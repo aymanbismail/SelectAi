@@ -229,12 +229,23 @@ export const demoCategories = aiToolsCategories;
 //Info: Navigation items for AI Tools tenant
 export const getAiToolsNavItems = (locale: string = 'en'): NavItem[] => [
   {
+    title: 'Home',
+    url: `/${locale}/home`,
+    icon: 'dashboard',
+    isActive: false,
+    shortcut: ['h', 'm'],
+    items: []
+  },
+  {
     title: 'Chat',
-    url: `/${locale}/chat`,
+    // Temporarily disabled; keep URL omitted to prevent navigation
+    // url: `/${locale}/chat`,
     icon: 'chat',
     isActive: false,
     shortcut: ['c', 'c'],
-    items: []
+    items: [],
+    disabled: true,
+    badge: { text: 'Coming Soon', variant: 'secondary' }
   },
   {
     title: 'AI Tools',
@@ -257,12 +268,23 @@ export const getAiToolsNavItems = (locale: string = 'en'): NavItem[] => [
 //Info: Navigation items for AI Agents tenant
 export const getAiAgentsNavItems = (locale: string = 'en'): NavItem[] => [
   {
+    title: 'Home',
+    url: `/${locale}/home`,
+    icon: 'dashboard',
+    isActive: false,
+    shortcut: ['h', 'm'],
+    items: []
+  },
+  {
     title: 'Chat',
-    url: `/${locale}/chat`,
+    // Temporarily disabled; keep URL omitted to prevent navigation
+    // url: `/${locale}/chat`,
     icon: 'chat',
     isActive: false,
     shortcut: ['c', 'c'],
-    items: []
+    items: [],
+    disabled: true,
+    badge: { text: 'Coming Soon', variant: 'secondary' }
   },
   {
     title: 'AI Agents',
@@ -296,8 +318,8 @@ export const getAiToolsAdditionalCategories = (
   aiToolsCategories.map((category) => ({
     title: category.name.charAt(0).toUpperCase() + category.name.slice(1),
     url: `/${locale}/${category.name}`,
-    icon: 'dashboard' as const,
-    shortcut: ['a', 'i'] as [string, string],
+    icon: 'dashboard',
+    shortcut: ['a', 'i'],
     isActive: false,
     items: []
   }));
@@ -311,8 +333,8 @@ export const getAiAgentsAdditionalCategories = (
       category.name.charAt(0).toUpperCase() +
       category.name.slice(1).replace('-', ' '),
     url: `/${locale}/agents/${category.name}`,
-    icon: 'chat' as const,
-    shortcut: ['a', 'g'] as [string, string],
+    icon: 'chat',
+    shortcut: ['a', 'g'],
     isActive: false,
     items: []
   }));

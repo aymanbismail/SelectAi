@@ -10,8 +10,8 @@ export default async function HomePage({ params }: HomePageProps) {
   const { locale } = await params;
 
   if (locale === 'ar' || locale === 'en') {
-    redirect(`/${locale}/chat`);
+    redirect(`/${locale}/home`);
   } else {
-    redirect('/en/chat');
+    redirect('/en/home');
   }
 }

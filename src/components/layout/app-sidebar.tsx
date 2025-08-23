@@ -61,6 +61,8 @@ import { useLocale } from 'next-intl';
 import * as React from 'react';
 import { cn } from '@/lib/utils';
 import { Icons } from '../icons';
+import type { NavItem } from '@/types';
+import { Badge } from '@/components/ui/badge';
 import { OrgSwitcher } from '../org-switcher';
 export const company = {
   name: 'Acme Inc',
@@ -190,7 +192,7 @@ export default function AppSidebar() {
 
   return (
     <Sidebar collapsible='icon' side={sidebarSide}>
-      <SidebarHeader className='border-sidebar-border bg-sidebar/95 supports-[backdrop-filter]:bg-sidebar/60 backdrop-blur'>
+      <SidebarHeader className='border-sidebar-border bg-background/60 supports-[backdrop-filter]:bg-background/50 backdrop-blur'>
         <OrgSwitcher
           tenants={tenants}
           defaultTenant={activeTenant}
@@ -204,7 +206,7 @@ export default function AppSidebar() {
       {isLargeViewport ? (
         // Large viewport: Fixed header with scrollable content
         <>
-          <div className='bg-sidebar/95 supports-[backdrop-filter]:bg-sidebar/60 sidebar-fixed-header flex-shrink-0 backdrop-blur'>
+          <div className='sidebar-fixed-header flex-shrink-0 bg-transparent'>
             {/* Fixed Navigation Items (Chat, AI Tools, Categories) */}
             {isLoadingNavItems ? (
               <div className='p-2'>
@@ -214,7 +216,7 @@ export default function AppSidebar() {
               <SidebarGroup>
                 <SidebarGroupLabel>Overview</SidebarGroupLabel>
                 <SidebarMenu>
-                  {currentNavItems.map((item) => {
+                  {currentNavItems.map((item: NavItem) => {
                     const Icon = item.icon ? Icons[item.icon] : Icons.logo;
                     return item?.items && item?.items?.length > 0 ? (
                       <Collapsible
@@ -228,12 +230,15 @@ export default function AppSidebar() {
                             <SidebarMenuButton
                               tooltip={item.title}
                               isActive={pathname === item.url}
+                              className='data-[active=true]:bg-sidebar-accent/60 data-[active=true]:border-sidebar-accent/20 transition-all duration-200 data-[active=true]:border data-[active=true]:backdrop-blur-sm'
                             >
-                              {item.icon && <Icon />}
-                              <span>{item.title}</span>
+                              {item.icon && <Icon className='h-4 w-4' />}
+                              <span className='group-data-[collapsible=icon]:hidden'>
+                                {item.title}
+                              </span>
                               <IconChevronRight
                                 className={cn(
-                                  'ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90',
+                                  'ml-auto transition-transform duration-200 group-data-[collapsible=icon]:hidden group-data-[state=open]/collapsible:rotate-90',
                                   locale === 'ar' &&
                                     'mr-auto ml-0 rotate-180 group-data-[state=open]/collapsible:rotate-270'
                                 )}
@@ -242,13 +247,14 @@ export default function AppSidebar() {
                           </CollapsibleTrigger>
                           <CollapsibleContent>
                             <SidebarMenuSub>
-                              {item.items?.map((subItem) => (
+                              {item.items?.map((subItem: NavItem) => (
                                 <SidebarMenuSubItem key={subItem.title}>
                                   <SidebarMenuSubButton
                                     asChild
                                     isActive={pathname === subItem.url}
+                                    className='data-[active=true]:bg-sidebar-accent/60 data-[active=true]:border-sidebar-accent/20 transition-all duration-200 data-[active=true]:border data-[active=true]:backdrop-blur-sm'
                                   >
-                                    <Link href={subItem.url}>
+                                    <Link href={subItem.url!}>
                                       <span>{subItem.title}</span>
                                     </Link>
                                   </SidebarMenuSubButton>
@@ -261,14 +267,53 @@ export default function AppSidebar() {
                     ) : (
                       <SidebarMenuItem key={item.title}>
                         <SidebarMenuButton
-                          asChild
+                          asChild={!item.disabled}
                           tooltip={item.title}
                           isActive={pathname === item.url}
+                          className={cn(
+                            'data-[active=true]:bg-sidebar-accent/60 data-[active=true]:border-sidebar-accent/20 transition-all duration-200 data-[active=true]:border data-[active=true]:backdrop-blur-sm',
+                            item.disabled &&
+                              'cursor-not-allowed opacity-80 hover:bg-transparent'
+                          )}
                         >
-                          <Link href={item.url}>
-                            <Icon />
-                            <span>{item.title}</span>
-                          </Link>
+                          {item.disabled ? (
+                            <div className='flex w-full items-center justify-between py-2'>
+                              <div className='flex items-center gap-2'>
+                                <Icon className='h-4 w-4' />
+                                <span className='group-data-[collapsible=icon]:hidden'>
+                                  {item.title}
+                                </span>
+                              </div>
+                              {item.badge && (
+                                <Badge
+                                  variant={item.badge.variant ?? 'default'}
+                                  className='from-primary/90 via-primary/80 to-primary/70 text-primary-foreground border-0 bg-gradient-to-r shadow-sm group-data-[collapsible=icon]:hidden'
+                                >
+                                  {item.badge.text}
+                                </Badge>
+                              )}
+                            </div>
+                          ) : (
+                            <Link
+                              href={item.url!}
+                              className='flex w-full items-center justify-between'
+                            >
+                              <div className='flex items-center gap-2'>
+                                <Icon className='h-4 w-4' />
+                                <span className='group-data-[collapsible=icon]:hidden'>
+                                  {item.title}
+                                </span>
+                              </div>
+                              {item.badge && (
+                                <Badge
+                                  variant={item.badge.variant ?? 'default'}
+                                  className='from-primary/90 via-primary/80 to-primary/70 text-primary-foreground border-0 bg-gradient-to-r shadow-sm group-data-[collapsible=icon]:hidden'
+                                >
+                                  {item.badge.text}
+                                </Badge>
+                              )}
+                            </Link>
+                          )}
                         </SidebarMenuButton>
                       </SidebarMenuItem>
                     );
@@ -289,7 +334,7 @@ export default function AppSidebar() {
                   <div className='relative min-h-0 flex-1'>
                     <div className='categories-scrollbar absolute inset-0 overflow-y-auto pr-2 pb-2'>
                       <SidebarMenu className='space-y-1'>
-                        {currentCategories.map((category) => {
+                        {currentCategories.map((category: NavItem) => {
                           const CategoryIcon = category.icon
                             ? Icons[category.icon]
                             : Icons.logo;
@@ -299,11 +344,13 @@ export default function AppSidebar() {
                                 asChild
                                 tooltip={category.title}
                                 isActive={pathname === category.url}
-                                className='hover:bg-sidebar-accent hover:text-sidebar-accent-foreground w-full justify-start transition-colors duration-200'
+                                className='hover:bg-sidebar-accent hover:text-sidebar-accent-foreground data-[active=true]:bg-sidebar-accent/60 data-[active=true]:border-sidebar-accent/20 w-full justify-start transition-all duration-200 data-[active=true]:border data-[active=true]:backdrop-blur-sm'
                               >
-                                <Link href={category.url}>
+                                <Link href={category.url!}>
                                   <CategoryIcon className='h-4 w-4' />
-                                  <span>{category.title}</span>
+                                  <span className='group-data-[collapsible=icon]:hidden'>
+                                    {category.title}
+                                  </span>
                                 </Link>
                               </SidebarMenuButton>
                             </SidebarMenuItem>
@@ -318,7 +365,7 @@ export default function AppSidebar() {
         </>
       ) : (
         // Small viewport: Single scrollable container
-        <SidebarContent className='sidebar-content-transition flex flex-col overflow-x-hidden'>
+        <SidebarContent className='sidebar-content-transition flex flex-col overflow-x-hidden bg-transparent'>
           <div className='min-h-0 flex-1'>
             <div className='categories-scrollbar sidebar-scrollable-container h-full overflow-y-auto pr-2 pb-2'>
               {/* Navigation Items */}
@@ -330,7 +377,7 @@ export default function AppSidebar() {
                 <SidebarGroup className='flex-shrink-0'>
                   <SidebarGroupLabel>Overview</SidebarGroupLabel>
                   <SidebarMenu>
-                    {currentNavItems.map((item) => {
+                    {currentNavItems.map((item: NavItem) => {
                       const Icon = item.icon ? Icons[item.icon] : Icons.logo;
                       return item?.items && item?.items?.length > 0 ? (
                         <Collapsible
@@ -344,12 +391,15 @@ export default function AppSidebar() {
                               <SidebarMenuButton
                                 tooltip={item.title}
                                 isActive={pathname === item.url}
+                                className='data-[active=true]:bg-sidebar-accent/60 data-[active=true]:border-sidebar-accent/20 transition-all duration-200 data-[active=true]:border data-[active=true]:backdrop-blur-sm'
                               >
-                                {item.icon && <Icon />}
-                                <span>{item.title}</span>
+                                {item.icon && <Icon className='h-4 w-4' />}
+                                <span className='group-data-[collapsible=icon]:hidden'>
+                                  {item.title}
+                                </span>
                                 <IconChevronRight
                                   className={cn(
-                                    'ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90',
+                                    'ml-auto transition-transform duration-200 group-data-[collapsible=icon]:hidden group-data-[state=open]/collapsible:rotate-90',
                                     locale === 'ar' &&
                                       'mr-auto ml-0 rotate-180 group-data-[state=open]/collapsible:rotate-270'
                                   )}
@@ -358,13 +408,14 @@ export default function AppSidebar() {
                             </CollapsibleTrigger>
                             <CollapsibleContent>
                               <SidebarMenuSub>
-                                {item.items?.map((subItem) => (
+                                {item.items?.map((subItem: NavItem) => (
                                   <SidebarMenuSubItem key={subItem.title}>
                                     <SidebarMenuSubButton
                                       asChild
                                       isActive={pathname === subItem.url}
+                                      className='data-[active=true]:bg-sidebar-accent/60 data-[active=true]:border-sidebar-accent/20 transition-all duration-200 data-[active=true]:border data-[active=true]:backdrop-blur-sm'
                                     >
-                                      <Link href={subItem.url}>
+                                      <Link href={subItem.url!}>
                                         <span>{subItem.title}</span>
                                       </Link>
                                     </SidebarMenuSubButton>
@@ -377,14 +428,53 @@ export default function AppSidebar() {
                       ) : (
                         <SidebarMenuItem key={item.title}>
                           <SidebarMenuButton
-                            asChild
+                            asChild={!item.disabled}
                             tooltip={item.title}
                             isActive={pathname === item.url}
+                            className={cn(
+                              'data-[active=true]:bg-sidebar-accent/60 data-[active=true]:border-sidebar-accent/20 transition-all duration-200 data-[active=true]:border data-[active=true]:backdrop-blur-sm',
+                              item.disabled &&
+                                'cursor-not-allowed opacity-80 hover:bg-transparent'
+                            )}
                           >
-                            <Link href={item.url}>
-                              <Icon />
-                              <span>{item.title}</span>
-                            </Link>
+                            {item.disabled ? (
+                              <div className='flex w-full items-center justify-between py-2'>
+                                <div className='flex items-center gap-2'>
+                                  <Icon className='h-4 w-4' />
+                                  <span className='group-data-[collapsible=icon]:hidden'>
+                                    {item.title}
+                                  </span>
+                                </div>
+                                {item.badge && (
+                                  <Badge
+                                    variant={item.badge.variant ?? 'default'}
+                                    className='from-primary/90 via-primary/80 to-primary/70 text-primary-foreground border-0 bg-gradient-to-r shadow-sm group-data-[collapsible=icon]:hidden'
+                                  >
+                                    {item.badge.text}
+                                  </Badge>
+                                )}
+                              </div>
+                            ) : (
+                              <Link
+                                href={item.url!}
+                                className='flex w-full items-center justify-between'
+                              >
+                                <div className='flex items-center gap-2'>
+                                  <Icon className='h-4 w-4' />
+                                  <span className='group-data-[collapsible=icon]:hidden'>
+                                    {item.title}
+                                  </span>
+                                </div>
+                                {item.badge && (
+                                  <Badge
+                                    variant={item.badge.variant ?? 'default'}
+                                    className='from-primary/90 via-primary/80 to-primary/70 text-primary-foreground border-0 bg-gradient-to-r shadow-sm group-data-[collapsible=icon]:hidden'
+                                  >
+                                    {item.badge.text}
+                                  </Badge>
+                                )}
+                              </Link>
+                            )}
                           </SidebarMenuButton>
                         </SidebarMenuItem>
                       );
@@ -403,7 +493,7 @@ export default function AppSidebar() {
                   <SidebarGroup>
                     <SidebarGroupLabel>{categoryLabel}</SidebarGroupLabel>
                     <SidebarMenu className='space-y-1'>
-                      {currentCategories.map((category) => {
+                      {currentCategories.map((category: NavItem) => {
                         const CategoryIcon = category.icon
                           ? Icons[category.icon]
                           : Icons.logo;
@@ -413,11 +503,13 @@ export default function AppSidebar() {
                               asChild
                               tooltip={category.title}
                               isActive={pathname === category.url}
-                              className='hover:bg-sidebar-accent hover:text-sidebar-accent-foreground w-full justify-start transition-colors duration-200'
+                              className='hover:bg-sidebar-accent hover:text-sidebar-accent-foreground data-[active=true]:bg-sidebar-accent/60 data-[active=true]:border-sidebar-accent/20 w-full justify-start transition-all duration-200 data-[active=true]:border data-[active=true]:backdrop-blur-sm'
                             >
-                              <Link href={category.url}>
+                              <Link href={category.url!}>
                                 <CategoryIcon className='h-4 w-4' />
-                                <span>{category.title}</span>
+                                <span className='group-data-[collapsible=icon]:hidden'>
+                                  {category.title}
+                                </span>
                               </Link>
                             </SidebarMenuButton>
                           </SidebarMenuItem>
@@ -431,7 +523,7 @@ export default function AppSidebar() {
         </SidebarContent>
       )}
 
-      <SidebarFooter className='border-sidebar-border bg-sidebar/95 supports-[backdrop-filter]:bg-sidebar/60 backdrop-blur'>
+      <SidebarFooter className='border-sidebar-border bg-background/60 supports-[backdrop-filter]:bg-background/50 backdrop-blur'>
         <SidebarMenu>
           <SidebarMenuItem>
             <DropdownMenu>
@@ -447,7 +539,7 @@ export default function AppSidebar() {
                       user={user}
                     />
                   )}
-                  <IconChevronsDown className='ml-auto size-4 transition-transform duration-200' />
+                  <IconChevronsDown className='ml-auto size-4 transition-transform duration-200 group-data-[collapsible=icon]:hidden' />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
               <DropdownMenuContent

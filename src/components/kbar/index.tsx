@@ -9,6 +9,7 @@ import {
 } from 'kbar';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
+import type { Action } from 'kbar';
 import RenderResults from './render-result';
 import useThemeSwitching from './use-theme-switching';
 
@@ -16,41 +17,54 @@ export default function KBar({ children }: { children: React.ReactNode }) {
   const router = useRouter();
 
   // These action are for the navigation
-  const actions = useMemo(() => {
+  const actions = useMemo<Action[]>(() => {
     // Define navigateTo inside the useMemo callback to avoid dependency array issues
     const navigateTo = (url: string) => {
       router.push(url);
     };
 
     return navItems.flatMap((navItem) => {
-      // Only include base action if the navItem has a real URL and is not just a container
-      const baseAction =
+      const actions: Action[] = [];
+
+      // Base action only if a valid URL exists (non-empty string)
+      if (
+        typeof navItem.url === 'string' &&
+        navItem.url.trim() !== '' &&
         navItem.url !== '#'
-          ? {
-              id: `${navItem.title.toLowerCase()}Action`,
-              name: navItem.title,
-              shortcut: navItem.shortcut,
-              keywords: navItem.title.toLowerCase(),
-              section: 'Navigation',
-              subtitle: `Go to ${navItem.title}`,
-              perform: () => navigateTo(navItem.url)
-            }
-          : null;
+      ) {
+        actions.push({
+          id: `${navItem.title.toLowerCase()}Action`,
+          name: navItem.title,
+          shortcut: navItem.shortcut,
+          keywords: navItem.title.toLowerCase(),
+          section: 'Navigation',
+          subtitle: `Go to ${navItem.title}`,
+          perform: () => navigateTo(navItem.url as string)
+        });
+      }
 
-      // Map child items into actions
-      const childActions =
-        navItem.items?.map((childItem) => ({
-          id: `${childItem.title.toLowerCase()}Action`,
-          name: childItem.title,
-          shortcut: childItem.shortcut,
-          keywords: childItem.title.toLowerCase(),
-          section: navItem.title,
-          subtitle: `Go to ${childItem.title}`,
-          perform: () => navigateTo(childItem.url)
-        })) ?? [];
+      // Child actions only for children with valid URLs
+      if (navItem.items?.length) {
+        navItem.items.forEach((childItem) => {
+          if (
+            typeof childItem.url === 'string' &&
+            childItem.url.trim() !== '' &&
+            childItem.url !== '#'
+          ) {
+            actions.push({
+              id: `${childItem.title.toLowerCase()}Action`,
+              name: childItem.title,
+              shortcut: childItem.shortcut,
+              keywords: childItem.title.toLowerCase(),
+              section: navItem.title,
+              subtitle: `Go to ${childItem.title}`,
+              perform: () => navigateTo(childItem.url as string)
+            });
+          }
+        });
+      }
 
-      // Return only valid actions (ignoring null base actions for containers)
-      return baseAction ? [baseAction, ...childActions] : childActions;
+      return actions;
     });
   }, [router]);
 
