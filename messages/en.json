@@ -1,4 +1,24 @@
 {
+  "auth": {
+    "signIn": "Sign in",
+    "signUp": "Sign up",
+    "enterEmail": "Enter your email to continue",
+    "enterPassword": "Enter your password",
+    "next": "Next",
+    "noAccount": "Don't have an account?",
+    "copyright": "© SelectAi",
+    "termsOfService": "Terms of Service",
+    "privacyPolicy": "Privacy Policy",
+    "sendingPolicy": "Sending Policy",
+    "email": "Email",
+    "password": "Password",
+    "name": "Name",
+    "back": "Back",
+    "alreadyHaveAccount": "Already have an account?",
+    "needAccount": "Need an account? Sign up",
+    "createAccount": "Create your account",
+    "logout": "Sign out"
+  },
   "chat": {
     "title": "Discover the best AI tool for your task",
     "description": "Chat with your AI assistant and ask for help with your daily tasks."
@@ -41,5 +61,125 @@
     "codeai": "Discover the latest AI tools for coding",
     "audioai": "Discover the latest AI tools for audio",
     "businessai": "Discover the latest AI tools for business"
+  },
+  "features": {
+    "card1": {
+      "number": "500+",
+      "title": "Curated AI Tools",
+      "description": "Access a handpicked collection of the best AI tools across multiple categories, constantly updated with new innovations."
+    },
+    "card2": {
+      "number": "24/7",
+      "title": "Always Available",
+      "description": "Discover and explore AI tools anytime, anywhere. Our platform is always online and ready to help you find the perfect tool."
+    },
+    "card3": {
+      "number": "100%",
+      "title": "Free Access",
+      "description": "Browse our entire collection of AI tools completely free. No hidden fees, no subscriptions, just pure discovery."
+    }
+  },
+  "testimonials": {
+    "title": "Loved by Creators & Teams",
+    "subtitle": "See what our users are saying about their experience with SelectAI",
+    "testimonial1": {
+      "text": "SelectAI helped me find the perfect AI tool for my content creation workflow.",
+      "username": "Sarah Chen"
+    },
+    "testimonial2": {
+      "text": "The curated collection is amazing. Every tool is handpicked and actually useful for real work.",
+      "username": "Marcus Johnson"
+    },
+    "testimonial3": {
+      "text": "I discovered AI tools I never knew existed. This platform is a game-changer for productivity.",
+      "username": "Emma Rodriguez"
+    },
+    "testimonial4": {
+      "text": "Clean interface, great selection. Finding the right AI tool has never been easier.",
+      "username": "David Kim"
+    },
+    "testimonial5": {
+      "text": "As a designer, I love how easy it is to explore different AI tools for my projects.",
+      "username": "Olivia Martinez"
+    },
+    "testimonial6": {
+      "text": "The categories are well-organized and the descriptions are clear. Highly recommend!",
+      "username": "James Wilson"
+    },
+    "testimonial7": {
+      "text": "Finally, a platform that makes AI tools accessible and easy to understand.",
+      "username": "Sophia Anderson"
+    },
+    "testimonial8": {
+      "text": "I use SelectAI daily to stay updated on the latest AI innovations. It's my go-to resource.",
+      "username": "Michael Brown"
+    },
+    "testimonial9": {
+      "text": "The platform is fast, intuitive, and has exactly what I need. No clutter, just quality tools.",
+      "username": "Isabella Garcia"
+    },
+    "testimonial10": {
+      "text": "Great for teams! We've integrated several tools we found here into our workflow.",
+      "username": "Ethan Taylor"
+    },
+    "testimonial11": {
+      "text": "Love the variety and quality. SelectAI made it easy to find tools for video editing.",
+      "username": "Ava Thomas"
+    },
+    "testimonial12": {
+      "text": "Best AI tools directory I've found. Clean, modern, and always up-to-date.",
+      "username": "Noah White"
+    }
+  },
+  "heroCTA": {
+    "title": "Start Exploring",
+    "subtitle": "Discover the perfect AI solution for your next project",
+    "button": "Browse AI Tools"
+  },
+  "footer": {
+    "createdBy": {
+      "text": "created with",
+      "by": "by"
+    },
+    "copyright": "©",
+    "about": "About"
+  },
+  "aiTools": {
+    "1": "Advanced AI assistant for conversation and writing",
+    "2": "Anthropic assistant for helpful, honest, safe dialogue",
+    "3": "AI writing assistant for grammar, tone and clarity",
+    "4": "AI content platform for marketing copy and creativity",
+    "5": "AI copywriting tool for marketing and social posts",
+    "6": "All‑in‑one intelligent workspace for notes and projects",
+    "7": "Advanced image generation for creative visuals",
+    "8": "Art generator creating stunning images from text",
+    "9": "Open-source pro image generation model",
+    "10": "Creative AI tools integrated with Adobe ecosystem",
+    "11": "AI design assistant for graphics and presentations",
+    "12": "AI background removal and smart image editing",
+    "13": "Smart video production & editing platform",
+    "14": "AI video creator from text and images",
+    "15": "Avatar-based AI video creation for training & marketing",
+    "16": "3D capture & generative video for interactive content",
+    "17": "AI video editor with text-based editing & audio tools",
+    "18": "Turn blog articles & text into videos automatically",
+    "19": "Pair programming AI to write code faster",
+    "20": "AI-powered code editor for collaborative coding",
+    "21": "Integrated coding assistant in Replit environment",
+    "22": "AI code completion predicting next blocks",
+    "23": "Amazon AI coding companion with real-time suggestions",
+    "24": "Free AI code completion & chat for developers",
+    "25": "Voice generation & cloning for realistic speech",
+    "26": "Natural text-to-speech voiceover generation",
+    "27": "AI music production platform from text prompts",
+    "28": "Creative AI music composition engine",
+    "29": "OpenAI speech recognition to transcribe audio",
+    "30": "Audio enhancement tools for podcasts & cleanup",
+    "31": "AI automation to connect apps & workflows",
+    "32": "AI CRM insights & predictive sales analytics",
+    "33": "AI project management assistant for teams",
+    "34": "AI-enhanced marketing & sales automation platform",
+    "35": "Noise cancellation & meeting assistant",
+    "36": "AI meeting transcription & note‑taking assistant"
   }
 }

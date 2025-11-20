@@ -22,11 +22,11 @@ export default function NotFound() {
               </p>
             </div>
 
-            <div className='flex flex-col gap-3 sm:flex-row'>
+            <div className='flex flex-col items-center gap-3 sm:flex-row sm:justify-center'>
               <Button
                 onClick={() => router.back()}
                 variant='default'
-                className='w-full sm:w-auto'
+                className='w-auto'
               >
                 <ArrowLeft className='mr-2 h-4 w-4' />
                 Go Back
@@ -34,7 +34,7 @@ export default function NotFound() {
               <Button
                 onClick={() => router.push('/')}
                 variant='outline'
-                className='w-full sm:w-auto'
+                className='w-auto'
               >
                 <Home className='mr-2 h-4 w-4' />
                 Home

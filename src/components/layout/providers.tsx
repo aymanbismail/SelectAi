@@ -4,6 +4,7 @@
 // import { dark } from '@clerk/themes';
 // import { useTheme } from 'next-themes';
 import React from 'react';
+import { AuthProvider } from '@/contexts/auth-context';
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   // TEMPORARILY DISABLED FOR LARAVEL AUTH MIGRATION
@@ -18,7 +19,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
             baseTheme: resolvedTheme === 'dark' ? dark : undefined
           }}
         > */}
-      {children}
+      <AuthProvider>{children}</AuthProvider>
       {/* </ClerkProvider> */}
     </>
   );

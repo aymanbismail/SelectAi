@@ -10,24 +10,25 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { UserAvatarProfile } from '@/components/user-avatar-profile';
-// TEMPORARILY DISABLED FOR LARAVEL AUTH MIGRATION
-// import { SignOutButton, useUser } from '@clerk/nextjs';
+import { useAuth } from '@/contexts/auth-context';
 import { useRouter } from 'next/navigation';
-
-// Demo user for testing without authentication
-const demoUser = {
-  fullName: 'Demo User',
-  emailAddresses: [{ emailAddress: 'demo@example.com' }],
-  imageUrl: ''
-};
+import { useLocale, useTranslations } from 'next-intl';
+import Link from 'next/link';
+import { Icons } from '@/components/icons';
 
 export function UserNav() {
-  // TEMPORARILY DISABLED FOR LARAVEL AUTH MIGRATION
-  // const { user } = useUser();
+  const { user, logout, loading } = useAuth();
   const router = useRouter();
+  const locale = useLocale();
+  const t = useTranslations('auth');
 
-  // Using demo user instead of Clerk user
-  const user = demoUser;
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      // Error is handled by the AuthContext
+    }
+  };
 
   if (user) {
     return (
@@ -45,31 +46,44 @@ export function UserNav() {
         >
           <DropdownMenuLabel className='font-normal'>
             <div className='flex flex-col space-y-1'>
-              <p className='text-sm leading-none font-medium'>
-                {user.fullName}
-              </p>
+              <p className='text-sm leading-none font-medium'>{user.name}</p>
               <p className='text-muted-foreground text-xs leading-none'>
-                {user.emailAddresses[0].emailAddress}
+                {user.email}
               </p>
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
-            <DropdownMenuItem onClick={() => router.push('/dashboard/profile')}>
+            <DropdownMenuItem onClick={() => router.push(`/${locale}/profile`)}>
+              <Icons.user className='mr-2 h-4 w-4' />
               Profile
             </DropdownMenuItem>
-            <DropdownMenuItem>Billing</DropdownMenuItem>
-            <DropdownMenuItem>Settings</DropdownMenuItem>
-            <DropdownMenuItem>New Team</DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => router.push(`/${locale}/settings`)}
+            >
+              <Icons.settings className='mr-2 h-4 w-4' />
+              Settings
+            </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>
-            {/* TEMPORARILY DISABLED FOR LARAVEL AUTH MIGRATION */}
-            {/* <SignOutButton redirectUrl='/auth/sign-in' /> */}
-            <span className='text-muted-foreground'>Sign Out (Disabled)</span>
+          <DropdownMenuItem onClick={handleLogout} disabled={loading}>
+            <Icons.login className='mr-2 h-4 w-4' />
+            {loading ? 'Signing out...' : t('logout')}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     );
   }
+
+  // If not logged in, show sign in/sign up buttons
+  return (
+    <div className='flex items-center gap-2'>
+      <Button variant='ghost' size='sm' asChild>
+        <Link href={`/${locale}/auth/sign-in`}>{t('signIn')}</Link>
+      </Button>
+      <Button size='sm' asChild>
+        <Link href={`/${locale}/auth/sign-up`}>{t('signUp')}</Link>
+      </Button>
+    </div>
+  );
 }

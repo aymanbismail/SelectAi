@@ -5,7 +5,6 @@ import { Product } from '@/constants/data';
 import { Column, ColumnDef } from '@tanstack/react-table';
 import { CheckCircle2, Text, XCircle } from 'lucide-react';
 import Image from 'next/image';
-import { CellAction } from './cell-action';
 import { CATEGORY_OPTIONS } from './options';
 
 export const columns: ColumnDef<Product>[] = [
@@ -71,10 +70,6 @@ export const columns: ColumnDef<Product>[] = [
   {
     accessorKey: 'description',
     header: 'DESCRIPTION'
-  },
-
-  {
-    id: 'actions',
-    cell: ({ row }) => <CellAction data={row.original} />
   }
+  // Actions column removed per request
 ];

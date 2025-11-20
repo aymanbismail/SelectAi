@@ -247,3 +247,8 @@ body {
 [dir='rtl'] [data-slot='scroll-area'] > [data-slot='scroll-area-viewport'] {
   padding-inline-start: 0.25rem; /* tweak if overlap occurs */
 }
+
+/* Arabic font class */
+.font-arabic {
+  font-family: var(--font-noto-arabic);
+}

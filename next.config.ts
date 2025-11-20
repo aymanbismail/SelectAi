@@ -9,6 +9,16 @@ const baseConfig: NextConfig = {
         // cspell:disable-next-line
         hostname: 'api.slingacademy.com',
         port: ''
+      },
+      {
+        protocol: 'https',
+        hostname: 'placehold.co',
+        port: ''
+      },
+      {
+        protocol: 'https',
+        hostname: 'avatar.iran.liara.run',
+        port: ''
       }
     ]
   },

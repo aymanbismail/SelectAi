@@ -44,6 +44,7 @@ import { useMediaQuery } from '@/hooks/use-media-query';
 import { useWindowHeight } from '@/hooks/use-window-height';
 // TEMPORARILY DISABLED FOR LARAVEL AUTH MIGRATION
 // import { useUser } from '@clerk/nextjs';
+import { useAuth } from '@/contexts/auth-context';
 import {
   IconBell,
   IconChevronRight,
@@ -57,7 +58,7 @@ import {
 // import { SignOutButton } from '@clerk/nextjs';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import * as React from 'react';
 import { cn } from '@/lib/utils';
 import { Icons } from '../icons';
@@ -76,20 +77,20 @@ const tenants = [
 ];
 
 // Demo user for testing without authentication
-const demoUser = {
-  fullName: 'Ayman Ismail',
-  emailAddresses: [{ emailAddress: 'ayman@example.com' }],
-  imageUrl: ''
-};
+// const demoUser = {
+//   fullName: 'Ayman Ismail',
+//   emailAddresses: [{ emailAddress: 'ayman@example.com' }],
+//   imageUrl: ''
+// };
 
 export default function AppSidebar() {
   const pathname = usePathname();
   const { isOpen } = useMediaQuery();
   const { state, isMobile } = useSidebar();
   const windowHeight = useWindowHeight();
-  // TEMPORARILY DISABLED FOR LARAVEL AUTH MIGRATION
-  // const { user } = useUser();
-  const user = demoUser; // Using demo user instead
+  // Use the new AuthContext instead of demo user
+  const { user, logout, loading: authLoading } = useAuth();
+  const t = useTranslations('auth');
   const router = useRouter();
   const locale = useLocale();
 
@@ -563,7 +564,7 @@ export default function AppSidebar() {
 
                 <DropdownMenuGroup>
                   <DropdownMenuItem
-                    onClick={() => router.push('/dashboard/profile')}
+                    onClick={() => router.push(`/${locale}/profile`)}
                     className='hover:bg-sidebar-accent hover:text-sidebar-accent-foreground cursor-pointer transition-colors duration-200'
                   >
                     <IconUserCircle className='mr-2 h-4 w-4' />
@@ -579,13 +580,19 @@ export default function AppSidebar() {
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator className='bg-sidebar-border' />
-                <DropdownMenuItem className='hover:bg-destructive hover:text-destructive-foreground cursor-pointer transition-colors duration-200'>
+                <DropdownMenuItem
+                  onClick={async () => {
+                    try {
+                      await logout();
+                    } catch (error) {
+                      // Error is handled by the AuthContext
+                    }
+                  }}
+                  disabled={authLoading}
+                  className='hover:bg-destructive hover:text-destructive-foreground cursor-pointer transition-colors duration-200'
+                >
                   <IconLogout className='mr-2 h-4 w-4' />
-                  {/* TEMPORARILY DISABLED FOR LARAVEL AUTH MIGRATION */}
-                  {/* <SignOutButton redirectUrl='/auth/sign-in' /> */}
-                  <span className='text-muted-foreground'>
-                    Sign Out (Disabled)
-                  </span>
+                  {authLoading ? 'Signing out...' : t('logout')}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

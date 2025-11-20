@@ -1,6 +1,7 @@
 'use client';
 
 import type { Column } from '@tanstack/react-table';
+import { useLocale } from 'next-intl';
 import { EyeOff } from 'lucide-react';
 
 import {
@@ -30,15 +31,18 @@ export function DataTableColumnHeader<TData, TValue>({
   className,
   ...props
 }: DataTableColumnHeaderProps<TData, TValue>) {
+  const locale = useLocale?.();
+  const isRTL = locale === 'ar';
+  const t = (en: string, ar: string) => (isRTL ? ar : en);
   if (!column.getCanSort() && !column.getCanHide()) {
-    return <div className={cn(className)}>{title}</div>;
+    return <div className={cn('text-center', className)}>{title}</div>;
   }
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
         className={cn(
-          'hover:bg-accent focus:ring-ring data-[state=open]:bg-accent [&_svg]:text-muted-foreground -ml-1.5 flex h-8 items-center gap-1.5 rounded-md px-2 py-1.5 focus:ring-1 focus:outline-none [&_svg]:size-4 [&_svg]:shrink-0',
+          'hover:bg-accent focus:ring-ring data-[state=open]:bg-accent [&_svg]:text-muted-foreground flex h-8 w-full items-center justify-center gap-1.5 rounded-md px-2 py-1.5 text-center focus:ring-1 focus:outline-none [&_svg]:size-4 [&_svg]:shrink-0',
           className
         )}
         {...props}
@@ -62,7 +66,7 @@ export function DataTableColumnHeader<TData, TValue>({
               onClick={() => column.toggleSorting(false)}
             >
               <ChevronUpIcon />
-              Asc
+              {t('Asc', 'تصاعدي')}
             </DropdownMenuCheckboxItem>
             <DropdownMenuCheckboxItem
               className='[&_svg]:text-muted-foreground relative pr-8 pl-2 [&>span:first-child]:right-2 [&>span:first-child]:left-auto'
@@ -70,7 +74,7 @@ export function DataTableColumnHeader<TData, TValue>({
               onClick={() => column.toggleSorting(true)}
             >
               <ChevronDownIcon />
-              Desc
+              {t('Desc', 'تنازلي')}
             </DropdownMenuCheckboxItem>
             {column.getIsSorted() && (
               <DropdownMenuItem
@@ -78,7 +82,7 @@ export function DataTableColumnHeader<TData, TValue>({
                 onClick={() => column.clearSorting()}
               >
                 <Cross2Icon />
-                Reset
+                {t('Reset', 'إعادة تعيين')}
               </DropdownMenuItem>
             )}
           </>
@@ -90,7 +94,7 @@ export function DataTableColumnHeader<TData, TValue>({
             onClick={() => column.toggleVisibility(false)}
           >
             <EyeOff />
-            Hide
+            {t('Hide', 'إخفاء')}
           </DropdownMenuCheckboxItem>
         )}
       </DropdownMenuContent>

@@ -18,7 +18,7 @@ export const aiToolsData: Record<string, AITool[]> = {
       icon: '🧭'
     },
     {
-      id: '2', // adjusted from '2' to avoid id collision
+      id: '2',
       name: 'Gamma',
       description:
         'AI tool for generating polished presentations and documents fast',
@@ -26,7 +26,7 @@ export const aiToolsData: Record<string, AITool[]> = {
       icon: '📑'
     },
     {
-      id: '3', // adjusted from '3'
+      id: '3',
       name: 'Leonardo AI',
       description:
         'AI platform for stylized image generation and asset creation',
@@ -34,7 +34,7 @@ export const aiToolsData: Record<string, AITool[]> = {
       icon: '🖌️'
     },
     {
-      id: '4', // adjusted from '4'
+      id: '4',
       name: 'Devin',
       description:
         'AI software engineering agent handling complex coding tasks',
@@ -42,7 +42,7 @@ export const aiToolsData: Record<string, AITool[]> = {
       icon: '👨‍💻'
     },
     {
-      id: '5', // adjusted from '5'
+      id: '5',
       name: 'Suno',
       description:
         'Generate full songs from text prompts using AI music models',
@@ -50,7 +50,7 @@ export const aiToolsData: Record<string, AITool[]> = {
       icon: '🎵'
     },
     {
-      id: '6', // adjusted from '6'
+      id: '6',
       name: 'Runway Gen-3',
       description:
         'Next‑gen AI video model for cinematic generation and editing',
