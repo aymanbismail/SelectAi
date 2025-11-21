@@ -12,6 +12,12 @@ import { account, ID } from '@/appwrite/appwrite';
 import { useRouter } from 'next/navigation';
 import { useLocale } from 'next-intl';
 
+// Check if Appwrite is configured
+const isAppwriteConfigured = Boolean(
+  process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT &&
+    process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID
+);
+
 // Types
 interface User {
   $id: string;
@@ -55,6 +61,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
   // Check for existing session on mount
   useEffect(() => {
     const checkSession = async () => {
+      // Skip session check if Appwrite is not configured
+      if (!isAppwriteConfigured) {
+        setState((prev) => ({ ...prev, user: null, loading: false }));
+        return;
+      }
+
       try {
         const currentUser = await account.get();
         setState((prev) => ({
@@ -73,6 +85,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const login = useCallback(
     async (email: string, password: string) => {
+      if (!isAppwriteConfigured) {
+        setState((prev) => ({
+          ...prev,
+          loading: false,
+          error:
+            'Authentication service is not configured. Please contact the administrator.'
+        }));
+        throw new Error('Appwrite is not configured');
+      }
+
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
 
@@ -104,6 +126,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const signup = useCallback(
     async (name: string, email: string, password: string) => {
+      if (!isAppwriteConfigured) {
+        setState((prev) => ({
+          ...prev,
+          loading: false,
+          error:
+            'Authentication service is not configured. Please contact the administrator.'
+        }));
+        throw new Error('Appwrite is not configured');
+      }
+
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
 
@@ -136,6 +168,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
   );
 
   const logout = useCallback(async () => {
+    if (!isAppwriteConfigured) {
+      setState((prev) => ({ ...prev, user: null, loading: false }));
+      router.push(`/${locale}/auth/sign-in`);
+      return;
+    }
+
     try {
       setState((prev) => ({ ...prev, loading: true, error: null }));
 
