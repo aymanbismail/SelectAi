@@ -10,7 +10,7 @@ import LanguageSwitcher from './LanguageSwitcher';
 
 export default function Header() {
   return (
-    <header className='border-sidebar-border bg-background/60 supports-[backdrop-filter]:bg-background/50 flex h-16 shrink-0 items-center justify-between gap-2 backdrop-blur transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12'>
+    <header className='header-glass border-sidebar-border bg-background/70 supports-[backdrop-filter]:bg-background/50 fixed top-0 right-0 left-0 z-50 flex h-16 shrink-0 items-center justify-between gap-2 border-b backdrop-blur transition-[margin,width,height] duration-400 ease-[cubic-bezier(0.4,0,0.2,1)] group-has-data-[collapsible=icon]/sidebar-wrapper:h-12'>
       <div className='flex items-center gap-2 px-4'>
         <SidebarTrigger className='-ml-1' />
         <Separator orientation='vertical' className='mr-2 h-4' />

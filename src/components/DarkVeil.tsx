@@ -139,14 +139,19 @@ export default function DarkVeil({
         });
 
         const gl = renderer.gl;
-        // Keep track of current theme
-        let isLight = !document.documentElement.classList.contains('dark');
+        // Keep track of current theme - start with dark to match SSR default
+        let isLight = false;
         // Opaque clear based on theme
         const applyThemeClear = () => {
           const c = isLight ? 1 : 0;
           gl.clearColor(c, c, c, 1);
         };
         applyThemeClear();
+        // Update on next tick to actual theme
+        requestAnimationFrame(() => {
+          isLight = !document.documentElement.classList.contains('dark');
+          applyThemeClear();
+        });
         const themeObserver = new MutationObserver((mutations) => {
           for (const m of mutations) {
             if (m.attributeName === 'class') {
@@ -196,7 +201,7 @@ export default function DarkVeil({
             uWarp: { value: warpAmount },
             uAlpha: { value: alpha },
             uLightMode: {
-              value: document.documentElement.classList.contains('dark') ? 0 : 1
+              value: 0 // Start with dark to match SSR
             },
             uBlueDarken: { value: blueDarkenLight }
           }

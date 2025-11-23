@@ -23,9 +23,9 @@ export default function LanguageSwitcher() {
 
   return (
     <Button
-      variant='secondary'
+      variant='ghost'
       size='icon'
-      className='group/toggle size-8'
+      className='group/toggle border-foreground/20 text-foreground hover:bg-foreground/10 hover:text-foreground size-8 border bg-transparent dark:border-white/15 dark:text-white dark:hover:bg-white/10'
       onClick={handleSwitch}
     >
       <IconLanguage />

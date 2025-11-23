@@ -1,5 +1,4 @@
 'use client';
-import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
@@ -11,14 +10,11 @@ export function HeroSection() {
   const t = useTranslations('hero');
   const locale = useLocale();
   const isRTL = locale === 'ar';
-  const [titleAnimationComplete, setTitleAnimationComplete] = useState(false);
-
-  const handleTitleAnimationComplete = () => {
-    setTitleAnimationComplete(true);
-  };
 
   return (
-    <section className={cn('relative w-full overflow-x-hidden py-16 lg:py-20')}>
+    <section
+      className={cn('relative mt-16 w-full overflow-x-hidden py-16 lg:py-20')}
+    >
       <div className='mx-auto max-w-7xl px-4'>
         <div className='flex flex-col items-center text-center'>
           <Badge
@@ -36,12 +32,11 @@ export function HeroSection() {
               animateBy='words'
               displayAs='block'
               direction='top'
-              onAnimationComplete={handleTitleAnimationComplete}
               className='text-foreground mb-6 text-center text-4xl leading-tight font-bold tracking-tight whitespace-pre-wrap sm:text-5xl lg:text-6xl'
             />
           </div>
 
-          <div
+          <p
             className={cn(
               'mx-auto mb-10 w-full max-w-2xl px-4',
               'text-center text-lg leading-relaxed sm:text-xl',
@@ -49,20 +44,8 @@ export function HeroSection() {
             )}
             style={{ direction: isRTL ? 'rtl' : 'ltr' }}
           >
-            {titleAnimationComplete && (
-              <BlurText
-                text={t('description')}
-                delay={100}
-                animateBy='words'
-                direction='top'
-                displayAs='block'
-                className={cn(
-                  'text-lg leading-relaxed sm:text-xl',
-                  'text-muted-foreground'
-                )}
-              />
-            )}
-          </div>
+            {t('description')}
+          </p>
 
           <div
             className={cn(

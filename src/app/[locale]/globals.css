@@ -202,6 +202,41 @@
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+.header-glass {
+  --header-sidebar-offset: var(--sidebar-width, 0);
+  margin-left: var(--header-sidebar-offset);
+  margin-right: 0;
+  width: calc(100% - var(--header-sidebar-offset));
+  transition:
+    margin 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-slot='sidebar'][data-state='collapsed']
+  + [data-slot='sidebar-inset']
+  .header-glass {
+  --header-sidebar-offset: var(--sidebar-width-icon, 0);
+}
+
+[data-slot='sidebar'][data-state='collapsed'][data-collapsible='offcanvas']
+  + [data-slot='sidebar-inset']
+  .header-glass {
+  --header-sidebar-offset: 0;
+}
+
+html[dir='rtl'] .header-glass {
+  margin-left: 0;
+  margin-right: var(--header-sidebar-offset);
+}
+
+@media (max-width: 767px) {
+  .header-glass {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
+  }
+}
+
 /* Marquee animations */
 @keyframes marquee {
   0% {
