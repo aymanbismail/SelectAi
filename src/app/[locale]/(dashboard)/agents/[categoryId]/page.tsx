@@ -19,7 +19,7 @@ export default async function CategoryPage({
 
   return (
     <PageContainer>
-      <div className='flex items-center justify-between space-y-2'>
+      <div className='flex items-center justify-between space-y-2 pt-16'>
         <h1 className='text-2xl font-bold capitalize'>
           {category.name.replace('-', ' ')}
         </h1>

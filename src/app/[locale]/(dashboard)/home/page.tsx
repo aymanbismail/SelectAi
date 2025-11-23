@@ -12,7 +12,7 @@ export const metadata = {
 export default async function HomePage() {
   return (
     <PageContainer scrollable={true} className='!p-0'>
-      <div className='flex w-full flex-col'>
+      <div className='flex w-full flex-col pt-16'>
         {/* Hero Section */}
         <HeroSection />
 

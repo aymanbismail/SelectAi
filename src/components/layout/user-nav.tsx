@@ -15,6 +15,11 @@ import { useRouter } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { Icons } from '@/components/icons';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger
+} from '@/components/ui/tooltip';
 
 export function UserNav() {
   const { user, logout, loading } = useAuth();
@@ -78,12 +83,48 @@ export function UserNav() {
   // If not logged in, show sign in/sign up buttons
   return (
     <div className='flex items-center gap-2'>
-      <Button variant='ghost' size='sm' asChild>
-        <Link href={`/${locale}/auth/sign-in`}>{t('signIn')}</Link>
-      </Button>
-      <Button size='sm' asChild>
-        <Link href={`/${locale}/auth/sign-up`}>{t('signUp')}</Link>
-      </Button>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button variant='ghost' size='sm' asChild>
+            <Link
+              href={`/${locale}/auth/sign-in`}
+              className='flex items-center gap-2'
+            >
+              <Icons.login className='h-4 w-4' />
+              <span className='hidden min-[600px]:inline'>{t('signIn')}</span>
+            </Link>
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent
+          side='bottom'
+          align='center'
+          sideOffset={4}
+          className='min-[600px]:hidden'
+        >
+          <p>{t('signIn')}</p>
+        </TooltipContent>
+      </Tooltip>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button size='sm' asChild>
+            <Link
+              href={`/${locale}/auth/sign-up`}
+              className='flex items-center gap-2'
+            >
+              <Icons.userPen className='h-4 w-4' />
+              <span className='hidden min-[600px]:inline'>{t('signUp')}</span>
+            </Link>
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent
+          side='bottom'
+          align='center'
+          sideOffset={4}
+          className='min-[600px]:hidden'
+        >
+          <p>{t('signUp')}</p>
+        </TooltipContent>
+      </Tooltip>
     </div>
   );
 }

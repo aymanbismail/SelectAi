@@ -5,12 +5,13 @@ import { useLocale } from 'next-intl';
 import { useAuth } from '@/contexts/auth-context';
 import { Button } from '@/components/ui/button';
 import { FloatingInput } from '@/components/ui/floating-input';
-import { Icons } from '@/components/icons';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import LanguageSwitcher from '@/components/layout/LanguageSwitcher';
 import { ModeToggle } from '@/components/layout/ThemeToggle/theme-toggle';
+import { Sparkles } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const SignUpPage = () => {
   const [name, setName] = useState('');
@@ -61,32 +62,75 @@ const SignUpPage = () => {
           {/* Logo, Site Name + Switchers (order reverses for Arabic vs English) */}
           <div
             className={cn(
-              'flex w-full flex-row items-center gap-3',
-              isRTL ? 'justify-end' : 'justify-start'
+              'flex w-full flex-row items-center justify-between gap-3'
             )}
           >
             {isRTL ? (
               <>
-                {/* Arabic: site name + logo first, then spacer, then switchers */}
-                <span className={cn('text-2xl font-semibold', 'text-right')}>
-                  SelectAi
-                </span>
-                <div className='bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg'>
-                  <Icons.logo className='text-primary h-6 w-6' />
+                {/* For Arabic (RTL): Logo + Site Name on the right */}
+                <div className='flex items-center gap-3'>
+                  <div className='bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg'>
+                    <motion.div
+                      animate={{
+                        rotate: [0, 360],
+                        scale: [1, 1.05, 1]
+                      }}
+                      transition={{
+                        rotate: {
+                          duration: 6,
+                          repeat: Infinity,
+                          ease: 'easeInOut'
+                        },
+                        scale: {
+                          duration: 1.5,
+                          repeat: Infinity,
+                          ease: 'easeInOut'
+                        }
+                      }}
+                    >
+                      <Sparkles className='h-6 w-6 text-current' />
+                    </motion.div>
+                  </div>
+                  <span className='text-2xl font-semibold'>SelectAi</span>
                 </div>
-                <LanguageSwitcher />
-                <ModeToggle />
+                {/* Switchers on the left */}
+                <div className='flex items-center gap-2'>
+                  <ModeToggle />
+                  <LanguageSwitcher />
+                </div>
               </>
             ) : (
               <>
-                {/* English: switchers first, then spacer, then site name + logo */}
-                <LanguageSwitcher />
-                <ModeToggle />
-                <span className={cn('text-2xl font-semibold', 'text-left')}>
-                  SelectAi
-                </span>
-                <div className='bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg'>
-                  <Icons.logo className='text-primary h-6 w-6' />
+                {/* For English (LTR): Logo + Site Name on the left */}
+                <div className='flex items-center gap-3'>
+                  <div className='bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg'>
+                    <motion.div
+                      animate={{
+                        rotate: [0, 360],
+                        scale: [1, 1.05, 1]
+                      }}
+                      transition={{
+                        rotate: {
+                          duration: 6,
+                          repeat: Infinity,
+                          ease: 'easeInOut'
+                        },
+                        scale: {
+                          duration: 1.5,
+                          repeat: Infinity,
+                          ease: 'easeInOut'
+                        }
+                      }}
+                    >
+                      <Sparkles className='h-6 w-6 text-current' />
+                    </motion.div>
+                  </div>
+                  <span className='text-2xl font-semibold'>SelectAi</span>
+                </div>
+                {/* Switchers on the right */}
+                <div className='flex items-center gap-2'>
+                  <LanguageSwitcher />
+                  <ModeToggle />
                 </div>
               </>
             )}

@@ -1,5 +1,6 @@
 'use client';
 
+import { memo, useMemo } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
@@ -13,45 +14,117 @@ interface Testimonial {
   username: string;
 }
 
+const FEMALE_AVATAR_IDS = [79, 63, 83, 86, 66, 61];
+const MALE_AVATAR_IDS = [42, 37, 4, 5, 1, 23];
+
+const rowCardDimensions = cn(
+  'flex-shrink-0',
+  'h-[170px] max-h-[170px] min-h-[170px] w-[240px] p-3',
+  'min-[500px]:h-[180px] min-[500px]:max-h-[180px] min-[500px]:min-h-[180px] min-[500px]:w-[260px] min-[500px]:p-4',
+  'md:w-[300px] md:p-5',
+  'lg:w-[340px] lg:p-6'
+);
+
+const mobileCardDimensions = cn('w-full p-4', 'min-[500px]:p-5', 'sm:p-6');
+
+const TestimonialCard = memo(function TestimonialCard({
+  testimonial,
+  className
+}: {
+  testimonial: Testimonial;
+  className?: string;
+}) {
+  const isCardRTL = isArabic(testimonial.text);
+
+  return (
+    <div
+      className={cn(
+        'bg-background/40 dark:bg-background/40 border-border/50 hover:border-border flex flex-col justify-between rounded-xl border shadow-lg backdrop-blur-sm transition-all duration-300 hover:shadow-[0_0_20px_rgba(0,0,0,0.1)] dark:border-white/10 dark:hover:border-white/30 dark:hover:shadow-[0_0_20px_rgba(255,255,255,0.1)]',
+        className
+      )}
+      style={{
+        direction: isCardRTL ? 'rtl' : 'ltr',
+        unicodeBidi: 'plaintext'
+      }}
+      data-testimonial-card=''
+    >
+      <p
+        className={cn(
+          'text-foreground mb-2 w-full flex-1 overflow-hidden leading-relaxed break-words md:mb-3 dark:text-white',
+          'text-sm md:text-base',
+          'line-clamp-5 md:line-clamp-6',
+          isCardRTL ? 'text-right' : 'text-left'
+        )}
+        style={{ unicodeBidi: 'plaintext' }}
+      >
+        &ldquo;{testimonial.text}&rdquo;
+      </p>
+
+      <div
+        className={cn(
+          'flex w-full flex-shrink-0 items-center gap-3',
+          isCardRTL ? 'flex-row justify-end' : 'flex-row justify-start'
+        )}
+      >
+        <div className='border-border/50 relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-full border dark:border-white/10'>
+          <Image
+            src={testimonial.avatar}
+            alt={testimonial.username}
+            fill
+            className='object-cover'
+          />
+        </div>
+
+        <div
+          className={cn(
+            'flex-1 overflow-hidden',
+            isCardRTL ? 'text-right' : 'text-left'
+          )}
+        >
+          <p className='text-foreground truncate text-xs font-semibold md:text-sm dark:text-white'>
+            {testimonial.username}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+});
+
+TestimonialCard.displayName = 'TestimonialCard';
+
 export function TestimonialsSection() {
   const t = useTranslations('testimonials');
   const locale = useLocale();
   const isRTL = locale === 'ar';
 
-  // Specific avatar IDs for variety
-  const femaleAvatarIds = [79, 63, 83, 86, 66, 61]; // For testimonials 1, 3, 5, 7, 9, 11
-  const maleAvatarIds = [42, 37, 4, 5, 1, 23]; // For testimonials 2, 4, 6, 8, 10, 12
+  const testimonials: Testimonial[] = useMemo(() => {
+    return Array.from({ length: 12 }, (_, i) => {
+      const isFemale = i % 2 === 0;
+      const avatarIndex = Math.floor(i / 2);
+      const avatarId = isFemale
+        ? FEMALE_AVATAR_IDS[avatarIndex]
+        : MALE_AVATAR_IDS[avatarIndex];
 
-  const testimonials: Testimonial[] = Array.from({ length: 12 }, (_, i) => {
-    // Odd positions (0, 2, 4, 6, 8, 10) = Female names (1, 3, 5, 7, 9, 11)
-    // Even positions (1, 3, 5, 7, 9, 11) = Male names (2, 4, 6, 8, 10, 12)
-    const isFemale = i % 2 === 0;
-    const avatarIndex = Math.floor(i / 2);
-    const avatarId = isFemale
-      ? femaleAvatarIds[avatarIndex]
-      : maleAvatarIds[avatarIndex];
+      return {
+        id: i + 1,
+        text: t(`testimonial${i + 1}.text`),
+        avatar: `https://avatar.iran.liara.run/public/${avatarId}`,
+        username: t(`testimonial${i + 1}.username`)
+      };
+    });
+  }, [t]);
 
-    return {
-      id: i + 1,
-      text: t(`testimonial${i + 1}.text`),
-      avatar: `https://avatar.iran.liara.run/public/${avatarId}`,
-      username: t(`testimonial${i + 1}.username`)
-    };
-  });
+  const row1 = useMemo(() => testimonials.slice(0, 4), [testimonials]);
+  const row2 = useMemo(() => testimonials.slice(4, 8), [testimonials]);
+  const row3 = useMemo(() => testimonials.slice(8, 12), [testimonials]);
 
-  // Split testimonials into 3 rows (4 testimonials each)
-  const row1 = testimonials.slice(0, 4);
-  const row2 = testimonials.slice(4, 8);
-  const row3 = testimonials.slice(8, 12);
-
-  // Duplicate for seamless loop
-  const row1Duplicated = [...row1, ...row1, ...row1];
-  const row2Duplicated = [...row2, ...row2, ...row2];
-  const row3Duplicated = [...row3, ...row3, ...row3];
+  const row1Duplicated = useMemo(() => [...row1, ...row1, ...row1], [row1]);
+  const row2Duplicated = useMemo(() => [...row2, ...row2, ...row2], [row2]);
+  const row3Duplicated = useMemo(() => [...row3, ...row3, ...row3], [row3]);
 
   // Render a single row of testimonials
   const renderRow = (
-    testimonials: Testimonial[],
+    testimonialsRow: Testimonial[],
     direction: 'ltr' | 'rtl',
     speed: number,
     rowIndex: number
@@ -63,104 +136,46 @@ export function TestimonialsSection() {
       >
         {/* Left Fade Gradient - Fully transparent with blur effect */}
         <div
-          className='pointer-events-none absolute top-0 left-0 z-10 h-full w-16 backdrop-blur-[1px] min-[500px]:w-20 md:w-32 lg:w-48'
+          className='testimonial-edge-blur pointer-events-none absolute top-0 left-0 z-[1] h-full w-20 backdrop-blur-xl min-[500px]:w-24 md:w-40 lg:w-56'
           style={{
+            background:
+              'linear-gradient(to right, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.08) 50%, transparent 100%)',
             maskImage:
-              'linear-gradient(to right, black 0%, black 30%, transparent 100%)',
+              'linear-gradient(to right, black 0%, black 50%, transparent 100%)',
             WebkitMaskImage:
-              'linear-gradient(to right, black 0%, black 30%, transparent 100%)'
+              'linear-gradient(to right, black 0%, black 50%, transparent 100%)'
           }}
         />
-
         {/* Right Fade Gradient - Fully transparent with blur effect */}
         <div
-          className='pointer-events-none absolute top-0 right-0 z-10 h-full w-16 backdrop-blur-[1px] min-[500px]:w-20 md:w-32 lg:w-48'
+          className='testimonial-edge-blur pointer-events-none absolute top-0 right-0 z-[1] h-full w-20 backdrop-blur-xl min-[500px]:w-24 md:w-40 lg:w-56'
           style={{
+            background:
+              'linear-gradient(to left, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.08) 50%, transparent 100%)',
             maskImage:
-              'linear-gradient(to left, black 0%, black 30%, transparent 100%)',
+              'linear-gradient(to left, black 0%, black 50%, transparent 100%)',
             WebkitMaskImage:
-              'linear-gradient(to left, black 0%, black 30%, transparent 100%)'
+              'linear-gradient(to left, black 0%, black 50%, transparent 100%)'
           }}
-        />
-
+        />{' '}
         {/* Scrolling Container */}
         <div className='testimonials-scroll group relative h-[170px] w-full overflow-hidden min-[500px]:h-[180px]'>
           <div className='absolute inset-0 overflow-hidden'>
             <div
-              className='flex items-center gap-2 will-change-transform min-[500px]:gap-3 md:gap-4 lg:gap-6'
+              className='testimonial-row-track relative z-[2] flex items-center gap-2 will-change-transform min-[500px]:gap-3 md:gap-4 lg:gap-6'
               style={{
                 animation: `scroll-${direction} ${speed}s linear infinite`,
                 width: 'max-content',
                 transform: 'translateZ(0)'
               }}
             >
-              {testimonials.map((testimonial, index) => {
-                // Auto-detect if this specific testimonial contains Arabic
-                const isCardRTL = isArabic(testimonial.text);
-
-                return (
-                  <div
-                    key={`row${rowIndex}-${testimonial.id}-${index}`}
-                    className={cn(
-                      'bg-background/40 flex flex-shrink-0 flex-col justify-between rounded-xl border border-white/10 shadow-lg backdrop-blur-sm transition-all duration-300 hover:border-white/30 hover:shadow-[0_0_20px_rgba(255,255,255,0.1)]',
-                      // Responsive sizing with fixed heights
-                      'h-[170px] max-h-[170px] min-h-[170px] w-[240px] p-3',
-                      'min-[500px]:h-[180px] min-[500px]:max-h-[180px] min-[500px]:min-h-[180px] min-[500px]:w-[260px] min-[500px]:p-4',
-                      'md:w-[300px] md:p-5',
-                      'lg:w-[340px] lg:p-6'
-                    )}
-                    style={{
-                      direction: isCardRTL ? 'rtl' : 'ltr',
-                      unicodeBidi: 'plaintext'
-                    }}
-                  >
-                    {/* Testimonial Text */}
-                    <p
-                      className={cn(
-                        'mb-2 w-full flex-1 overflow-hidden leading-relaxed break-words text-white md:mb-3',
-                        'text-sm md:text-base',
-                        'line-clamp-5 md:line-clamp-6',
-                        isCardRTL ? 'text-right' : 'text-left'
-                      )}
-                      style={{ unicodeBidi: 'plaintext' }}
-                    >
-                      &ldquo;{testimonial.text}&rdquo;
-                    </p>
-
-                    {/* User Info */}
-                    <div
-                      className={cn(
-                        'flex w-full flex-shrink-0 items-center gap-3',
-                        isCardRTL
-                          ? 'flex-row justify-end'
-                          : 'flex-row justify-start'
-                      )}
-                    >
-                      {/* Avatar */}
-                      <div className='relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-full border border-white/10'>
-                        <Image
-                          src={testimonial.avatar}
-                          alt={testimonial.username}
-                          fill
-                          className='object-cover'
-                        />
-                      </div>
-
-                      {/* Username */}
-                      <div
-                        className={cn(
-                          'flex-1 overflow-hidden',
-                          isCardRTL ? 'text-right' : 'text-left'
-                        )}
-                      >
-                        <p className='truncate text-xs font-semibold text-white md:text-sm'>
-                          {testimonial.username}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
+              {testimonialsRow.map((testimonial, index) => (
+                <TestimonialCard
+                  key={`row${rowIndex}-${testimonial.id}-${index}`}
+                  testimonial={testimonial}
+                  className={rowCardDimensions}
+                />
+              ))}
             </div>
           </div>
         </div>
@@ -168,18 +183,23 @@ export function TestimonialsSection() {
     );
   };
 
+  const mobileTestimonialsMarquee = useMemo(
+    () => [...testimonials, ...testimonials],
+    [testimonials]
+  );
+
   return (
     <section
-      className='relative w-full overflow-x-clip py-20 lg:py-32'
+      className='relative flex h-screen w-full flex-col overflow-x-clip py-12 sm:py-20 md:flex md:h-auto md:flex-col lg:py-32'
       style={{ contain: 'layout paint' }}
     >
       {/* Self-contained wrapper - prevents page overflow */}
-      <div className='relative mx-auto w-full max-w-7xl overflow-hidden px-4'>
+      <div className='relative mx-auto flex w-full max-w-7xl flex-1 flex-col overflow-hidden px-3 sm:px-4 md:flex md:flex-1 md:flex-col'>
         {/* Section Title */}
-        <div className='mb-12 text-center'>
+        <div className='mb-8 text-center sm:mb-12'>
           <h2
             className={cn(
-              'mb-4 text-3xl font-bold sm:text-4xl lg:text-5xl',
+              'mb-3 text-2xl font-bold sm:mb-4 sm:text-3xl md:text-4xl lg:text-5xl',
               isRTL ? 'pb-2 leading-[1.5]' : 'leading-normal'
             )}
           >
@@ -193,7 +213,7 @@ export function TestimonialsSection() {
             </GradientText>
           </h2>
           <p
-            className='text-muted-foreground mx-auto max-w-2xl text-lg sm:text-xl'
+            className='text-muted-foreground mx-auto max-w-2xl px-2 text-base sm:px-0 sm:text-lg md:text-xl'
             style={{
               direction: isRTL ? 'rtl' : 'ltr',
               unicodeBidi: 'plaintext'
@@ -203,8 +223,49 @@ export function TestimonialsSection() {
           </p>
         </div>
 
-        {/* 3-Row Testimonials Container */}
-        <div className='relative w-full overflow-hidden'>
+        {/* Mobile Column Layout */}
+        <div className='relative flex-1 overflow-hidden md:hidden'>
+          <div
+            className='mobile-testimonial-blur pointer-events-none absolute inset-x-0 top-0 z-[1] h-24 backdrop-blur-2xl'
+            style={{
+              background:
+                'linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.1) 60%, transparent 100%)',
+              maskImage:
+                'linear-gradient(to bottom, black 0%, black 40%, transparent 100%)',
+              WebkitMaskImage:
+                'linear-gradient(to bottom, black 0%, black 40%, transparent 100%)'
+            }}
+          />
+          <div
+            className='mobile-testimonial-blur pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-24 backdrop-blur-2xl'
+            style={{
+              background:
+                'linear-gradient(to top, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.1) 60%, transparent 100%)',
+              maskImage:
+                'linear-gradient(to top, black 0%, black 40%, transparent 100%)',
+              WebkitMaskImage:
+                'linear-gradient(to top, black 0%, black 40%, transparent 100%)'
+            }}
+          />
+          <div
+            className='mobile-testimonials-marquee relative z-[2] flex flex-col gap-3 min-[500px]:gap-4'
+            style={{
+              animation: 'testimonials-mobile-up 45s linear infinite',
+              transform: 'translateZ(0)'
+            }}
+          >
+            {mobileTestimonialsMarquee.map((testimonial, idx) => (
+              <TestimonialCard
+                key={`mobile-${testimonial.id}-${idx}`}
+                testimonial={testimonial}
+                className={mobileCardDimensions}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* 3-Row Testimonials Container (Desktop & Tablet) */}
+        <div className='relative hidden w-full overflow-visible md:block'>
           <div className='relative w-full overflow-x-hidden'>
             {/* Row 1 - Scrolls left to right (or right to left in RTL) */}
             {renderRow(row1Duplicated, isRTL ? 'rtl' : 'ltr', 50, 1)}
@@ -235,6 +296,48 @@ export function TestimonialsSection() {
           }
           100% {
             transform: translateX(0);
+          }
+        }
+
+        @keyframes testimonials-mobile-up {
+          0% {
+            transform: translateY(0);
+          }
+          100% {
+            transform: translateY(-50%);
+          }
+        }
+
+        .testimonial-edge-blur,
+        .mobile-testimonial-blur {
+          animation: testimonial-blur-pulse 4s ease-in-out infinite;
+          opacity: 1;
+        }
+
+        @keyframes testimonial-blur-pulse {
+          0% {
+            opacity: 0.7;
+          }
+          50% {
+            opacity: 1;
+          }
+          100% {
+            opacity: 0.7;
+          }
+        }
+
+        @media (min-width: 768px) {
+          .mobile-testimonials-marquee {
+            animation: none !important;
+            transform: none !important;
+          }
+
+          section {
+            height: auto !important;
+          }
+
+          .mobile-testimonial-blur {
+            display: none !important;
           }
         }
       `}</style>

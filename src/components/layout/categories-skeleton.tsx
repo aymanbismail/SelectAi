@@ -44,7 +44,7 @@ export function CategoriesPageSkeleton({
 }: CategoriesSkeletonProps) {
   return (
     <PageContainer scrollable={false}>
-      <div className='flex flex-1 flex-col space-y-4'>
+      <div className='flex flex-1 flex-col space-y-4 pt-16'>
         {/* Header skeleton */}
         <div className='flex items-start justify-between'>
           <div className='space-y-2'>

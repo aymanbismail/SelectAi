@@ -3,7 +3,7 @@
 
 export default function ProfileViewPage() {
   return (
-    <div className='flex w-full flex-col p-4'>
+    <div className='flex w-full flex-col p-4 pt-16'>
       {/* TEMPORARILY DISABLED FOR LARAVEL AUTH MIGRATION */}
       {/* <UserProfile /> */}
       <div className='py-8 text-center'>

@@ -10,8 +10,8 @@ export function Footer() {
   const isRTL = locale === 'ar';
 
   return (
-    <footer className='border-sidebar-border bg-background/60 supports-[backdrop-filter]:bg-background/50 border-t py-8 backdrop-blur'>
-      <div className='mx-auto max-w-7xl px-4'>
+    <footer className='border-sidebar-border bg-background/60 supports-[backdrop-filter]:bg-background/50 border-t py-6 backdrop-blur sm:py-8'>
+      <div className='mx-auto max-w-7xl px-3 sm:px-4'>
         <div
           className={cn(
             'flex flex-col items-center justify-between gap-4 text-center sm:flex-row',
@@ -26,13 +26,13 @@ export function Footer() {
             )}
           >
             <div className='flex items-center gap-2'>
-              <span className='text-foreground text-lg font-bold'>
+              <span className='text-foreground text-base font-bold sm:text-lg'>
                 Select AI
               </span>
             </div>
             <p
               className={cn(
-                'text-muted-foreground/80 text-sm leading-relaxed',
+                'text-muted-foreground/80 text-xs leading-relaxed sm:text-sm',
                 isRTL && 'sm:text-right'
               )}
               style={{
@@ -61,22 +61,22 @@ export function Footer() {
               isRTL && 'sm:items-start'
             )}
           >
-            <p className='text-muted-foreground/80 text-sm'>
+            <p className='text-muted-foreground/80 text-xs sm:text-sm'>
               {t('copyright')} 2025 Select AI
             </p>
-            <div className='flex items-center gap-4'>
+            <div className='flex items-center gap-3 sm:gap-4'>
               <Link
                 href='https://github.com/ReBestX/SelectAi'
                 target='_blank'
                 rel='noopener noreferrer'
-                className='text-muted-foreground/80 hover:text-foreground text-sm transition-colors'
+                className='text-muted-foreground/80 hover:text-foreground text-xs transition-colors sm:text-sm'
               >
                 GitHub
               </Link>
               <span className='text-muted-foreground/50'>•</span>
               <Link
                 href='/about'
-                className='text-muted-foreground/80 hover:text-foreground text-sm transition-colors'
+                className='text-muted-foreground/80 hover:text-foreground text-xs transition-colors sm:text-sm'
               >
                 {t('about')}
               </Link>

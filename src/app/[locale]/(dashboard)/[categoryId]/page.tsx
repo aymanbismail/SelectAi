@@ -61,7 +61,7 @@ export default async function CategoryPage({
 
   return (
     <PageContainer scrollable={false}>
-      <div className='flex flex-1 flex-col space-y-4'>
+      <div className='flex flex-1 flex-col space-y-4 pt-16'>
         <div className='flex items-start justify-between'>
           <Heading
             title={
