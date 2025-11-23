@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { Renderer, Program, Mesh, Triangle, Vec2 } from 'ogl';
 
 const vertex = `
@@ -62,8 +62,11 @@ vec4 cppn_fn(vec2 coordinate,float in0,float in1,float in2){
 }
 
 void mainImage(out vec4 fragColor,in vec2 fragCoord){
-    vec2 uv=fragCoord/uResolution.xy*2.-1.;
-    uv.y*=-1.;
+  vec2 resolution=uResolution.xy;
+  vec2 uv=fragCoord/resolution*2.-1.;
+  uv.y*=-1.;
+  vec2 coverScale=vec2(max(resolution.x/resolution.y,1.),max(resolution.y/resolution.x,1.));
+  uv*=coverScale;
     uv+=uWarp*vec2(sin(uv.y*6.283+uTime*0.5),cos(uv.x*6.283+uTime*0.5))*0.05;
     fragColor=cppn_fn(uv,0.1*sin(0.3*uTime),0.1*sin(0.69*uTime),0.1*sin(0.44*uTime));
 }
@@ -99,6 +102,8 @@ type Props = {
   resolutionScale?: number;
   alpha?: number; // overall canvas opacity for compositing
   blueDarkenLight?: number; // [0..1] amount to darken blue in light mode
+  freezeBelowWidth?: number; // px breakpoint below which animation freezes
+  disableBelowWidth?: number; // px breakpoint below which WebGL is fully disabled
 };
 
 export default function DarkVeil({
@@ -110,16 +115,73 @@ export default function DarkVeil({
   warpAmount = 0,
   resolutionScale = 1,
   alpha = 0.9,
-  blueDarkenLight = 0.12
+  blueDarkenLight = 0.12,
+  freezeBelowWidth = 0,
+  disableBelowWidth = 0
 }: Props) {
   const ref = useRef<HTMLCanvasElement>(null);
+  const [shouldDisable, setShouldDisable] = useState(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
   useEffect(() => {
+    if (!disableBelowWidth || typeof window === 'undefined') return;
+    const mediaQuery = window.matchMedia(
+      `(max-width: ${disableBelowWidth - 1}px)`
+    );
+    const updateState = (target: MediaQueryList | MediaQueryListEvent) => {
+      setShouldDisable(target.matches);
+    };
+    updateState(mediaQuery);
+    const handler = (event: MediaQueryListEvent) => updateState(event);
+    if (typeof mediaQuery.addEventListener === 'function') {
+      mediaQuery.addEventListener('change', handler);
+    } else if (typeof mediaQuery.addListener === 'function') {
+      mediaQuery.addListener(handler);
+    }
+    return () => {
+      if (typeof mediaQuery.removeEventListener === 'function') {
+        mediaQuery.removeEventListener('change', handler);
+      } else if (typeof mediaQuery.removeListener === 'function') {
+        mediaQuery.removeListener(handler);
+      }
+    };
+  }, [disableBelowWidth]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const updateState = (target: MediaQueryList | MediaQueryListEvent) => {
+      setPrefersReducedMotion(target.matches);
+    };
+    updateState(mediaQuery);
+    const handler = (event: MediaQueryListEvent) => updateState(event);
+    if (typeof mediaQuery.addEventListener === 'function') {
+      mediaQuery.addEventListener('change', handler);
+    } else if (typeof mediaQuery.addListener === 'function') {
+      mediaQuery.addListener(handler);
+    }
+    return () => {
+      if (typeof mediaQuery.removeEventListener === 'function') {
+        mediaQuery.removeEventListener('change', handler);
+      } else if (typeof mediaQuery.removeListener === 'function') {
+        mediaQuery.removeListener(handler);
+      }
+    };
+  }, []);
+
+  const shouldUseCanvas = !(shouldDisable || prefersReducedMotion);
+
+  useEffect(() => {
+    if (!shouldUseCanvas) {
+      return;
+    }
     let isInitialized = false;
     let frame = 0;
     let renderer: any = null;
     let program: any = null;
     let cleanupFn: (() => void) | null = null;
+    let freezeAnimation = false;
+    let freezeCleanup: (() => void) | null = null;
 
     const initialize = () => {
       const canvas = ref.current;
@@ -128,12 +190,12 @@ export default function DarkVeil({
       if (!canvas || !parent || isInitialized) return false;
 
       try {
+        const parentWidth = parent.clientWidth || window.innerWidth || 0;
+        const baseDpr = window.devicePixelRatio || 1;
+        const lowPowerCap = parentWidth <= 768 ? 1.25 : 2;
         renderer = new Renderer({
-          // Use dpr to encode resolutionScale so CSS size remains correct.
-          dpr: Math.min(
-            window.devicePixelRatio * Math.max(0.5, resolutionScale),
-            2
-          ),
+          // Adaptive DPR keeps mobile GPUs from doing excess work.
+          dpr: Math.min(baseDpr * Math.max(0.5, resolutionScale), lowPowerCap),
           canvas,
           alpha: false
         });
@@ -188,6 +250,27 @@ export default function DarkVeil({
 
         const geometry = new Triangle(gl);
 
+        const setupFreezeControl = () => {
+          if (!freezeBelowWidth || typeof window === 'undefined') {
+            freezeAnimation = false;
+            return () => {};
+          }
+          const query = `(max-width: ${freezeBelowWidth - 1}px)`;
+          const mediaQuery = window.matchMedia(query);
+          const updateFreeze = (
+            event: MediaQueryList | MediaQueryListEvent
+          ) => {
+            freezeAnimation = event.matches;
+          };
+          updateFreeze(mediaQuery);
+          const listener = (event: MediaQueryListEvent) => updateFreeze(event);
+          mediaQuery.addEventListener('change', listener);
+          return () => {
+            mediaQuery.removeEventListener('change', listener);
+          };
+        };
+        freezeCleanup = setupFreezeControl();
+
         program = new Program(gl, {
           vertex,
           fragment,
@@ -215,9 +298,12 @@ export default function DarkVeil({
             const w = parent.clientWidth;
             const h = parent.clientHeight;
             if (w > 0 && h > 0) {
-              // Keep CSS size equal to parent and let DPR handle pixel density.
               renderer.setSize(w, h);
-              program.uniforms.uResolution.value.set(w, h);
+              const { width: bufferWidth, height: bufferHeight } =
+                renderer.gl.canvas;
+              // Use the actual drawing buffer size so the shader sees the
+              // correct aspect ratio even on high-DPR/mobile screens.
+              program.uniforms.uResolution.value.set(bufferWidth, bufferHeight);
             }
           } catch (error) {
             // Silently handle resize errors
@@ -229,14 +315,19 @@ export default function DarkVeil({
         // Initial resize with a small delay to ensure parent dimensions are available
         setTimeout(resize, 0);
 
-        const start = performance.now();
+        let accumulated = 0;
+        let lastTick = performance.now();
 
         const loop = () => {
           if (!program || !renderer) return;
 
           try {
-            program.uniforms.uTime.value =
-              ((performance.now() - start) / 1000) * speed;
+            const now = performance.now();
+            if (!freezeAnimation) {
+              accumulated += now - lastTick;
+            }
+            lastTick = now;
+            program.uniforms.uTime.value = (accumulated / 1000) * speed;
             program.uniforms.uHueShift.value = hueShift;
             program.uniforms.uNoise.value = noiseIntensity;
             program.uniforms.uScan.value = scanlineIntensity;
@@ -263,6 +354,10 @@ export default function DarkVeil({
             cancelAnimationFrame(frame);
           }
           window.removeEventListener('resize', resize);
+          if (freezeCleanup) {
+            freezeCleanup();
+            freezeCleanup = null;
+          }
           if (canvas) {
             canvas.removeEventListener('webglcontextlost', handleContextLost);
             canvas.removeEventListener(
@@ -296,6 +391,10 @@ export default function DarkVeil({
         cleanupFn();
         cleanupFn = null;
       }
+      if (freezeCleanup) {
+        freezeCleanup();
+        freezeCleanup = null;
+      }
     };
   }, [
     hueShift,
@@ -306,12 +405,23 @@ export default function DarkVeil({
     warpAmount,
     resolutionScale,
     alpha,
-    blueDarkenLight
+    blueDarkenLight,
+    freezeBelowWidth,
+    shouldUseCanvas
   ]);
 
+  const containerClass = [
+    'block h-full w-full bg-white dark:bg-black',
+    !shouldUseCanvas ? 'background-ambient' : ''
+  ]
+    .join(' ')
+    .trim();
+
   return (
-    <div className='block h-full w-full bg-white dark:bg-black'>
-      <canvas ref={ref} className='block h-full w-full bg-transparent' />
+    <div className={containerClass}>
+      {shouldUseCanvas ? (
+        <canvas ref={ref} className='block h-full w-full bg-transparent' />
+      ) : null}
     </div>
   );
 }

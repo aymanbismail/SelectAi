@@ -59,7 +59,7 @@ export default async function RootLayout({
           'bg-background overflow-hidden overscroll-none font-sans antialiased'
         )}
       >
-        {/* Global animated background (both themes) */}
+        {/* Global background runs everywhere but freezes animation on small screens */}
         <div className='pointer-events-none fixed inset-0 -z-10 block'>
           <DarkVeil
             resolutionScale={1}
@@ -68,6 +68,8 @@ export default async function RootLayout({
             scanlineIntensity={0.08}
             scanlineFrequency={20}
             warpAmount={0.02}
+            freezeBelowWidth={768}
+            disableBelowWidth={640}
           />
         </div>
         <NextTopLoader showSpinner={false} />
