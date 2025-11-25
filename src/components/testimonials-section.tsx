@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useMemo } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
@@ -16,6 +16,50 @@ interface Testimonial {
 
 const FEMALE_AVATAR_IDS = [79, 63, 83, 86, 66, 61];
 const MALE_AVATAR_IDS = [42, 37, 4, 5, 1, 23];
+
+const SECTION_STYLE = Object.freeze({ contain: 'layout paint' });
+const ROW_WRAPPER_STYLE = Object.freeze({
+  contain: 'layout style paint',
+  maxWidth: '100%'
+});
+const MOBILE_COLUMN_WRAPPER_STYLE = Object.freeze({ contain: 'layout paint' });
+const TRACK_BASE_STYLE = Object.freeze({
+  width: 'max-content',
+  transform: 'translateZ(0)'
+});
+
+const EDGE_FADE_STYLE_LEFT = Object.freeze({
+  background:
+    'linear-gradient(to right, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.08) 50%, transparent 100%)',
+  maskImage: 'linear-gradient(to right, black 0%, black 50%, transparent 100%)',
+  WebkitMaskImage:
+    'linear-gradient(to right, black 0%, black 50%, transparent 100%)'
+});
+
+const EDGE_FADE_STYLE_RIGHT = Object.freeze({
+  background:
+    'linear-gradient(to left, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.08) 50%, transparent 100%)',
+  maskImage: 'linear-gradient(to left, black 0%, black 50%, transparent 100%)',
+  WebkitMaskImage:
+    'linear-gradient(to left, black 0%, black 50%, transparent 100%)'
+});
+
+const MOBILE_BLUR_STYLE_TOP = Object.freeze({
+  background:
+    'linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.1) 60%, transparent 100%)',
+  maskImage:
+    'linear-gradient(to bottom, black 0%, black 40%, transparent 100%)',
+  WebkitMaskImage:
+    'linear-gradient(to bottom, black 0%, black 40%, transparent 100%)'
+});
+
+const MOBILE_BLUR_STYLE_BOTTOM = Object.freeze({
+  background:
+    'linear-gradient(to top, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.1) 60%, transparent 100%)',
+  maskImage: 'linear-gradient(to top, black 0%, black 40%, transparent 100%)',
+  WebkitMaskImage:
+    'linear-gradient(to top, black 0%, black 40%, transparent 100%)'
+});
 
 const rowCardDimensions = cn(
   'flex-shrink-0',
@@ -71,6 +115,7 @@ const TestimonialCard = memo(function TestimonialCard({
             src={testimonial.avatar}
             alt={testimonial.username}
             fill
+            sizes='40px'
             className='object-cover'
           />
         </div>
@@ -97,6 +142,7 @@ export function TestimonialsSection() {
   const locale = useLocale();
   const isRTL = locale === 'ar';
 
+  // Memoize translation-driven data so the rows never rebuild unless the locale copy changes.
   const testimonials: Testimonial[] = useMemo(() => {
     return Array.from({ length: 12 }, (_, i) => {
       const isFemale = i % 2 === 0;
@@ -118,56 +164,47 @@ export function TestimonialsSection() {
   const row2 = useMemo(() => testimonials.slice(4, 8), [testimonials]);
   const row3 = useMemo(() => testimonials.slice(8, 12), [testimonials]);
 
+  // Duplicate rows just once; arrays stay referentially stable between renders.
   const row1Duplicated = useMemo(() => [...row1, ...row1, ...row1], [row1]);
   const row2Duplicated = useMemo(() => [...row2, ...row2, ...row2], [row2]);
   const row3Duplicated = useMemo(() => [...row3, ...row3, ...row3], [row3]);
 
-  // Render a single row of testimonials
-  const renderRow = (
-    testimonialsRow: Testimonial[],
-    direction: 'ltr' | 'rtl',
-    speed: number,
-    rowIndex: number
-  ) => {
-    return (
+  const buildTrackStyle = useCallback(
+    (direction: 'ltr' | 'rtl', speed: number) => ({
+      ...TRACK_BASE_STYLE,
+      animation: `scroll-${direction} ${speed}s linear infinite`
+    }),
+    []
+  );
+
+  // Avoid re-creating the render helper every render; keeps animation containers stable.
+  const renderRow = useCallback(
+    (
+      testimonialsRow: Testimonial[],
+      direction: 'ltr' | 'rtl',
+      speed: number,
+      rowIndex: number
+    ) => (
       <div
         className='relative isolate mb-3 w-full overflow-hidden last:mb-0 md:mb-4'
-        style={{ contain: 'layout style paint', maxWidth: '100%' }}
+        style={ROW_WRAPPER_STYLE}
       >
         {/* Left Fade Gradient - Fully transparent with blur effect */}
         <div
           className='testimonial-edge-blur pointer-events-none absolute top-0 left-0 z-[1] h-full w-20 backdrop-blur-xl min-[500px]:w-24 md:w-40 lg:w-56'
-          style={{
-            background:
-              'linear-gradient(to right, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.08) 50%, transparent 100%)',
-            maskImage:
-              'linear-gradient(to right, black 0%, black 50%, transparent 100%)',
-            WebkitMaskImage:
-              'linear-gradient(to right, black 0%, black 50%, transparent 100%)'
-          }}
+          style={EDGE_FADE_STYLE_LEFT}
         />
         {/* Right Fade Gradient - Fully transparent with blur effect */}
         <div
           className='testimonial-edge-blur pointer-events-none absolute top-0 right-0 z-[1] h-full w-20 backdrop-blur-xl min-[500px]:w-24 md:w-40 lg:w-56'
-          style={{
-            background:
-              'linear-gradient(to left, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.08) 50%, transparent 100%)',
-            maskImage:
-              'linear-gradient(to left, black 0%, black 50%, transparent 100%)',
-            WebkitMaskImage:
-              'linear-gradient(to left, black 0%, black 50%, transparent 100%)'
-          }}
+          style={EDGE_FADE_STYLE_RIGHT}
         />{' '}
         {/* Scrolling Container */}
         <div className='testimonials-scroll group relative h-[170px] w-full overflow-hidden min-[500px]:h-[180px]'>
           <div className='absolute inset-0 overflow-hidden'>
             <div
               className='testimonial-row-track relative z-[2] flex items-center gap-2 will-change-transform min-[500px]:gap-3 md:gap-4 lg:gap-6'
-              style={{
-                animation: `scroll-${direction} ${speed}s linear infinite`,
-                width: 'max-content',
-                transform: 'translateZ(0)'
-              }}
+              style={buildTrackStyle(direction, speed)}
             >
               {testimonialsRow.map((testimonial, index) => (
                 <TestimonialCard
@@ -180,8 +217,9 @@ export function TestimonialsSection() {
           </div>
         </div>
       </div>
-    );
-  };
+    ),
+    [buildTrackStyle]
+  );
 
   const mobileTestimonialsMarquee = useMemo(
     () => [...testimonials, ...testimonials],
@@ -191,7 +229,7 @@ export function TestimonialsSection() {
   return (
     <section
       className='relative flex h-screen w-full flex-col overflow-x-clip py-12 sm:py-20 md:flex md:h-auto md:flex-col lg:py-32'
-      style={{ contain: 'layout paint' }}
+      style={SECTION_STYLE}
     >
       {/* Self-contained wrapper - prevents page overflow */}
       <div className='relative mx-auto flex w-full max-w-7xl flex-1 flex-col overflow-hidden px-3 sm:px-4 md:flex md:flex-1 md:flex-col'>
@@ -224,28 +262,17 @@ export function TestimonialsSection() {
         </div>
 
         {/* Mobile Column Layout */}
-        <div className='relative flex-1 overflow-hidden md:hidden'>
+        <div
+          className='relative flex-1 overflow-hidden md:hidden'
+          style={MOBILE_COLUMN_WRAPPER_STYLE}
+        >
           <div
             className='mobile-testimonial-blur pointer-events-none absolute inset-x-0 top-0 z-[1] h-24 backdrop-blur-2xl'
-            style={{
-              background:
-                'linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.1) 60%, transparent 100%)',
-              maskImage:
-                'linear-gradient(to bottom, black 0%, black 40%, transparent 100%)',
-              WebkitMaskImage:
-                'linear-gradient(to bottom, black 0%, black 40%, transparent 100%)'
-            }}
+            style={MOBILE_BLUR_STYLE_TOP}
           />
           <div
             className='mobile-testimonial-blur pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-24 backdrop-blur-2xl'
-            style={{
-              background:
-                'linear-gradient(to top, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.1) 60%, transparent 100%)',
-              maskImage:
-                'linear-gradient(to top, black 0%, black 40%, transparent 100%)',
-              WebkitMaskImage:
-                'linear-gradient(to top, black 0%, black 40%, transparent 100%)'
-            }}
+            style={MOBILE_BLUR_STYLE_BOTTOM}
           />
           <div
             className='mobile-testimonials-marquee relative z-[2] flex flex-col gap-3 min-[500px]:gap-4'
@@ -256,7 +283,9 @@ export function TestimonialsSection() {
           >
             {mobileTestimonialsMarquee.map((testimonial, idx) => (
               <TestimonialCard
-                key={`mobile-${testimonial.id}-${idx}`}
+                key={`mobile-${testimonial.id}-${Math.floor(
+                  idx / testimonials.length
+                )}-${idx % testimonials.length}`}
                 testimonial={testimonial}
                 className={mobileCardDimensions}
               />
