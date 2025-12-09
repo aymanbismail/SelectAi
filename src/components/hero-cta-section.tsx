@@ -11,34 +11,26 @@ export function HeroCTASection() {
     <section className='relative w-full overflow-x-hidden py-12 sm:py-20 lg:py-32'>
       {/* Container */}
       <div className='mx-auto max-w-7xl px-3 sm:px-4'>
-        {/* Hero Card with Purple Gradient */}
-        <div
-          className='relative mx-auto flex flex-col items-center gap-4 overflow-hidden rounded-3xl p-8 text-center shadow-[rgba(31,38,135,0.5)_0px_8px_32px] backdrop-blur-[10px] transition-all duration-300 select-none sm:gap-6 sm:rounded-[50px] sm:p-12 md:p-16'
-          style={{
-            background:
-              'linear-gradient(135deg, rgb(124, 58, 237), rgba(24, 47, 255, 0.6))',
-            backgroundSize: '200% 200%'
-          }}
-        >
-          {/* Grain Texture Overlay - using ::before effect */}
+        {/* Hero Card with Glass Effect */}
+        <div className='border-border bg-card/80 shadow-elevated relative mx-auto flex flex-col items-center gap-4 overflow-hidden rounded-3xl border p-8 text-center backdrop-blur-[10px] transition-all duration-300 select-none sm:gap-6 sm:rounded-[50px] sm:p-12 md:p-16'>
+          {/* Subtle gradient overlay */}
           <div
-            className='pointer-events-none absolute inset-0 z-[1] opacity-100 mix-blend-lighten brightness-[3]'
+            className='pointer-events-none absolute inset-0 z-[1] opacity-30'
             style={{
-              backgroundImage: 'url(/assets/grain.webp)',
-              backgroundRepeat: 'repeat',
-              backgroundSize: '500px 500px'
+              background:
+                'radial-gradient(ellipse at top, var(--accent) 0%, transparent 60%)'
             }}
           />
 
           {/* Content */}
           <div className='relative z-10 flex flex-col items-center gap-4 sm:gap-6'>
             {/* Title */}
-            <h2 className='text-3xl font-bold tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl'>
+            <h2 className='text-foreground text-3xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl'>
               {t('title')}
             </h2>
 
             {/* Subtitle */}
-            <p className='px-2 text-base text-white/80 sm:px-0 sm:text-xl md:text-2xl lg:text-3xl'>
+            <p className='text-muted-foreground px-2 text-base sm:px-0 sm:text-xl md:text-2xl lg:text-3xl'>
               {t('subtitle')}
             </p>
 
@@ -46,7 +38,7 @@ export function HeroCTASection() {
             <Link href='/ai-tools'>
               <Button
                 size='lg'
-                className='rounded-full bg-white px-8 py-6 text-base font-semibold text-[#8b5cf6] shadow-xl transition-colors duration-300 hover:bg-white sm:px-10 sm:py-7 sm:text-lg'
+                className='bg-primary text-primary-foreground hover:bg-primary/90 rounded-full px-8 py-6 text-base font-semibold shadow-xl transition-colors duration-300 sm:px-10 sm:py-7 sm:text-lg'
               >
                 {t('button')}
               </Button>

@@ -8,15 +8,8 @@ import React, {
   ReactNode,
   useCallback
 } from 'react';
-import { account, ID } from '@/appwrite/appwrite';
 import { useRouter } from 'next/navigation';
 import { useLocale } from 'next-intl';
-
-// Check if Appwrite is configured
-const isAppwriteConfigured = Boolean(
-  process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT &&
-    process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID
-);
 
 // Types
 interface User {
@@ -61,23 +54,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
   // Check for existing session on mount
   useEffect(() => {
     const checkSession = async () => {
-      // Skip session check if Appwrite is not configured
-      if (!isAppwriteConfigured) {
-        setState((prev) => ({ ...prev, user: null, loading: false }));
-        return;
-      }
-
-      try {
-        const currentUser = await account.get();
-        setState((prev) => ({
-          ...prev,
-          user: currentUser as User,
-          loading: false
-        }));
-      } catch (error) {
-        // No active session
-        setState((prev) => ({ ...prev, user: null, loading: false }));
-      }
+      // TODO: Implement session check with your authentication provider
+      setState((prev) => ({ ...prev, user: null, loading: false }));
     };
 
     checkSession();
@@ -85,113 +63,36 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const login = useCallback(
     async (email: string, password: string) => {
-      if (!isAppwriteConfigured) {
-        setState((prev) => ({
-          ...prev,
-          loading: false,
-          error:
-            'Authentication service is not configured. Please contact the administrator.'
-        }));
-        throw new Error('Appwrite is not configured');
-      }
-
-      try {
-        setState((prev) => ({ ...prev, loading: true, error: null }));
-
-        // Create email session
-        await account.createEmailPasswordSession(email, password);
-
-        // Get user data
-        const userData = await account.get();
-        setState((prev) => ({
-          ...prev,
-          user: userData as User,
-          loading: false
-        }));
-
-        // Redirect to home page
-        router.push(`/${locale}/home`);
-      } catch (error: any) {
-        setState((prev) => ({
-          ...prev,
-          loading: false,
-          error:
-            error?.message || 'Login failed. Please check your credentials.'
-        }));
-        throw error;
-      }
+      // TODO: Implement login with your authentication provider
+      setState((prev) => ({
+        ...prev,
+        loading: false,
+        error:
+          'Authentication service is not configured. Please implement your authentication provider.'
+      }));
+      throw new Error('Authentication not configured');
     },
     [router, locale]
   );
 
   const signup = useCallback(
     async (name: string, email: string, password: string) => {
-      if (!isAppwriteConfigured) {
-        setState((prev) => ({
-          ...prev,
-          loading: false,
-          error:
-            'Authentication service is not configured. Please contact the administrator.'
-        }));
-        throw new Error('Appwrite is not configured');
-      }
-
-      try {
-        setState((prev) => ({ ...prev, loading: true, error: null }));
-
-        // Create account
-        await account.create(ID.unique(), email, password, name);
-
-        // Automatically login after signup
-        await account.createEmailPasswordSession(email, password);
-
-        // Get user data
-        const userData = await account.get();
-        setState((prev) => ({
-          ...prev,
-          user: userData as User,
-          loading: false
-        }));
-
-        // Redirect to home page
-        router.push(`/${locale}/home`);
-      } catch (error: any) {
-        setState((prev) => ({
-          ...prev,
-          loading: false,
-          error: error?.message || 'Signup failed. Please try again.'
-        }));
-        throw error;
-      }
+      // TODO: Implement signup with your authentication provider
+      setState((prev) => ({
+        ...prev,
+        loading: false,
+        error:
+          'Authentication service is not configured. Please implement your authentication provider.'
+      }));
+      throw new Error('Authentication not configured');
     },
     [router, locale]
   );
 
   const logout = useCallback(async () => {
-    if (!isAppwriteConfigured) {
-      setState((prev) => ({ ...prev, user: null, loading: false }));
-      router.push(`/${locale}/auth/sign-in`);
-      return;
-    }
-
-    try {
-      setState((prev) => ({ ...prev, loading: true, error: null }));
-
-      // Delete current session
-      await account.deleteSession('current');
-
-      setState((prev) => ({ ...prev, user: null, loading: false }));
-
-      // Redirect to sign in page
-      router.push(`/${locale}/auth/sign-in`);
-    } catch (error: any) {
-      setState((prev) => ({
-        ...prev,
-        loading: false,
-        error: error?.message || 'Logout failed. Please try again.'
-      }));
-      throw error;
-    }
+    // TODO: Implement logout with your authentication provider
+    setState((prev) => ({ ...prev, user: null, loading: false }));
+    router.push(`/${locale}/auth/sign-in`);
   }, [router, locale]);
 
   const clearError = useCallback(() => {

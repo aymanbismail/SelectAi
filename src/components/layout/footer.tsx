@@ -40,13 +40,13 @@ export function Footer() {
                 unicodeBidi: 'plaintext'
               }}
             >
-              {t('createdBy.text')} <span className='text-purple-500'>💜</span>{' '}
+              {t('createdBy.text')} <span className='text-foreground'>🤍</span>{' '}
               {t('createdBy.by')}{' '}
               <Link
                 href='https://github.com/ReBestX'
                 target='_blank'
                 rel='noopener noreferrer'
-                className='text-foreground font-semibold transition-colors hover:text-purple-500'
+                className='text-foreground hover:text-muted-foreground font-semibold transition-colors'
                 style={{ direction: 'ltr', unicodeBidi: 'embed' }}
               >
                 ReBestX

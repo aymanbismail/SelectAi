@@ -54,14 +54,14 @@ export function FeaturesSection() {
               {/* Card 1 - Top Left */}
               <div
                 className={cn(
-                  'group bg-background/40 hover:bg-background/60 relative overflow-hidden rounded-xl border border-white/5 p-4 backdrop-blur-md transition-all duration-500 hover:border-purple-500/20 sm:rounded-2xl sm:p-6 lg:rounded-3xl lg:p-8',
+                  'group border-border bg-card/80 hover:border-border/80 hover:bg-card relative overflow-hidden rounded-xl border p-4 backdrop-blur-[6px] transition-all duration-500 sm:rounded-2xl sm:p-6 lg:rounded-3xl lg:p-8',
                   isRTL && 'text-right'
                 )}
               >
                 {/* Number */}
                 <AnimatedCounter
                   value={features[0].number}
-                  className='mb-3 bg-gradient-to-br from-blue-400 to-blue-600 bg-clip-text text-4xl leading-none font-black tracking-tight text-transparent sm:mb-4 sm:text-5xl md:text-6xl lg:text-7xl'
+                  className='text-foreground mb-3 text-4xl leading-none font-black tracking-tight sm:mb-4 sm:text-5xl md:text-6xl lg:text-7xl'
                   duration={2000}
                 />
 
@@ -79,14 +79,14 @@ export function FeaturesSection() {
               {/* Card 2 - Bottom Left */}
               <div
                 className={cn(
-                  'group bg-background/40 hover:bg-background/60 relative overflow-hidden rounded-xl border border-white/5 p-4 backdrop-blur-md transition-all duration-500 hover:border-purple-500/20 sm:rounded-2xl sm:p-6 lg:rounded-3xl lg:p-8',
+                  'group border-border bg-card/80 hover:border-border/80 hover:bg-card relative overflow-hidden rounded-xl border p-4 backdrop-blur-[6px] transition-all duration-500 sm:rounded-2xl sm:p-6 lg:rounded-3xl lg:p-8',
                   isRTL && 'text-right'
                 )}
               >
                 {/* Number */}
                 <AnimatedCounter
                   value={features[1].number}
-                  className='mb-3 bg-gradient-to-br from-blue-400 to-blue-600 bg-clip-text text-4xl leading-none font-black tracking-tight text-transparent sm:mb-4 sm:text-5xl md:text-6xl lg:text-7xl'
+                  className='text-foreground mb-3 text-4xl leading-none font-black tracking-tight sm:mb-4 sm:text-5xl md:text-6xl lg:text-7xl'
                   duration={2000}
                 />
 
@@ -105,14 +105,14 @@ export function FeaturesSection() {
             {/* Right Column: One Tall Card (Left in RTL) */}
             <div
               className={cn(
-                'group bg-background/40 hover:bg-background/60 relative flex flex-col justify-center overflow-hidden rounded-xl border border-white/5 p-4 backdrop-blur-md transition-all duration-500 hover:border-purple-500/20 sm:rounded-2xl sm:p-6 lg:rounded-3xl lg:p-8',
+                'group border-border bg-card/80 hover:border-border/80 hover:bg-card relative flex flex-col justify-center overflow-hidden rounded-xl border p-4 backdrop-blur-[6px] transition-all duration-500 sm:rounded-2xl sm:p-6 lg:rounded-3xl lg:p-8',
                 isRTL && 'text-right lg:order-1'
               )}
             >
               {/* Number */}
               <AnimatedCounter
                 value={features[2].number}
-                className='mb-3 bg-gradient-to-br from-blue-400 to-blue-600 bg-clip-text text-4xl leading-none font-black tracking-tight text-transparent sm:mb-4 sm:text-5xl md:text-6xl lg:text-7xl'
+                className='text-foreground mb-3 text-4xl leading-none font-black tracking-tight sm:mb-4 sm:text-5xl md:text-6xl lg:text-7xl'
                 duration={2000}
               />
 

@@ -19,6 +19,11 @@ const baseConfig: NextConfig = {
         protocol: 'https',
         hostname: 'avatar.iran.liara.run',
         port: ''
+      },
+      {
+        protocol: 'https',
+        hostname: 'randomuser.me',
+        port: ''
       }
     ]
   },

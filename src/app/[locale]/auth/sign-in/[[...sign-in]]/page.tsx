@@ -12,6 +12,7 @@ import LanguageSwitcher from '@/components/layout/LanguageSwitcher';
 import { ModeToggle } from '@/components/layout/ThemeToggle/theme-toggle';
 import { Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { GoogleButton } from '@/components/auth/google-button';
 
 const SignInPage = () => {
   const [email, setEmail] = useState('');
@@ -30,9 +31,13 @@ const SignInPage = () => {
     }
   }, [user, locale]);
 
+  const handleGoogleSignIn = () => {
+    // TODO: Implement Google sign-in with your authentication provider
+  };
+
   const handleEmailNext = () => {
     if (!email.trim()) return;
-    clearError(); // Clear error when advancing to password step
+    clearError();
     setStep('password');
   };
 
@@ -54,7 +59,7 @@ const SignInPage = () => {
   };
 
   const handleBackToEmail = () => {
-    clearError(); // Clear error when going back
+    clearError();
     setStep('email');
     setPassword('');
   };
@@ -74,7 +79,7 @@ const SignInPage = () => {
     <div className={cn('flex min-h-screen flex-col', isRTL && 'font-arabic')}>
       {/* Main Content */}
       <main className='flex flex-1 items-center justify-center px-6 py-8'>
-        <div className='w-full max-w-md space-y-8'>
+        <div className='w-full max-w-[400px] space-y-8'>
           {/* Logo and Site Name + Switchers */}
           <div
             className={cn(
@@ -84,7 +89,10 @@ const SignInPage = () => {
             {isRTL ? (
               <>
                 {/* For Arabic (RTL): Logo + Site Name on the right */}
-                <div className='flex items-center gap-3'>
+                <Link
+                  href={`/${locale}/home`}
+                  className='flex items-center gap-3 transition-opacity hover:opacity-80'
+                >
                   <div className='bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg'>
                     <motion.div
                       animate={{
@@ -108,7 +116,7 @@ const SignInPage = () => {
                     </motion.div>
                   </div>
                   <span className='text-2xl font-semibold'>SelectAi</span>
-                </div>
+                </Link>
                 {/* Switchers on the left */}
                 <div className='flex items-center gap-2'>
                   <ModeToggle />
@@ -118,7 +126,10 @@ const SignInPage = () => {
             ) : (
               <>
                 {/* For English (LTR): Logo + Site Name on the left */}
-                <div className='flex items-center gap-3'>
+                <Link
+                  href={`/${locale}/home`}
+                  className='flex items-center gap-3 transition-opacity hover:opacity-80'
+                >
                   <div className='bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg'>
                     <motion.div
                       animate={{
@@ -142,7 +153,7 @@ const SignInPage = () => {
                     </motion.div>
                   </div>
                   <span className='text-2xl font-semibold'>SelectAi</span>
-                </div>
+                </Link>
                 {/* Switchers on the right */}
                 <div className='flex items-center gap-2'>
                   <LanguageSwitcher />
@@ -155,14 +166,42 @@ const SignInPage = () => {
           {/* Page Title and Description */}
           <div className={cn('space-y-2', isRTL && 'text-right')}>
             <h1 className='text-3xl font-bold tracking-tight'>
-              {locale === 'ar' ? 'سجل الدخول' : 'Sign in'}
+              {isRTL ? 'سجل الدخول' : 'Sign in'}
             </h1>
             <p className='text-muted-foreground text-base'>
-              {locale === 'ar'
-                ? 'أدخل بريدك الإلكتروني للمتابعة'
-                : 'Enter your email to continue'}
+              {step === 'email'
+                ? isRTL
+                  ? 'أدخل بريدك الإلكتروني للمتابعة'
+                  : 'Enter your email to continue'
+                : isRTL
+                  ? 'أدخل كلمة المرور للمتابعة'
+                  : 'Enter your password to continue'}
             </p>
           </div>
+
+          {/* Google Sign-in Button */}
+          {step === 'email' && (
+            <>
+              <GoogleButton
+                variant='signin'
+                isRTL={isRTL}
+                onClick={handleGoogleSignIn}
+                disabled={loading}
+              />
+
+              {/* Divider */}
+              <div className='relative my-6'>
+                <div className='absolute inset-0 flex items-center'>
+                  <div className='w-full border-t border-neutral-300 dark:border-neutral-700/50' />
+                </div>
+                <div className='relative flex justify-center'>
+                  <span className='text-muted-foreground rounded-full bg-neutral-100 px-3 py-1 text-xs font-medium tracking-wider uppercase dark:bg-neutral-800/60'>
+                    {isRTL ? 'أو' : 'or'}
+                  </span>
+                </div>
+              </div>
+            </>
+          )}
 
           {/* Error Message */}
           {error && (
@@ -176,13 +215,13 @@ const SignInPage = () => {
             {step === 'email' ? (
               <FloatingInput
                 type='email'
-                label={locale === 'ar' ? 'البريد الإلكتروني' : 'Email'}
+                label={isRTL ? 'البريد الإلكتروني' : 'Email'}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 isRTL={isRTL}
                 disabled={loading}
-                className='text-base'
+                className='h-12 text-base'
               />
             ) : (
               <div className='space-y-4'>
@@ -194,7 +233,7 @@ const SignInPage = () => {
                       isRTL && 'text-right'
                     )}
                   >
-                    {locale === 'ar' ? 'البريد الإلكتروني' : 'Email'}
+                    {isRTL ? 'البريد الإلكتروني' : 'Email'}
                   </div>
                   <div className={cn('font-medium', isRTL && 'text-right')}>
                     {email}
@@ -204,15 +243,30 @@ const SignInPage = () => {
                 {/* Password input */}
                 <FloatingInput
                   type='password'
-                  label={locale === 'ar' ? 'كلمة المرور' : 'Password'}
+                  label={isRTL ? 'كلمة المرور' : 'Password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   isRTL={isRTL}
                   disabled={loading}
                   autoFocus
-                  className='text-base'
+                  className='h-12 text-base'
                 />
+
+                {/* Forgot Password Link */}
+                <div
+                  className={cn(
+                    'flex',
+                    isRTL ? 'justify-start' : 'justify-end'
+                  )}
+                >
+                  <Link
+                    href={`/${locale}/auth/forgot-password`}
+                    className='text-primary text-sm font-medium hover:underline'
+                  >
+                    {isRTL ? 'نسيت كلمة المرور؟' : 'Forgot your password?'}
+                  </Link>
+                </div>
               </div>
             )}
 
@@ -229,17 +283,15 @@ const SignInPage = () => {
               {loading ? (
                 <div className='flex items-center gap-2'>
                   <div className='h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent'></div>
-                  <span>
-                    {locale === 'ar' ? 'جاري التحميل...' : 'Loading...'}
-                  </span>
+                  <span>{isRTL ? 'جاري التحميل...' : 'Loading...'}</span>
                 </div>
               ) : step === 'email' ? (
-                locale === 'ar' ? (
+                isRTL ? (
                   'التالي'
                 ) : (
                   'Continue'
                 )
-              ) : locale === 'ar' ? (
+              ) : isRTL ? (
                 'سجل الدخول'
               ) : (
                 'Sign in'
@@ -255,7 +307,7 @@ const SignInPage = () => {
                 onClick={handleBackToEmail}
                 disabled={loading}
               >
-                {locale === 'ar' ? 'العودة' : 'Back'}
+                {isRTL ? 'العودة' : 'Back'}
               </Button>
             )}
           </form>
@@ -263,13 +315,13 @@ const SignInPage = () => {
           {/* Sign Up Link */}
           <div className={cn('text-center text-base', isRTL && 'text-right')}>
             <span className='text-muted-foreground'>
-              {locale === 'ar' ? 'ليس لديك حساب؟ ' : "Don't have an account? "}
+              {isRTL ? 'ليس لديك حساب؟ ' : "Don't have an account? "}
             </span>
             <Link
               href={`/${locale}/auth/sign-up`}
               className='text-primary font-medium hover:underline'
             >
-              {locale === 'ar' ? 'إنشاء حساب' : 'Sign up'}
+              {isRTL ? 'إنشاء حساب' : 'Sign up'}
             </Link>
           </div>
         </div>
@@ -282,21 +334,16 @@ const SignInPage = () => {
           isRTL && 'text-right'
         )}
       >
-        <div
-          className={cn(
-            'text-muted-foreground flex items-center justify-center gap-6 text-sm'
-            // Always center for both LTR and RTL
-          )}
-        >
+        <div className='text-muted-foreground flex items-center justify-center gap-6 text-sm'>
           <span>© SelectAi</span>
           <Link href='#' className='hover:text-foreground transition-colors'>
-            {locale === 'ar' ? 'شروط الخدمة' : 'Terms of Service'}
+            {isRTL ? 'شروط الخدمة' : 'Terms of Service'}
           </Link>
           <Link href='#' className='hover:text-foreground transition-colors'>
-            {locale === 'ar' ? 'سياسة الخصوصية' : 'Privacy Policy'}
+            {isRTL ? 'سياسة الخصوصية' : 'Privacy Policy'}
           </Link>
           <Link href='#' className='hover:text-foreground transition-colors'>
-            {locale === 'ar' ? 'سياسة الإرسال' : 'Sending Policy'}
+            {isRTL ? 'سياسة الإرسال' : 'Sending Policy'}
           </Link>
         </div>
       </footer>

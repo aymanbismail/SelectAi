@@ -22,7 +22,8 @@ const suggestions: SuggestionCard[] = [
       'Get AI-powered tools for content creation, copywriting, and editing',
     category: 'Content',
     icon: 'post',
-    color: 'bg-blue-500/10 text-blue-600 hover:bg-blue-500/20'
+    color:
+      'bg-[rgba(59,130,246,0.10)] text-[#60A5FA] hover:bg-[rgba(59,130,246,0.20)]'
   },
   {
     id: '2',
@@ -31,7 +32,7 @@ const suggestions: SuggestionCard[] = [
       'Explore tools for graphic design, image generation, and creative work',
     category: 'Design',
     icon: 'media',
-    color: 'bg-purple-500/10 text-purple-600 hover:bg-purple-500/20'
+    color: 'bg-secondary text-muted-foreground hover:bg-secondary/80'
   },
   {
     id: '3',
@@ -39,7 +40,8 @@ const suggestions: SuggestionCard[] = [
     description: 'Find AI agents and tools to automate your business processes',
     category: 'Business',
     icon: 'settings',
-    color: 'bg-green-500/10 text-green-600 hover:bg-green-500/20'
+    color:
+      'bg-[rgba(34,197,94,0.10)] text-[#4ADE80] hover:bg-[rgba(34,197,94,0.20)]'
   },
   {
     id: '4',
@@ -48,7 +50,8 @@ const suggestions: SuggestionCard[] = [
       'Get help with programming, debugging, and software development',
     category: 'Development',
     icon: 'dashboard',
-    color: 'bg-orange-500/10 text-orange-600 hover:bg-orange-500/20'
+    color:
+      'bg-[rgba(251,146,60,0.10)] text-[#FB923C] hover:bg-[rgba(251,146,60,0.20)]'
   }
 ];
 

@@ -10,7 +10,6 @@ import './theme.css';
 import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
-import DarkVeil from '@/components/DarkVeil';
 
 const META_THEME_COLORS = {
   light: '#ffffff',
@@ -60,18 +59,6 @@ export default async function RootLayout({
         )}
       >
         {/* Global background runs everywhere but freezes animation on small screens */}
-        <div className='pointer-events-none fixed inset-0 -z-10 block'>
-          <DarkVeil
-            resolutionScale={1}
-            speed={0.5}
-            noiseIntensity={0.03}
-            scanlineIntensity={0.08}
-            scanlineFrequency={20}
-            warpAmount={0.02}
-            freezeBelowWidth={768}
-            disableBelowWidth={640}
-          />
-        </div>
         <NextTopLoader showSpinner={false} />
         <NuqsAdapter>
           <NextIntlClientProvider>

@@ -257,7 +257,7 @@ export const getAiToolsNavItems = (locale: string = 'en'): NavItem[] => [
   },
   {
     title: 'Categories',
-    url: `/${locale}/categories`,
+    url: `/${locale}/ai-tools/categories`,
     icon: 'dashboard',
     shortcut: ['c', 't'],
     isActive: false,

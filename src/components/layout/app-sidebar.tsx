@@ -193,7 +193,7 @@ export default function AppSidebar() {
 
   return (
     <Sidebar collapsible='icon' side={sidebarSide}>
-      <SidebarHeader className='border-sidebar-border bg-background/60 supports-[backdrop-filter]:bg-background/50 backdrop-blur'>
+      <SidebarHeader className='border-border bg-background'>
         <OrgSwitcher
           tenants={tenants}
           defaultTenant={activeTenant}
