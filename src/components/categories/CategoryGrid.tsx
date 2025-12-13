@@ -3,7 +3,6 @@
 import * as React from 'react';
 import { cn } from '@/lib/utils';
 import { CategoryCard } from './CategoryCard';
-import { Skeleton } from '@/components/ui/skeleton';
 import { useLocale, useTranslations } from 'next-intl';
 import type { CategoryGridProps, Category } from './types';
 

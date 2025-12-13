@@ -130,7 +130,7 @@ function CategoryClientInner({ type }: CategoryClientProps) {
 /**
  * CategoryClientSkeleton - Loading skeleton for category pages
  */
-function CategoryClientSkeleton({ type }: CategoryClientProps) {
+function CategoryClientSkeleton({ type: _type }: CategoryClientProps) {
   return (
     <PageContainer scrollable>
       <div className='flex flex-1 flex-col space-y-6 py-6 pt-16'>

@@ -12,7 +12,7 @@ import { AnimatedContainer } from '@/components/animation/animated-container';
 export function TableView({ items, onItemClick, isLoading }: TableViewProps) {
   const locale = useLocale();
   const t = useTranslations('tableView');
-  const tFilters = useTranslations('filters');
+  const _tFilters = useTranslations('filters');
   const isRTL = locale === 'ar';
   const [isMobile, setIsMobile] = React.useState(false);
 

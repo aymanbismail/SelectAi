@@ -497,15 +497,13 @@ function HeroSection() {
 
         <AnimatedContainer delay={0.3} className='w-full max-w-2xl'>
           <div className='group relative w-full' dir={isRTL ? 'rtl' : 'ltr'}>
-            <Search
-              className='text-muted-foreground group-focus-within:text-foreground pointer-events-none absolute top-1/2 h-5 w-5 -translate-y-1/2 transition-colors start-4'
-            />
+            <Search className='text-muted-foreground group-focus-within:text-foreground pointer-events-none absolute start-4 top-1/2 h-5 w-5 -translate-y-1/2 transition-colors' />
             <Input
               type='text'
               placeholder={t('searchPlaceholder')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className='border-border/50 bg-card/80 h-14 w-full rounded-xl text-base backdrop-blur-sm ps-12 pe-4 placeholder:text-muted-foreground/60 focus-visible:border-border focus-visible:ring-ring/20 focus-visible:ring-4 transition-all duration-300'
+              className='border-border/50 bg-card/80 placeholder:text-muted-foreground/60 focus-visible:border-border focus-visible:ring-ring/20 h-14 w-full rounded-xl ps-12 pe-4 text-base backdrop-blur-sm transition-all duration-300 focus-visible:ring-4'
             />
           </div>
         </AnimatedContainer>

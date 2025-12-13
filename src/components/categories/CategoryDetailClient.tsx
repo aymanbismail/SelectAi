@@ -8,7 +8,6 @@ import PageContainer from '@/components/layout/page-container';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { Skeleton } from '@/components/ui/skeleton';
 import {
   GridView,
   Filters,
@@ -105,6 +104,10 @@ function paginateItems(
  * CategoryDetailClientInner - Display items within a category
  */
 function CategoryDetailClientInner({ slug, type }: CategoryDetailClientProps) {
+  // Hooks must be called before any conditional returns
+  const locale = useLocale();
+  const isRTL = locale === 'ar';
+
   // Get category info
   const category = getCategoryBySlug(slug, type);
   const categoryName = getCategoryNameFromSlug(slug);
@@ -216,9 +219,6 @@ function CategoryDetailClientInner({ slug, type }: CategoryDetailClientProps) {
       </PageContainer>
     );
   }
-
-  const locale = useLocale();
-  const isRTL = locale === 'ar';
 
   const isTools = type === 'tool';
   const Icon = isTools ? Sparkles : Bot;
@@ -333,7 +333,7 @@ function CategoryDetailClientInner({ slug, type }: CategoryDetailClientProps) {
 /**
  * CategoryDetailSkeleton - Loading skeleton
  */
-function CategoryDetailSkeleton({ type }: { type: CategoryType }) {
+function CategoryDetailSkeleton({ type: _type }: { type: CategoryType }) {
   return (
     <PageContainer scrollable>
       <div className='flex flex-1 flex-col space-y-6 py-6 pt-16'>

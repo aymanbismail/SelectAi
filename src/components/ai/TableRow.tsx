@@ -24,7 +24,7 @@ export function TableRow({
 }: TableRowProps & { index?: number }) {
   const locale = useLocale();
   const t = useTranslations('tableView');
-  const isRTL = locale === 'ar';
+  const _isRTL = locale === 'ar';
 
   const {
     name,

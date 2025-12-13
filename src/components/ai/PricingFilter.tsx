@@ -2,7 +2,14 @@
 
 import * as React from 'react';
 import { useLocale, useTranslations } from 'next-intl';
-import { ChevronsUpDown, Gift, Zap, Crown, Building2, CircleDollarSign } from 'lucide-react';
+import {
+  ChevronsUpDown,
+  Gift,
+  Zap,
+  Crown,
+  Building2,
+  CircleDollarSign
+} from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
@@ -37,7 +44,8 @@ export function PricingFilter({ value, onChange }: PricingFilterProps) {
     { value: 'enterprise', label: t('enterprise'), icon: Building2 }
   ];
 
-  const selectedOption = pricingOptions.find((opt) => opt.value === value) ?? pricingOptions[0];
+  const selectedOption =
+    pricingOptions.find((opt) => opt.value === value) ?? pricingOptions[0];
   const SelectedIcon = selectedOption.icon;
 
   return (

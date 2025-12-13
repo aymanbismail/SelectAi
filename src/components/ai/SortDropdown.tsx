@@ -2,7 +2,15 @@
 
 import * as React from 'react';
 import { useLocale, useTranslations } from 'next-intl';
-import { ChevronsUpDown, ArrowUp, ArrowDown, Calendar, Star, Users, Type } from 'lucide-react';
+import {
+  ChevronsUpDown,
+  ArrowUp,
+  ArrowDown,
+  Calendar,
+  Star,
+  Users,
+  Type
+} from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
@@ -40,7 +48,8 @@ export function SortDropdown({
     { value: 'usage_count', label: t('popularity'), icon: Users }
   ];
 
-  const selectedOption = sortOptions.find((opt) => opt.value === sortBy) ?? sortOptions[3];
+  const selectedOption =
+    sortOptions.find((opt) => opt.value === sortBy) ?? sortOptions[3];
   const SelectedIcon = selectedOption.icon;
 
   const toggleOrder = () => {

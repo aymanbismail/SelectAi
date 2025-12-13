@@ -172,26 +172,38 @@ function CollectionsGrid() {
                     <p className='text-muted-foreground mb-6 line-clamp-2 flex-1 text-sm'>
                       {collection.description}
                     </p>
-                    <div className={cn(
-                      'mt-auto flex items-center justify-between',
-                      isRTL && 'flex-row-reverse'
-                    )}>
-                      <div className={cn(
-                        'text-muted-foreground flex items-center gap-2 text-xs',
+                    <div
+                      className={cn(
+                        'mt-auto flex items-center justify-between',
                         isRTL && 'flex-row-reverse'
-                      )}>
-                        <span>{collection.tool_count} {t('toolsCount')}</span>
+                      )}
+                    >
+                      <div
+                        className={cn(
+                          'text-muted-foreground flex items-center gap-2 text-xs',
+                          isRTL && 'flex-row-reverse'
+                        )}
+                      >
+                        <span>
+                          {collection.tool_count} {t('toolsCount')}
+                        </span>
                         {collection.agent_count > 0 && (
                           <>
                             <span className='text-border'>·</span>
-                            <span>{collection.agent_count} {t('agentsCount')}</span>
+                            <span>
+                              {collection.agent_count} {t('agentsCount')}
+                            </span>
                           </>
                         )}
                       </div>
-                      <ArrowIcon className={cn(
-                        'text-muted-foreground h-4 w-4 transition-transform',
-                        isRTL ? 'group-hover:-translate-x-0.5' : 'group-hover:translate-x-0.5'
-                      )} />
+                      <ArrowIcon
+                        className={cn(
+                          'text-muted-foreground h-4 w-4 transition-transform',
+                          isRTL
+                            ? 'group-hover:-translate-x-0.5'
+                            : 'group-hover:translate-x-0.5'
+                        )}
+                      />
                     </div>
                   </div>
                 </div>
