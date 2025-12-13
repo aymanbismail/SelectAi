@@ -5,11 +5,15 @@ import { cn } from '@/lib/utils';
 import { Card } from './Card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { PackageOpen } from 'lucide-react';
+import { useLocale, useTranslations } from 'next-intl';
 import type { GridViewProps } from './types';
 
 export function GridView({ items, onItemClick, isLoading }: GridViewProps) {
+  const locale = useLocale();
+  const isRTL = locale === 'ar';
+
   if (isLoading) {
-    return <GridSkeleton />;
+    return <GridSkeleton isRTL={isRTL} />;
   }
 
   if (items.length === 0) {
@@ -25,15 +29,21 @@ export function GridView({ items, onItemClick, isLoading }: GridViewProps) {
         'lg:grid-cols-3',
         'xl:grid-cols-4'
       )}
+      dir={isRTL ? 'rtl' : 'ltr'}
     >
-      {items.map((item) => (
-        <Card key={item.id} item={item} onClick={() => onItemClick?.(item)} />
+      {items.map((item, index) => (
+        <Card
+          key={item.id}
+          item={item}
+          onClick={() => onItemClick?.(item)}
+          index={index}
+        />
       ))}
     </div>
   );
 }
 
-function GridSkeleton() {
+function GridSkeleton({ isRTL }: { isRTL: boolean }) {
   return (
     <div
       className={cn(
@@ -43,6 +53,7 @@ function GridSkeleton() {
         'lg:grid-cols-3',
         'xl:grid-cols-4'
       )}
+      dir={isRTL ? 'rtl' : 'ltr'}
     >
       {Array.from({ length: 8 }).map((_, i) => (
         <div
@@ -87,12 +98,17 @@ function GridSkeleton() {
 }
 
 function EmptyState() {
+  const t = useTranslations('filters');
+  const locale = useLocale();
+  const isRTL = locale === 'ar';
+
   return (
     <div
       className={cn(
         'flex flex-col items-center justify-center py-20',
         'text-center'
       )}
+      dir={isRTL ? 'rtl' : 'ltr'}
     >
       <div
         className={cn(
@@ -104,11 +120,10 @@ function EmptyState() {
         <PackageOpen className='text-muted-foreground h-10 w-10' />
       </div>
       <h3 className='text-foreground mb-2 text-xl font-semibold'>
-        No results found
+        {t('noResultsFound')}
       </h3>
       <p className='text-muted-foreground max-w-md'>
-        Try adjusting your filters or search terms to find what you&apos;re
-        looking for.
+        {t('noResultsFoundDesc')}
       </p>
     </div>
   );

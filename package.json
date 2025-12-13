@@ -90,6 +90,7 @@
     "react-dropzone": "^14.3.8",
     "react-hook-form": "^7.62.0",
     "react-resizable-panels": "^2.1.9",
+    "react-use-measure": "^2.1.7",
     "recharts": "^2.15.4",
     "sharp": "^0.33.5",
     "sonner": "^1.7.4",

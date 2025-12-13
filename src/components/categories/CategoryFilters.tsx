@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { useLocale, useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -19,6 +20,9 @@ export function CategoryFilters({
   showTypeToggle = true
 }: CategoryFiltersProps) {
   const [localSearch, setLocalSearch] = React.useState(search);
+  const locale = useLocale();
+  const isRTL = locale === 'ar';
+  const t = useTranslations('filters');
 
   // Debounce search input
   React.useEffect(() => {
@@ -41,22 +45,29 @@ export function CategoryFilters({
         'bg-card/50 backdrop-blur-[6px]',
         'border-border border'
       )}
+      dir={isRTL ? 'rtl' : 'ltr'}
     >
       {/* Search Input */}
       <div className='relative max-w-md flex-1'>
-        <Search className='text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2' />
+        <Search
+          className={cn(
+            'text-muted-foreground absolute top-1/2 h-4 w-4 -translate-y-1/2',
+            isRTL ? 'right-3' : 'left-3'
+          )}
+        />
         <Input
           type='text'
-          placeholder='Search categories...'
+          placeholder={t('searchCategories')}
           value={localSearch}
           onChange={(e) => setLocalSearch(e.target.value)}
           className={cn(
-            'pr-4 pl-10',
             'bg-secondary',
             'border-border focus:border-foreground/20',
             'text-foreground placeholder:text-muted-foreground',
-            'transition-all duration-200'
+            'transition-all duration-200',
+            isRTL ? 'pr-10 pl-4' : 'pr-4 pl-10'
           )}
+          dir={isRTL ? 'rtl' : 'ltr'}
         />
       </div>
 
@@ -68,14 +79,14 @@ export function CategoryFilters({
             currentType={type}
             onClick={() => onTypeChange('tool')}
             icon={<Wrench className='h-4 w-4' />}
-            label='Tools'
+            label={t('allCategories').includes('أدوات') ? 'أدوات' : 'Tools'}
           />
           <TypeToggleButton
             type='agent'
             currentType={type}
             onClick={() => onTypeChange('agent')}
             icon={<Bot className='h-4 w-4' />}
-            label='Agents'
+            label={t('allCategories').includes('وكلاء') ? 'وكلاء' : 'Agents'}
           />
         </div>
       )}

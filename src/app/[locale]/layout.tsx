@@ -1,6 +1,7 @@
 import Providers from '@/components/layout/providers';
 import { Toaster } from '@/components/ui/sonner';
 import ThemeProvider from '@/components/layout/ThemeToggle/theme-provider';
+import { InitialLoader } from '@/components/initial-loader';
 import { cn } from '@/lib/utils';
 import type { Metadata, Viewport } from 'next';
 import NextTopLoader from 'nextjs-toploader';
@@ -58,7 +59,6 @@ export default async function RootLayout({
           'bg-background overflow-hidden overscroll-none font-sans antialiased'
         )}
       >
-        {/* Global background runs everywhere but freezes animation on small screens */}
         <NextTopLoader showSpinner={false} />
         <NuqsAdapter>
           <NextIntlClientProvider>
@@ -69,6 +69,7 @@ export default async function RootLayout({
               disableTransitionOnChange
               enableColorScheme
             >
+              <InitialLoader />
               <Providers>
                 <Toaster />
                 {children}

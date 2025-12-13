@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import { Suspense } from 'react';
+import { useLocale } from 'next-intl';
 import { cn } from '@/lib/utils';
 import PageContainer from '@/components/layout/page-container';
 import { Button } from '@/components/ui/button';
@@ -216,6 +217,9 @@ function CategoryDetailClientInner({ slug, type }: CategoryDetailClientProps) {
     );
   }
 
+  const locale = useLocale();
+  const isRTL = locale === 'ar';
+
   const isTools = type === 'tool';
   const Icon = isTools ? Sparkles : Bot;
   const backUrl = isTools ? '/ai-tools/categories' : '/agents/categories';
@@ -223,7 +227,10 @@ function CategoryDetailClientInner({ slug, type }: CategoryDetailClientProps) {
 
   return (
     <PageContainer scrollable>
-      <div className='flex flex-1 flex-col space-y-6 py-6 pt-16'>
+      <div
+        className='flex flex-1 flex-col space-y-6 py-6 pt-16'
+        dir={isRTL ? 'rtl' : 'ltr'}
+      >
         {/* Back Navigation */}
         <Link
           href={backUrl}

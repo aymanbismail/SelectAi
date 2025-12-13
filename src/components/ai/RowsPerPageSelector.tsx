@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { useLocale, useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import {
   Select,
@@ -19,11 +20,15 @@ export function RowsPerPageSelector({
   onChange,
   options = defaultOptions
 }: RowsPerPageSelectorProps) {
+  const locale = useLocale();
+  const isRTL = locale === 'ar';
+  const t = useTranslations('perPage');
+
   return (
-    <div className='flex items-center gap-2'>
+    <div className='flex items-center gap-2' dir={isRTL ? 'rtl' : 'ltr'}>
       <Rows3 className='text-muted-foreground h-4 w-4' />
       <span className='text-muted-foreground text-sm whitespace-nowrap'>
-        Per page:
+        {t('label')}
       </span>
       <Select
         value={value.toString()}

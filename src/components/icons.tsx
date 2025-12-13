@@ -8,6 +8,7 @@ import {
   IconCreditCard,
   IconFile,
   IconFileText,
+  IconFolder,
   IconHelpCircle,
   IconPhoto,
   IconDeviceLaptop,
@@ -15,6 +16,7 @@ import {
   IconLoader2,
   IconLogin,
   IconProps,
+  IconSearch,
   IconShoppingBag,
   IconMoon,
   IconDotsVertical,
@@ -50,6 +52,7 @@ export const Icons = {
   employee: IconUserX,
   post: IconFileText,
   page: IconFile,
+  folder: IconFolder,
   userPen: IconUserEdit,
   user2: IconUserCircle,
   media: IconPhoto,
@@ -68,5 +71,6 @@ export const Icons = {
   github: IconBrandGithub,
   twitter: IconBrandTwitter,
   check: IconCheck,
-  chat: IconMessages
+  chat: IconMessages,
+  search: IconSearch
 };

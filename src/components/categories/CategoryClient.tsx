@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import { Suspense } from 'react';
+import { useLocale, useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import PageContainer from '@/components/layout/page-container';
 import { Separator } from '@/components/ui/separator';
@@ -27,6 +28,10 @@ interface CategoryClientProps {
  * Shared between Tool Categories and Agent Categories pages
  */
 function CategoryClientInner({ type }: CategoryClientProps) {
+  const locale = useLocale();
+  const isRTL = locale === 'ar';
+  const t = useTranslations('categoryPage');
+
   // State from URL - ready for API integration
   const {
     search,
@@ -74,7 +79,10 @@ function CategoryClientInner({ type }: CategoryClientProps) {
 
   return (
     <PageContainer scrollable>
-      <div className='flex flex-1 flex-col space-y-6 py-6 pt-16'>
+      <div
+        className='flex flex-1 flex-col space-y-6 py-6 pt-16'
+        dir={isRTL ? 'rtl' : 'ltr'}
+      >
         {/* Header Section */}
         <CategoryHeader type={type} />
 
@@ -93,7 +101,9 @@ function CategoryClientInner({ type }: CategoryClientProps) {
         <div className='flex items-center justify-between'>
           <span className='text-muted-foreground text-sm'>
             {filteredCategories.length}{' '}
-            {filteredCategories.length === 1 ? 'category' : 'categories'} found
+            {filteredCategories.length === 1
+              ? t('categoryFound')
+              : t('categoriesFound')}
           </span>
         </div>
 

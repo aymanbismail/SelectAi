@@ -5,6 +5,7 @@ import { useTranslations, useLocale } from 'next-intl';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { motion } from 'motion/react';
+import { AnimatedContainer } from '@/components/animation/animated-container';
 
 interface Testimonial {
   id: number;
@@ -132,57 +133,61 @@ export function TestimonialsSection() {
     <section className='relative w-full overflow-hidden py-16 sm:py-20 lg:py-32'>
       <div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
         {/* Section Title */}
-        <div className='mb-12 text-center sm:mb-16'>
-          <h2
-            className={cn(
-              'mb-4 text-2xl font-bold sm:text-3xl md:text-4xl lg:text-5xl',
-              isRTL ? 'pb-2 leading-[1.5]' : 'leading-normal'
-            )}
-          >
-            <span className='text-foreground'>{t('title')}</span>
-          </h2>
-          <p
-            className='text-muted-foreground mx-auto max-w-2xl text-base sm:text-lg md:text-xl'
-            style={{
-              direction: isRTL ? 'rtl' : 'ltr',
-              unicodeBidi: 'plaintext'
-            }}
-          >
-            {t('subtitle')}
-          </p>
-        </div>
+        <AnimatedContainer delay={0.1}>
+          <div className='mb-12 text-center sm:mb-16'>
+            <h2
+              className={cn(
+                'mb-4 text-2xl font-bold sm:text-3xl md:text-4xl lg:text-5xl',
+                isRTL ? 'pb-2 leading-[1.5]' : 'leading-normal'
+              )}
+            >
+              <span className='text-foreground'>{t('title')}</span>
+            </h2>
+            <p
+              className='text-muted-foreground mx-auto max-w-2xl text-base sm:text-lg md:text-xl'
+              style={{
+                direction: isRTL ? 'rtl' : 'ltr',
+                unicodeBidi: 'plaintext'
+              }}
+            >
+              {t('subtitle')}
+            </p>
+          </div>
+        </AnimatedContainer>
 
         {/* Testimonials Columns */}
-        <div className='relative h-[500px] overflow-hidden sm:h-[550px] lg:h-[600px]'>
-          {/* Top fade */}
-          <div className='from-background pointer-events-none absolute inset-x-0 top-0 z-10 h-24 bg-gradient-to-b to-transparent' />
-          {/* Bottom fade */}
-          <div className='from-background pointer-events-none absolute inset-x-0 bottom-0 z-10 h-24 bg-gradient-to-t to-transparent' />
+        <AnimatedContainer delay={0.2}>
+          <div className='relative h-[500px] overflow-hidden sm:h-[550px] lg:h-[600px]'>
+            {/* Top fade */}
+            <div className='from-background pointer-events-none absolute inset-x-0 top-0 z-10 h-24 bg-gradient-to-b to-transparent' />
+            {/* Bottom fade */}
+            <div className='from-background pointer-events-none absolute inset-x-0 bottom-0 z-10 h-24 bg-gradient-to-t to-transparent' />
 
-          <div className='grid h-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3'>
-            {/* Column 1 - visible on all screens */}
-            <TestimonialsColumn
-              testimonials={column1}
-              duration={20}
-              className='block'
-              isRTL={isRTL}
-            />
-            {/* Column 2 - hidden on mobile */}
-            <TestimonialsColumn
-              testimonials={column2}
-              duration={25}
-              className='hidden md:block'
-              isRTL={isRTL}
-            />
-            {/* Column 3 - hidden on mobile and tablet */}
-            <TestimonialsColumn
-              testimonials={column3}
-              duration={22}
-              className='hidden lg:block'
-              isRTL={isRTL}
-            />
+            <div className='grid h-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3'>
+              {/* Column 1 - visible on all screens */}
+              <TestimonialsColumn
+                testimonials={column1}
+                duration={20}
+                className='block'
+                isRTL={isRTL}
+              />
+              {/* Column 2 - hidden on mobile */}
+              <TestimonialsColumn
+                testimonials={column2}
+                duration={25}
+                className='hidden md:block'
+                isRTL={isRTL}
+              />
+              {/* Column 3 - hidden on mobile and tablet */}
+              <TestimonialsColumn
+                testimonials={column3}
+                duration={22}
+                className='hidden lg:block'
+                isRTL={isRTL}
+              />
+            </div>
           </div>
-        </div>
+        </AnimatedContainer>
       </div>
     </section>
   );

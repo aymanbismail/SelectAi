@@ -3,6 +3,7 @@
 import { Check, ChevronsUpDown, Sparkles } from 'lucide-react';
 import * as React from 'react';
 import { motion } from 'framer-motion';
+import { useLocale } from 'next-intl';
 
 import {
   DropdownMenu,
@@ -30,6 +31,9 @@ export function OrgSwitcher({
   defaultTenant: Tenant;
   onTenantSwitch?: (tenantId: string) => void;
 }) {
+  const locale = useLocale();
+  const isRTL = locale === 'ar';
+
   const [selectedTenant, setSelectedTenant] = React.useState<
     Tenant | undefined
   >(defaultTenant || (tenants.length > 0 ? tenants[0] : undefined));
@@ -82,16 +86,16 @@ export function OrgSwitcher({
                   <Sparkles className='h-6 w-6 text-current' />
                 </motion.div>
               </div>
-              <div className='flex flex-col gap-0.5 leading-none'>
+              <div className='flex flex-col items-start gap-0.5 leading-none'>
                 <span className='font-semibold'>Select AI</span>
-                <span className=''>{selectedTenant.name}</span>
+                <span>{selectedTenant.name}</span>
               </div>
-              <ChevronsUpDown className='ml-auto' />
+              <ChevronsUpDown className='ms-auto' />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
             className='w-[--radix-dropdown-menu-trigger-width]'
-            align='start'
+            align={isRTL ? 'end' : 'start'}
           >
             {tenants.map((tenant) => (
               <DropdownMenuItem
@@ -106,7 +110,7 @@ export function OrgSwitcher({
               >
                 {tenant.name}{' '}
                 {tenant.id === selectedTenant.id && (
-                  <Check className='ml-auto' />
+                  <Check className='ms-auto h-4 w-4' />
                 )}
               </DropdownMenuItem>
             ))}

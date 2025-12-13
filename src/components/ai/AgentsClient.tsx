@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import { Suspense } from 'react';
+import { useLocale, useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import PageContainer from '@/components/layout/page-container';
 import { Button } from '@/components/ui/button';
@@ -100,6 +101,10 @@ function paginateItems(
  * Must be wrapped in Suspense because it uses useSearchParams
  */
 function AgentsClientInner() {
+  const locale = useLocale();
+  const isRTL = locale === 'ar';
+  const t = useTranslations('aiAgentsPage');
+
   // All state is now driven by URL
   const {
     filters,
@@ -175,10 +180,17 @@ function AgentsClientInner() {
 
   return (
     <PageContainer scrollable>
-      <div className='flex flex-1 flex-col space-y-6 py-6 pt-16'>
+      <div
+        className='flex flex-1 flex-col space-y-6 py-6 pt-16'
+        dir={isRTL ? 'rtl' : 'ltr'}
+      >
         {/* Header Section */}
-        <div className='flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center'>
-          <div className='flex items-center gap-3'>
+        <div
+          className={cn(
+            'flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center'
+          )}
+        >
+          <div className={cn('flex items-center gap-3')}>
             <div
               className={cn(
                 'flex items-center justify-center',
@@ -189,16 +201,14 @@ function AgentsClientInner() {
             >
               <Bot className='text-foreground h-6 w-6' />
             </div>
-            <div>
+            <div className={isRTL ? 'text-right' : 'text-left'}>
               <h1 className='text-foreground text-2xl font-bold tracking-tight'>
-                AI Agents
+                {t('title')}
               </h1>
-              <p className='text-muted-foreground'>
-                Discover autonomous AI agents for your workflows
-              </p>
+              <p className='text-muted-foreground'>{t('description')}</p>
             </div>
           </div>
-          <Link href='/agents/new'>
+          <Link href={`/${locale}/agents/new`}>
             <Button
               className={cn(
                 'bg-primary hover:bg-primary/90',
@@ -207,8 +217,8 @@ function AgentsClientInner() {
                 'focus-visible:ring-ring focus-visible:ring-offset-background focus-visible:ring-2 focus-visible:ring-offset-2'
               )}
             >
-              <IconPlus className='mr-2 h-4 w-4' />
-              Request New Agent
+              <IconPlus className='me-2 h-4 w-4' />
+              {t('requestNew')}
             </Button>
           </Link>
         </div>
@@ -223,11 +233,16 @@ function AgentsClientInner() {
         />
 
         {/* View Controls */}
-        <div className='flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center'>
-          <div className='flex items-center gap-4'>
+        <div
+          className={cn(
+            'flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center'
+          )}
+        >
+          <div className={cn('flex items-center gap-4')}>
             <ViewToggle view={viewMode} onViewChange={handleViewChange} />
             <span className='text-muted-foreground text-sm'>
-              {totalItems} {totalItems === 1 ? 'agent' : 'agents'} found
+              {totalItems}{' '}
+              {totalItems === 1 ? t('agentFound') : t('agentsFound')}
             </span>
           </div>
           <RowsPerPageSelector

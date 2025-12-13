@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { useLocale, useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
@@ -11,6 +12,10 @@ export function FeaturedSwitch({
   checked,
   onCheckedChange
 }: FeaturedSwitchProps) {
+  const locale = useLocale();
+  const isRTL = locale === 'ar';
+  const t = useTranslations('filters');
+
   return (
     <div
       className={cn(
@@ -20,6 +25,7 @@ export function FeaturedSwitch({
         'transition-all duration-200',
         checked && 'border-[rgba(251,191,36,0.30)] bg-[rgba(251,191,36,0.08)]'
       )}
+      dir={isRTL ? 'rtl' : 'ltr'}
     >
       <Switch
         id='featured-switch'
@@ -29,7 +35,7 @@ export function FeaturedSwitch({
           'data-[state=checked]:bg-[#FBBF24]',
           'transition-colors duration-200'
         )}
-        aria-label='Show featured only'
+        aria-label={t('featuredOnly')}
       />
       <Label
         htmlFor='featured-switch'
@@ -40,7 +46,7 @@ export function FeaturedSwitch({
         )}
       >
         <Sparkles className={cn('h-4 w-4', checked && 'fill-[#FBBF24]')} />
-        Featured Only
+        {t('featuredOnly')}
       </Label>
     </div>
   );

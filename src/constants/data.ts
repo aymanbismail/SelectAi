@@ -227,9 +227,17 @@ export const aiAgentsCategories: Category[] = [
 export const demoCategories = aiToolsCategories;
 
 //Info: Navigation items for AI Tools tenant
-export const getAiToolsNavItems = (locale: string = 'en'): NavItem[] => [
+export const getAiToolsNavItems = (
+  locale: string = 'en',
+  translations?: {
+    home: string;
+    explore: string;
+    collections: string;
+    aiTools: string;
+  }
+): NavItem[] => [
   {
-    title: 'Home',
+    title: translations?.home || 'Home',
     url: `/${locale}/home`,
     icon: 'dashboard',
     isActive: false,
@@ -237,38 +245,43 @@ export const getAiToolsNavItems = (locale: string = 'en'): NavItem[] => [
     items: []
   },
   {
-    title: 'Chat',
-    // Temporarily disabled; keep URL omitted to prevent navigation
-    // url: `/${locale}/chat`,
-    icon: 'chat',
+    title: translations?.explore || 'Explore',
+    url: `/${locale}/explore`,
+    icon: 'search',
     isActive: false,
-    shortcut: ['c', 'c'],
-    items: [],
-    disabled: true,
-    badge: { text: 'Coming Soon', variant: 'secondary' }
-  },
-  {
-    title: 'AI Tools',
-    url: `/${locale}/ai-tools`,
-    icon: 'dashboard',
-    shortcut: ['a', 'i'],
-    isActive: false,
+    shortcut: ['e', 'x'],
     items: []
   },
   {
-    title: 'Categories',
-    url: `/${locale}/ai-tools/categories`,
+    title: translations?.collections || 'Collections',
+    url: `/${locale}/collections`,
+    icon: 'folder',
+    isActive: false,
+    shortcut: ['c', 'o'],
+    items: []
+  },
+  {
+    title: translations?.aiTools || 'AI Tools',
+    url: `/${locale}/ai-tools`,
     icon: 'dashboard',
-    shortcut: ['c', 't'],
+    shortcut: ['a', 'i'],
     isActive: false,
     items: []
   }
 ];
 
 //Info: Navigation items for AI Agents tenant
-export const getAiAgentsNavItems = (locale: string = 'en'): NavItem[] => [
+export const getAiAgentsNavItems = (
+  locale: string = 'en',
+  translations?: {
+    home: string;
+    explore: string;
+    categories: string;
+    aiAgents: string;
+  }
+): NavItem[] => [
   {
-    title: 'Home',
+    title: translations?.home || 'Home',
     url: `/${locale}/home`,
     icon: 'dashboard',
     isActive: false,
@@ -276,29 +289,26 @@ export const getAiAgentsNavItems = (locale: string = 'en'): NavItem[] => [
     items: []
   },
   {
-    title: 'Chat',
-    // Temporarily disabled; keep URL omitted to prevent navigation
-    // url: `/${locale}/chat`,
-    icon: 'chat',
+    title: translations?.explore || 'Explore',
+    url: `/${locale}/explore`,
+    icon: 'search',
     isActive: false,
-    shortcut: ['c', 'c'],
-    items: [],
-    disabled: true,
-    badge: { text: 'Coming Soon', variant: 'secondary' }
+    shortcut: ['e', 'x'],
+    items: []
   },
   {
-    title: 'AI Agents',
-    url: `/${locale}/agents`,
+    title: translations?.categories || 'Categories',
+    url: `/${locale}/agents/categories`,
     icon: 'dashboard',
-    shortcut: ['a', 'i'],
+    shortcut: ['c', 't'],
     isActive: false,
     items: []
   },
   {
-    title: 'Categories',
-    url: `/${locale}/agents/categories`,
+    title: translations?.aiAgents || 'AI Agents',
+    url: `/${locale}/agents`,
     icon: 'dashboard',
-    shortcut: ['c', 't'],
+    shortcut: ['a', 'i'],
     isActive: false,
     items: []
   }
@@ -313,10 +323,13 @@ export const navItems = aiToolsNavItems;
 
 // Categories that will be displayed in the scrollable container for AI Tools
 export const getAiToolsAdditionalCategories = (
-  locale: string = 'en'
+  locale: string = 'en',
+  translations?: Record<string, string>
 ): NavItem[] =>
   aiToolsCategories.map((category) => ({
-    title: category.name.charAt(0).toUpperCase() + category.name.slice(1),
+    title:
+      translations?.[category.name] ||
+      category.name.charAt(0).toUpperCase() + category.name.slice(1),
     url: `/${locale}/${category.name}`,
     icon: 'dashboard',
     shortcut: ['a', 'i'],
@@ -326,12 +339,14 @@ export const getAiToolsAdditionalCategories = (
 
 // Categories that will be displayed in the scrollable container for AI Agents
 export const getAiAgentsAdditionalCategories = (
-  locale: string = 'en'
+  locale: string = 'en',
+  translations?: Record<string, string>
 ): NavItem[] =>
   aiAgentsCategories.map((category) => ({
     title:
+      translations?.[category.name] ||
       category.name.charAt(0).toUpperCase() +
-      category.name.slice(1).replace('-', ' '),
+        category.name.slice(1).replace('-', ' '),
     url: `/${locale}/agents/${category.name}`,
     icon: 'chat',
     shortcut: ['a', 'g'],

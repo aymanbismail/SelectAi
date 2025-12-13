@@ -1,7 +1,8 @@
 'use client';
 
 import * as React from 'react';
-import { Check, ChevronsUpDown, Layers } from 'lucide-react';
+import { useLocale, useTranslations } from 'next-intl';
+import { ChevronsUpDown, Layers } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
@@ -25,9 +26,12 @@ export function CategoryFilter({
   categories
 }: CategoryFilterProps) {
   const [open, setOpen] = React.useState(false);
+  const locale = useLocale();
+  const isRTL = locale === 'ar';
+  const t = useTranslations('filters');
 
   const allCategories = [
-    { value: 'all', label: 'All Categories' },
+    { value: 'all', label: t('allCategories') },
     ...categories.map((cat) => ({ value: cat, label: cat }))
   ];
 
@@ -51,23 +55,28 @@ export function CategoryFilter({
             'transition-all duration-200',
             value !== 'all' && 'border-foreground/20 text-foreground'
           )}
+          dir={isRTL ? 'rtl' : 'ltr'}
         >
-          <div className='flex items-center gap-2 truncate'>
+          <div className={cn('flex items-center gap-2 truncate')}>
             <Layers className='text-muted-foreground h-4 w-4 shrink-0' />
             <span className='truncate'>{selectedCategory?.label}</span>
           </div>
-          <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
+          <ChevronsUpDown className='ms-2 h-4 w-4 shrink-0 opacity-50' />
         </Button>
       </PopoverTrigger>
       <PopoverContent
         className={cn('w-[200px] p-0', 'bg-card', 'border-border')}
-        align='start'
+        align={isRTL ? 'end' : 'start'}
       >
         <Command>
-          <CommandInput placeholder='Search category...' className='h-9' />
+          <CommandInput
+            placeholder={t('searchCategories')}
+            className='h-9'
+            dir={isRTL ? 'rtl' : 'ltr'}
+          />
           <CommandList>
-            <CommandEmpty>No category found.</CommandEmpty>
-            <CommandGroup>
+            <CommandEmpty>{t('noResults')}</CommandEmpty>
+            <CommandGroup className='p-1'>
               {allCategories.map((category) => (
                 <CommandItem
                   key={category.value}
@@ -77,17 +86,12 @@ export function CategoryFilter({
                     setOpen(false);
                   }}
                   className={cn(
-                    'cursor-pointer',
+                    'cursor-pointer gap-2 px-2 py-1.5',
                     'transition-colors duration-150',
                     value === category.value && 'bg-accent text-foreground'
                   )}
+                  dir={isRTL ? 'rtl' : 'ltr'}
                 >
-                  <Check
-                    className={cn(
-                      'mr-2 h-4 w-4',
-                      value === category.value ? 'opacity-100' : 'opacity-0'
-                    )}
-                  />
                   {category.label}
                 </CommandItem>
               ))}

@@ -39,12 +39,12 @@ export function SidebarCategoriesSkeleton({
   categoriesCount?: number;
 }) {
   return (
-    <SidebarGroup>
+    <SidebarGroup className='min-h-[200px] flex-1'>
       <SidebarGroupLabel>
         <Skeleton className='h-4 w-20' />
       </SidebarGroupLabel>
-      <div className='relative'>
-        <div className='max-h-[50vh] min-h-[100px] overflow-y-auto pr-2'>
+      <div className='relative min-h-0 flex-1'>
+        <div className='categories-scrollbar absolute inset-0 overflow-y-auto pr-2 pb-2'>
           <SidebarMenu className='space-y-1'>
             {Array.from({ length: categoriesCount }).map((_, i) => (
               <SidebarMenuItem key={i}>

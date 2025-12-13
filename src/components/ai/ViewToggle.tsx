@@ -1,12 +1,17 @@
 'use client';
 
 import * as React from 'react';
+import { useLocale, useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { LayoutGrid, Table2 } from 'lucide-react';
 import type { ViewToggleProps } from './types';
 
 export function ViewToggle({ view, onViewChange }: ViewToggleProps) {
+  const locale = useLocale();
+  const isRTL = locale === 'ar';
+  const t = useTranslations('viewToggle');
+
   return (
     <div
       className={cn(
@@ -16,6 +21,7 @@ export function ViewToggle({ view, onViewChange }: ViewToggleProps) {
       )}
       role='group'
       aria-label='View mode'
+      dir={isRTL ? 'rtl' : 'ltr'}
     >
       <Button
         variant='ghost'
@@ -28,11 +34,11 @@ export function ViewToggle({ view, onViewChange }: ViewToggleProps) {
             ? 'bg-accent text-foreground hover:bg-accent'
             : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
         )}
-        aria-label='Grid view'
+        aria-label={t('gridView')}
         aria-pressed={view === 'grid'}
       >
-        <LayoutGrid className='mr-1.5 h-4 w-4' />
-        Grid
+        <LayoutGrid className='me-1.5 h-4 w-4' />
+        {t('grid')}
       </Button>
       <Button
         variant='ghost'
@@ -45,11 +51,11 @@ export function ViewToggle({ view, onViewChange }: ViewToggleProps) {
             ? 'bg-accent text-foreground hover:bg-accent'
             : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
         )}
-        aria-label='Table view'
+        aria-label={t('tableView')}
         aria-pressed={view === 'table'}
       >
-        <Table2 className='mr-1.5 h-4 w-4' />
-        Table
+        <Table2 className='me-1.5 h-4 w-4' />
+        {t('table')}
       </Button>
     </div>
   );

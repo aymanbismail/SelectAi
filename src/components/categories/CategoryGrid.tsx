@@ -4,6 +4,7 @@ import * as React from 'react';
 import { cn } from '@/lib/utils';
 import { CategoryCard } from './CategoryCard';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useLocale, useTranslations } from 'next-intl';
 import type { CategoryGridProps, Category } from './types';
 
 /**
@@ -55,6 +56,10 @@ export function CategoryGrid({
   isLoading = false,
   onCategoryClick
 }: CategoryGridProps) {
+  const locale = useLocale();
+  const t = useTranslations('categoryPage');
+  const isRTL = locale === 'ar';
+
   // Show skeletons when loading
   if (isLoading) {
     return (
@@ -66,6 +71,7 @@ export function CategoryGrid({
           'lg:grid-cols-3',
           'xl:grid-cols-4'
         )}
+        dir={isRTL ? 'rtl' : 'ltr'}
       >
         {Array.from({ length: 8 }).map((_, index) => (
           <CategoryCardSkeleton key={index} />
@@ -85,14 +91,14 @@ export function CategoryGrid({
           'bg-card/50 backdrop-blur-[6px]',
           'border-border border'
         )}
+        dir={isRTL ? 'rtl' : 'ltr'}
       >
         <div className='mb-4 text-6xl'>📂</div>
         <h3 className='text-foreground mb-2 text-lg font-semibold'>
-          No categories found
+          {t('noCategoriesFound')}
         </h3>
         <p className='text-muted-foreground max-w-md text-center text-sm'>
-          Try adjusting your search or filters to find what you&apos;re looking
-          for.
+          {t('noCategoriesFoundDesc')}
         </p>
       </div>
     );
@@ -108,12 +114,14 @@ export function CategoryGrid({
         'lg:grid-cols-3',
         'xl:grid-cols-4'
       )}
+      dir={isRTL ? 'rtl' : 'ltr'}
     >
-      {categories.map((category: Category) => (
+      {categories.map((category: Category, index: number) => (
         <CategoryCard
           key={category.id}
           category={category}
           onClick={() => onCategoryClick?.(category)}
+          index={index}
         />
       ))}
     </div>

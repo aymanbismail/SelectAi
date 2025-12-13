@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { useLocale, useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
@@ -17,6 +18,10 @@ export function Pagination({
   totalItems,
   onPageChange
 }: PaginationProps) {
+  const locale = useLocale();
+  const isRTL = locale === 'ar';
+  const t = useTranslations('pagination');
+
   const canGoPrevious = currentPage > 1;
   const canGoNext = currentPage < totalPages;
 
@@ -57,20 +62,28 @@ export function Pagination({
 
   const visiblePages = getVisiblePages();
 
+  // Navigation icons - swap icons for RTL so visual direction matches expectation
+  const FirstIcon = isRTL ? ChevronsRight : ChevronsLeft;
+  const LastIcon = isRTL ? ChevronsLeft : ChevronsRight;
+  const PrevIcon = isRTL ? ChevronRight : ChevronLeft;
+  const NextIcon = isRTL ? ChevronLeft : ChevronRight;
+
   return (
     <div
       className={cn(
         'flex flex-col items-center justify-between gap-4 sm:flex-row',
         'text-muted-foreground text-sm'
       )}
+      dir={isRTL ? 'rtl' : 'ltr'}
     >
       {/* Results count */}
       <div className='order-2 sm:order-1'>
         <span>
-          Showing page{' '}
-          <span className='text-foreground font-medium'>{currentPage}</span> of{' '}
+          {t('showingPage')}{' '}
+          <span className='text-foreground font-medium'>{currentPage}</span>{' '}
+          {t('of')}{' '}
           <span className='text-foreground font-medium'>{totalPages}</span> (
-          {totalItems.toLocaleString()} total items)
+          {totalItems.toLocaleString()} {t('totalItems')})
         </span>
       </div>
 
@@ -91,9 +104,9 @@ export function Pagination({
             'hover:border-foreground/15 hover:bg-secondary',
             'transition-all duration-200'
           )}
-          aria-label='Go to first page'
+          aria-label={t('goToFirst')}
         >
-          <ChevronsLeft className='h-4 w-4' />
+          <FirstIcon className='h-4 w-4' />
         </Button>
 
         {/* Previous page */}
@@ -111,9 +124,9 @@ export function Pagination({
             'hover:border-foreground/15 hover:bg-secondary',
             'transition-all duration-200'
           )}
-          aria-label='Go to previous page'
+          aria-label={t('goToPrevious')}
         >
-          <ChevronLeft className='h-4 w-4' />
+          <PrevIcon className='h-4 w-4' />
         </Button>
 
         {/* Page numbers */}
@@ -144,7 +157,7 @@ export function Pagination({
                         'transition-all duration-200'
                       )
                 )}
-                aria-label={`Go to page ${page}`}
+                aria-label={`${t('goToPage')} ${page}`}
                 aria-current={currentPage === page ? 'page' : undefined}
               >
                 {page}
@@ -175,9 +188,9 @@ export function Pagination({
             'hover:border-foreground/15 hover:bg-secondary',
             'transition-all duration-200'
           )}
-          aria-label='Go to next page'
+          aria-label={t('goToNext')}
         >
-          <ChevronRight className='h-4 w-4' />
+          <NextIcon className='h-4 w-4' />
         </Button>
 
         {/* Last page */}
@@ -195,9 +208,9 @@ export function Pagination({
             'hover:border-foreground/15 hover:bg-secondary',
             'transition-all duration-200'
           )}
-          aria-label='Go to last page'
+          aria-label={t('goToLast')}
         >
-          <ChevronsRight className='h-4 w-4' />
+          <LastIcon className='h-4 w-4' />
         </Button>
       </div>
     </div>

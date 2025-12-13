@@ -8,7 +8,9 @@ import { useEffect, useState } from 'react';
  * Updates on window resize events
  */
 export function useWindowHeight() {
-  const [height, setHeight] = useState<number>(0);
+  const [height, setHeight] = useState<number>(
+    typeof window !== 'undefined' ? window.innerHeight : 800
+  );
 
   useEffect(() => {
     const handleResize = () => {

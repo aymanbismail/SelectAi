@@ -71,9 +71,9 @@ export const company = {
   plan: 'Enterprise'
 };
 
-const tenants = [
-  { id: '1', name: 'AI Tools' },
-  { id: '2', name: 'AI Agents' }
+const getTenants = (tNav: (key: string) => string) => [
+  { id: '1', name: tNav('aiTools') },
+  { id: '2', name: tNav('aiAgents') }
 ];
 
 // Demo user for testing without authentication
@@ -86,27 +86,41 @@ const tenants = [
 export default function AppSidebar() {
   const pathname = usePathname();
   const { isOpen } = useMediaQuery();
-  const { state, isMobile } = useSidebar();
+  const { state, isMobile, setOpenMobile } = useSidebar();
   const windowHeight = useWindowHeight();
   // Use the new AuthContext instead of demo user
   const { user, logout, loading: authLoading } = useAuth();
   const t = useTranslations('auth');
+  const tSidebar = useTranslations('sidebar');
+  const tNav = useTranslations('navigation');
+  const tToolCat = useTranslations('toolCategories');
+  const tAgentCat = useTranslations('agentCategories');
   const router = useRouter();
   const locale = useLocale();
+
+  // Get translated tenants
+  const tenants = React.useMemo(() => getTenants(tNav), [tNav]);
 
   // Determine if we should use fixed header behavior (when height >= 700px)
   const isLargeViewport = windowHeight >= 700;
 
   // State for active tenant - always start with first tenant to avoid hydration mismatch
-  const [activeTenant, setActiveTenant] = React.useState(tenants[0]);
+  const [activeTenant, setActiveTenant] = React.useState(() => tenants[0]);
 
   // Track if we've loaded the initial tenant from localStorage
   const [hasLoadedInitialTenant, setHasLoadedInitialTenant] =
     React.useState(false);
 
-  // Loading states for sidebar navigation
-  const [isLoadingNavItems, setIsLoadingNavItems] = React.useState(true);
-  const [isLoadingCategories, setIsLoadingCategories] = React.useState(true);
+  // Loading states for sidebar navigation - start as false for initial page load
+  const [isLoadingNavItems, setIsLoadingNavItems] = React.useState(false);
+  const [isLoadingCategories, setIsLoadingCategories] = React.useState(false);
+
+  // Close mobile sidebar on path change
+  React.useEffect(() => {
+    if (isMobile) {
+      setOpenMobile(false);
+    }
+  }, [pathname, isMobile, setOpenMobile]);
 
   // Load saved tenant from localStorage after component mounts
   React.useEffect(() => {
@@ -120,7 +134,15 @@ export default function AppSidebar() {
       }
       setHasLoadedInitialTenant(true);
     }
-  }, []); // Run only once on mount
+  }, [tenants]); // Re-run when tenants change (e.g., language switch)
+
+  // Sync activeTenant name with translations when language changes
+  React.useEffect(() => {
+    const updatedTenant = tenants.find((t) => t.id === activeTenant.id);
+    if (updatedTenant && updatedTenant.name !== activeTenant.name) {
+      setActiveTenant(updatedTenant);
+    }
+  }, [tenants, activeTenant.id, activeTenant.name]);
 
   const handleSwitchTenant = (tenantId: string) => {
     // Find the tenant by ID and update the active tenant
@@ -143,17 +165,68 @@ export default function AppSidebar() {
   // Determine sidebar side based on locale
   const sidebarSide = locale === 'ar' ? 'right' : 'left';
 
+  // Build translation objects for navigation
+  const navTranslations = {
+    home: tNav('home'),
+    explore: tNav('explore'),
+    collections: tNav('collections'),
+    categories: tNav('categories'),
+    aiTools: tNav('aiTools'),
+    aiAgents: tNav('aiAgents')
+  };
+
+  // Build translation objects for tool categories
+  const toolCategoryTranslations: Record<string, string> = {
+    design: tToolCat('design'),
+    marketing: tToolCat('marketing'),
+    productivity: tToolCat('productivity'),
+    development: tToolCat('development'),
+    analytics: tToolCat('analytics'),
+    finance: tToolCat('finance'),
+    communication: tToolCat('communication'),
+    education: tToolCat('education'),
+    health: tToolCat('health'),
+    travel: tToolCat('travel'),
+    photography: tToolCat('photography'),
+    music: tToolCat('music'),
+    gaming: tToolCat('gaming'),
+    security: tToolCat('security'),
+    automation: tToolCat('automation'),
+    ecommerce: tToolCat('ecommerce'),
+    social: tToolCat('social'),
+    news: tToolCat('news'),
+    weather: tToolCat('weather'),
+    food: tToolCat('food')
+  };
+
+  // Build translation objects for agent categories
+  const agentCategoryTranslations: Record<string, string> = {
+    conversational: tAgentCat('conversational'),
+    automation: tAgentCat('automation'),
+    analysis: tAgentCat('analysis'),
+    content: tAgentCat('content'),
+    'customer-service': tAgentCat('customer-service'),
+    research: tAgentCat('research'),
+    scheduling: tAgentCat('scheduling'),
+    monitoring: tAgentCat('monitoring')
+  };
+
+  // Check if AI Tools is selected (id '1' is AI Tools, id '2' is AI Agents)
+  const isAiToolsSelected = activeTenant.id === '1';
+
   // Get navigation items and categories based on active tenant
-  const currentNavItems =
-    activeTenant.name === 'AI Tools'
-      ? getAiToolsNavItems(locale)
-      : getAiAgentsNavItems(locale);
-  const currentCategories =
-    activeTenant.name === 'AI Tools'
-      ? getAiToolsAdditionalCategories(locale)
-      : getAiAgentsAdditionalCategories(locale);
-  const categoryLabel =
-    activeTenant.name === 'AI Tools' ? 'Categories' : 'Agent Types';
+  const currentNavItems = isAiToolsSelected
+    ? getAiToolsNavItems(locale, navTranslations)
+    : getAiAgentsNavItems(locale, navTranslations);
+  const currentCategories = isAiToolsSelected
+    ? getAiToolsAdditionalCategories(locale, toolCategoryTranslations)
+    : getAiAgentsAdditionalCategories(locale, agentCategoryTranslations);
+  const categoryLabel = isAiToolsSelected
+    ? tSidebar('toolsCategories')
+    : tSidebar('agentsCategories');
+  const categoryUrl = isAiToolsSelected
+    ? `/${locale}/ai-tools/categories`
+    : `/${locale}/agents/categories`;
 
   // Simulate loading navigation items when tenant changes
   React.useEffect(() => {
@@ -193,7 +266,7 @@ export default function AppSidebar() {
 
   return (
     <Sidebar collapsible='icon' side={sidebarSide}>
-      <SidebarHeader className='border-border bg-background'>
+      <SidebarHeader className='border-border'>
         <OrgSwitcher
           tenants={tenants}
           defaultTenant={activeTenant}
@@ -210,12 +283,10 @@ export default function AppSidebar() {
           <div className='sidebar-fixed-header flex-shrink-0 bg-transparent'>
             {/* Fixed Navigation Items (Chat, AI Tools, Categories) */}
             {isLoadingNavItems ? (
-              <div className='p-2'>
-                <SidebarNavSkeleton navItemsCount={3} />
-              </div>
+              <SidebarNavSkeleton navItemsCount={3} />
             ) : (
               <SidebarGroup>
-                <SidebarGroupLabel>Overview</SidebarGroupLabel>
+                <SidebarGroupLabel>{tSidebar('overview')}</SidebarGroupLabel>
                 <SidebarMenu>
                   {currentNavItems.map((item: NavItem) => {
                     const Icon = item.icon ? Icons[item.icon] : Icons.logo;
@@ -331,7 +402,23 @@ export default function AppSidebar() {
                 <SidebarCategoriesSkeleton categoriesCount={8} />
               ) : (
                 <SidebarGroup className='min-h-0 flex-1'>
-                  <SidebarGroupLabel>{categoryLabel}</SidebarGroupLabel>
+                  <SidebarGroupLabel>
+                    <Link
+                      href={categoryUrl}
+                      className='hover:text-sidebar-foreground cursor-pointer transition-colors'
+                    >
+                      <span
+                        className={cn(
+                          'inline-block transition-all duration-200',
+                          pathname === categoryUrl
+                            ? 'border-sidebar-accent text-sidebar-foreground bg-sidebar-accent/10 rounded-full border px-2.5 py-0.5'
+                            : ''
+                        )}
+                      >
+                        {categoryLabel}
+                      </span>
+                    </Link>
+                  </SidebarGroupLabel>
                   <div className='relative min-h-0 flex-1'>
                     <div className='categories-scrollbar absolute inset-0 overflow-y-auto pr-2 pb-2'>
                       <SidebarMenu className='space-y-1'>
@@ -371,12 +458,10 @@ export default function AppSidebar() {
             <div className='categories-scrollbar sidebar-scrollable-container h-full overflow-y-auto pr-2 pb-2'>
               {/* Navigation Items */}
               {isLoadingNavItems ? (
-                <div className='p-2'>
-                  <SidebarNavSkeleton navItemsCount={3} />
-                </div>
+                <SidebarNavSkeleton navItemsCount={3} />
               ) : (
                 <SidebarGroup className='flex-shrink-0'>
-                  <SidebarGroupLabel>Overview</SidebarGroupLabel>
+                  <SidebarGroupLabel>{tSidebar('overview')}</SidebarGroupLabel>
                   <SidebarMenu>
                     {currentNavItems.map((item: NavItem) => {
                       const Icon = item.icon ? Icons[item.icon] : Icons.logo;
@@ -487,12 +572,26 @@ export default function AppSidebar() {
               {/* Categories Container */}
               {(isMobile || state === 'expanded') &&
                 (isLoadingCategories ? (
-                  <div className='p-2'>
-                    <SidebarCategoriesSkeleton categoriesCount={8} />
-                  </div>
+                  <SidebarCategoriesSkeleton categoriesCount={8} />
                 ) : (
                   <SidebarGroup>
-                    <SidebarGroupLabel>{categoryLabel}</SidebarGroupLabel>
+                    <SidebarGroupLabel>
+                      <Link
+                        href={categoryUrl}
+                        className='hover:text-sidebar-foreground cursor-pointer transition-colors'
+                      >
+                        <span
+                          className={cn(
+                            'inline-block transition-all duration-200',
+                            pathname === categoryUrl
+                              ? 'border-sidebar-accent text-sidebar-foreground bg-sidebar-accent/10 rounded-full border px-2.5 py-0.5'
+                              : ''
+                          )}
+                        >
+                          {categoryLabel}
+                        </span>
+                      </Link>
+                    </SidebarGroupLabel>
                     <SidebarMenu className='space-y-1'>
                       {currentCategories.map((category: NavItem) => {
                         const CategoryIcon = category.icon
@@ -567,16 +666,31 @@ export default function AppSidebar() {
                     onClick={() => router.push(`/${locale}/profile`)}
                     className='hover:bg-sidebar-accent hover:text-sidebar-accent-foreground cursor-pointer transition-colors duration-200'
                   >
-                    <IconUserCircle className='mr-2 h-4 w-4' />
-                    Profile
+                    <IconUserCircle
+                      className={cn(
+                        'h-4 w-4',
+                        locale === 'ar' ? 'ml-2' : 'mr-2'
+                      )}
+                    />
+                    {tSidebar('account')}
                   </DropdownMenuItem>
                   <DropdownMenuItem className='hover:bg-sidebar-accent hover:text-sidebar-accent-foreground cursor-pointer transition-colors duration-200'>
-                    <IconCreditCard className='mr-2 h-4 w-4' />
-                    Billing
+                    <IconCreditCard
+                      className={cn(
+                        'h-4 w-4',
+                        locale === 'ar' ? 'ml-2' : 'mr-2'
+                      )}
+                    />
+                    {tSidebar('billing')}
                   </DropdownMenuItem>
                   <DropdownMenuItem className='hover:bg-sidebar-accent hover:text-sidebar-accent-foreground cursor-pointer transition-colors duration-200'>
-                    <IconBell className='mr-2 h-4 w-4' />
-                    Notifications
+                    <IconBell
+                      className={cn(
+                        'h-4 w-4',
+                        locale === 'ar' ? 'ml-2' : 'mr-2'
+                      )}
+                    />
+                    {tSidebar('notifications')}
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator className='bg-sidebar-border' />
@@ -591,8 +705,10 @@ export default function AppSidebar() {
                   disabled={authLoading}
                   className='hover:bg-destructive hover:text-destructive-foreground cursor-pointer transition-colors duration-200'
                 >
-                  <IconLogout className='mr-2 h-4 w-4' />
-                  {authLoading ? 'Signing out...' : t('logout')}
+                  <IconLogout
+                    className={cn('h-4 w-4', locale === 'ar' ? 'ml-2' : 'mr-2')}
+                  />
+                  {t('logout')}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

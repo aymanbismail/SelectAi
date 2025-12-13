@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { useLocale, useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import { SearchInput } from './SearchInput';
 import { CategoryFilter } from './CategoryFilter';
@@ -26,6 +27,10 @@ export function Filters({
   categories,
   showCategoryFilter = true
 }: FiltersProps & { showCategoryFilter?: boolean }) {
+  const locale = useLocale();
+  const isRTL = locale === 'ar';
+  const t = useTranslations('filters');
+
   const hasActiveFilters =
     filters.search !== '' ||
     filters.category !== 'all' ||
@@ -50,13 +55,18 @@ export function Filters({
         'bg-card/50',
         'border-border border'
       )}
+      dir={isRTL ? 'rtl' : 'ltr'}
     >
       {/* Top row: Search + Featured Switch */}
-      <div className='flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center'>
+      <div
+        className={cn(
+          'flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center'
+        )}
+      >
         <SearchInput
           value={filters.search}
           onChange={(value) => updateFilter('search', value)}
-          placeholder='Search by name, category, or tags...'
+          placeholder={t('search')}
         />
         <FeaturedSwitch
           checked={filters.featured_only}
@@ -65,7 +75,7 @@ export function Filters({
       </div>
 
       {/* Bottom row: Category, Pricing, Sort, Reset */}
-      <div className='flex flex-wrap items-center gap-3'>
+      <div className={cn('flex flex-wrap items-center gap-3')}>
         {showCategoryFilter && (
           <CategoryFilter
             value={filters.category}
@@ -100,8 +110,8 @@ export function Filters({
               'transition-colors duration-200'
             )}
           >
-            <RotateCcw className='mr-1.5 h-4 w-4' />
-            Reset
+            <RotateCcw className='me-1.5 h-4 w-4' />
+            {t('reset')}
           </Button>
         )}
       </div>

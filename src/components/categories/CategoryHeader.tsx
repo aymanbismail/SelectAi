@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { useLocale, useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { IconPlus } from '@tabler/icons-react';
@@ -23,20 +24,26 @@ export function CategoryHeader({
   title,
   description
 }: CategoryHeaderProps) {
+  const locale = useLocale();
+  const isRTL = locale === 'ar';
+  const t = useTranslations('categoryPage');
   const isTools = type === 'tool';
 
-  const defaultTitle = isTools ? 'Tool Categories' : 'Agent Categories';
+  const defaultTitle = isTools ? t('toolCategories') : t('agentCategories');
   const defaultDescription = isTools
-    ? 'Explore our wide range of AI tool categories'
-    : 'Explore our wide range of AI agent categories';
+    ? t('toolCategoriesDesc')
+    : t('agentCategoriesDesc');
 
   const Icon = isTools ? Sparkles : Bot;
   const requestUrl = isTools
-    ? '/ai-tools/categories/new'
-    : '/agents/categories/new';
+    ? `/${locale}/ai-tools/categories/new`
+    : `/${locale}/agents/categories/new`;
 
   return (
-    <div className='flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center'>
+    <div
+      className='flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center'
+      dir={isRTL ? 'rtl' : 'ltr'}
+    >
       <div className='flex items-center gap-3'>
         <div
           className={cn(
@@ -66,8 +73,8 @@ export function CategoryHeader({
             'focus-visible:ring-ring focus-visible:ring-offset-background focus-visible:ring-2 focus-visible:ring-offset-2'
           )}
         >
-          <IconPlus className='mr-2 h-4 w-4' />
-          Request Category
+          <IconPlus className='me-2 h-4 w-4' />
+          {t('requestCategory')}
         </Button>
       </Link>
     </div>

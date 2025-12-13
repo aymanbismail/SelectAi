@@ -2,6 +2,7 @@
 
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
+import { useLocale, useTranslations } from 'next-intl';
 import {
   CheckCircle2,
   Star,
@@ -40,34 +41,38 @@ interface PricingBadgeProps {
   className?: string;
 }
 
-const pricingConfig = {
-  free: {
-    label: 'Free',
-    icon: Gift,
-    className:
-      'bg-[rgba(52,211,153,0.15)] text-[#34D399] border-[rgba(52,211,153,0.20)] hover:bg-[rgba(52,211,153,0.20)]'
-  },
-  freemium: {
-    label: 'Freemium',
-    icon: Zap,
-    className:
-      'bg-[rgba(99,102,241,0.15)] text-[#818CF8] border-[rgba(99,102,241,0.20)] hover:bg-[rgba(99,102,241,0.20)]'
-  },
-  paid: {
-    label: 'Paid',
-    icon: Crown,
-    className:
-      'bg-[rgba(239,68,68,0.15)] text-[#EF4444] border-[rgba(239,68,68,0.20)] hover:bg-[rgba(239,68,68,0.20)]'
-  },
-  enterprise: {
-    label: 'Enterprise',
-    icon: Building2,
-    className:
-      'bg-[rgba(168,85,247,0.15)] text-[#A855F7] border-[rgba(168,85,247,0.20)] hover:bg-[rgba(168,85,247,0.20)]'
-  }
-};
-
 export function PricingBadge({ pricingType, className }: PricingBadgeProps) {
+  const t = useTranslations('badges');
+  const locale = useLocale();
+  const isRTL = locale === 'ar';
+
+  const pricingConfig = {
+    free: {
+      label: t('free'),
+      icon: Gift,
+      className:
+        'bg-[rgba(52,211,153,0.15)] text-[#34D399] border-[rgba(52,211,153,0.20)] hover:bg-[rgba(52,211,153,0.20)]'
+    },
+    freemium: {
+      label: t('freemium'),
+      icon: Zap,
+      className:
+        'bg-[rgba(99,102,241,0.15)] text-[#818CF8] border-[rgba(99,102,241,0.20)] hover:bg-[rgba(99,102,241,0.20)]'
+    },
+    paid: {
+      label: t('paid'),
+      icon: Crown,
+      className:
+        'bg-[rgba(239,68,68,0.15)] text-[#EF4444] border-[rgba(239,68,68,0.20)] hover:bg-[rgba(239,68,68,0.20)]'
+    },
+    enterprise: {
+      label: t('enterprise'),
+      icon: Building2,
+      className:
+        'bg-[rgba(168,85,247,0.15)] text-[#A855F7] border-[rgba(168,85,247,0.20)] hover:bg-[rgba(168,85,247,0.20)]'
+    }
+  };
+
   const config = pricingConfig[pricingType];
   const Icon = config.icon;
 
@@ -80,6 +85,7 @@ export function PricingBadge({ pricingType, className }: PricingBadgeProps) {
         config.className,
         className
       )}
+      dir={isRTL ? 'rtl' : 'ltr'}
     >
       <Icon className='h-3 w-3' />
       {config.label}
@@ -92,6 +98,10 @@ interface VerifiedBadgeProps {
 }
 
 export function VerifiedBadge({ className }: VerifiedBadgeProps) {
+  const t = useTranslations('badges');
+  const locale = useLocale();
+  const isRTL = locale === 'ar';
+
   return (
     <Badge
       variant='outline'
@@ -102,9 +112,10 @@ export function VerifiedBadge({ className }: VerifiedBadgeProps) {
         'transition-colors duration-200',
         className
       )}
+      dir={isRTL ? 'rtl' : 'ltr'}
     >
       <CheckCircle2 className='h-3 w-3' />
-      Verified
+      {t('verified')}
     </Badge>
   );
 }
@@ -114,6 +125,10 @@ interface FeaturedBadgeProps {
 }
 
 export function FeaturedBadge({ className }: FeaturedBadgeProps) {
+  const t = useTranslations('badges');
+  const locale = useLocale();
+  const isRTL = locale === 'ar';
+
   return (
     <Badge
       variant='outline'
@@ -124,9 +139,10 @@ export function FeaturedBadge({ className }: FeaturedBadgeProps) {
         'transition-all duration-200',
         className
       )}
+      dir={isRTL ? 'rtl' : 'ltr'}
     >
       <Sparkles className='h-3 w-3' />
-      Featured
+      {t('featured')}
     </Badge>
   );
 }
@@ -137,6 +153,9 @@ interface RatingBadgeProps {
 }
 
 export function RatingBadge({ rating, className }: RatingBadgeProps) {
+  const locale = useLocale();
+  const isRTL = locale === 'ar';
+
   return (
     <div
       className={cn(
@@ -144,6 +163,7 @@ export function RatingBadge({ rating, className }: RatingBadgeProps) {
         'text-muted-foreground',
         className
       )}
+      dir={isRTL ? 'rtl' : 'ltr'}
     >
       <Star className='fill-muted-foreground text-muted-foreground h-3.5 w-3.5' />
       <span>{rating.toFixed(1)}</span>
@@ -157,6 +177,8 @@ interface UsageCountBadgeProps {
 }
 
 export function UsageCountBadge({ count, className }: UsageCountBadgeProps) {
+  const t = useTranslations('badges');
+
   const formatCount = (num: number): string => {
     if (num >= 1000000) {
       return `${(num / 1000000).toFixed(1)}M`;
@@ -169,7 +191,7 @@ export function UsageCountBadge({ count, className }: UsageCountBadgeProps) {
 
   return (
     <span className={cn('text-muted-foreground text-xs', className)}>
-      {formatCount(count)} uses
+      {formatCount(count)} {t('uses')}
     </span>
   );
 }

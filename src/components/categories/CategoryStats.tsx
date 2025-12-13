@@ -9,6 +9,7 @@ import {
   CardTitle
 } from '@/components/ui/card';
 import { Layers, Package, Bot, Headphones } from 'lucide-react';
+import { useLocale, useTranslations } from 'next-intl';
 import type { CategoryStatsProps } from './types';
 
 /**
@@ -20,11 +21,19 @@ export function CategoryStats({
   totalItems,
   type
 }: CategoryStatsProps) {
-  const itemLabel = type === 'tool' ? 'Tools' : 'Agents';
+  const locale = useLocale();
+  const t = useTranslations('categoryPage');
+  const isRTL = locale === 'ar';
+
+  const itemLabel =
+    type === 'tool' ? t('availableTools') : t('availableAgents');
   const ItemIcon = type === 'tool' ? Package : Bot;
 
   return (
-    <div className='grid grid-cols-1 gap-6 md:grid-cols-3'>
+    <div
+      className='grid grid-cols-1 gap-6 md:grid-cols-3'
+      dir={isRTL ? 'rtl' : 'ltr'}
+    >
       {/* Total Categories */}
       <Card
         className={cn(
@@ -45,7 +54,7 @@ export function CategoryStats({
             {totalCategories}
           </CardTitle>
           <CardDescription className='text-muted-foreground'>
-            Total Categories
+            {t('totalCategories')}
           </CardDescription>
         </CardHeader>
       </Card>
@@ -70,7 +79,7 @@ export function CategoryStats({
             {totalItems}+
           </CardTitle>
           <CardDescription className='text-muted-foreground'>
-            Available {itemLabel}
+            {itemLabel}
           </CardDescription>
         </CardHeader>
       </Card>
@@ -95,7 +104,7 @@ export function CategoryStats({
             24/7
           </CardTitle>
           <CardDescription className='text-muted-foreground'>
-            Support Available
+            {t('supportAvailable')}
           </CardDescription>
         </CardHeader>
       </Card>

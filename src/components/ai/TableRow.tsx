@@ -13,9 +13,19 @@ import {
   UsageCountBadge
 } from './Badges';
 import { ExternalLink, Sparkles, CheckCircle2 } from 'lucide-react';
+import { useLocale, useTranslations } from 'next-intl';
 import type { TableRowProps } from './types';
+import { motion, useReducedMotion } from 'motion/react';
 
-export function TableRow({ item, onClick }: TableRowProps) {
+export function TableRow({
+  item,
+  onClick,
+  index = 0
+}: TableRowProps & { index?: number }) {
+  const locale = useLocale();
+  const t = useTranslations('tableView');
+  const isRTL = locale === 'ar';
+
   const {
     name,
     short_description,
@@ -29,13 +39,28 @@ export function TableRow({ item, onClick }: TableRowProps) {
     is_verified
   } = item;
 
+  // Staggered animation: 0.05s delay per row
+  const animationDelay = index * 0.05;
+  const shouldReduceMotion = useReducedMotion();
+
+  const RowComponent = shouldReduceMotion ? 'tr' : motion.tr;
+  const animationProps = shouldReduceMotion
+    ? {}
+    : {
+        initial: { opacity: 0, y: -8 },
+        whileInView: { opacity: 1, y: 0 },
+        viewport: { once: true },
+        transition: { delay: animationDelay, duration: 0.5 }
+      };
+
   return (
-    <tr
+    <RowComponent
       className={cn(
         'group border-border border-b last:border-b-0',
         'transition-colors duration-200',
         'hover:bg-secondary'
       )}
+      {...animationProps}
     >
       {/* Tool/Agent Info Column */}
       <td className='px-4 py-4'>
@@ -142,16 +167,20 @@ export function TableRow({ item, onClick }: TableRowProps) {
             'whitespace-nowrap'
           )}
         >
-          <span className='hidden sm:inline'>View</span>
-          <ExternalLink className='h-3.5 w-3.5 sm:ml-1.5' />
+          <span className='hidden sm:inline'>{t('view')}</span>
+          <ExternalLink className='h-3.5 w-3.5 sm:ms-1.5' />
         </Button>
       </td>
-    </tr>
+    </RowComponent>
   );
 }
 
 // Mobile-optimized card row for responsive design
 export function TableRowMobile({ item, onClick }: TableRowProps) {
+  const locale = useLocale();
+  const t = useTranslations('tableView');
+  const isRTL = locale === 'ar';
+
   const {
     name,
     short_description,
@@ -175,6 +204,7 @@ export function TableRowMobile({ item, onClick }: TableRowProps) {
         'hover:border-foreground/10',
         'hover:bg-card'
       )}
+      dir={isRTL ? 'rtl' : 'ltr'}
     >
       <div className='flex items-start gap-3'>
         {/* Logo */}
@@ -239,8 +269,8 @@ export function TableRowMobile({ item, onClick }: TableRowProps) {
                 'transition-all duration-200'
               )}
             >
-              View
-              <ExternalLink className='ml-1.5 h-3.5 w-3.5' />
+              {t('view')}
+              <ExternalLink className='ms-1.5 h-3.5 w-3.5' />
             </Button>
           </div>
         </div>

@@ -5,9 +5,15 @@ import { cn } from '@/lib/utils';
 import { TableRow, TableRowMobile } from './TableRow';
 import { Skeleton } from '@/components/ui/skeleton';
 import { PackageOpen } from 'lucide-react';
+import { useLocale, useTranslations } from 'next-intl';
 import type { TableViewProps } from './types';
+import { AnimatedContainer } from '@/components/animation/animated-container';
 
 export function TableView({ items, onItemClick, isLoading }: TableViewProps) {
+  const locale = useLocale();
+  const t = useTranslations('tableView');
+  const tFilters = useTranslations('filters');
+  const isRTL = locale === 'ar';
   const [isMobile, setIsMobile] = React.useState(false);
 
   React.useEffect(() => {
@@ -20,7 +26,7 @@ export function TableView({ items, onItemClick, isLoading }: TableViewProps) {
   }, []);
 
   if (isLoading) {
-    return <TableSkeleton isMobile={isMobile} />;
+    return <TableSkeleton isMobile={isMobile} isRTL={isRTL} />;
   }
 
   if (items.length === 0) {
@@ -30,13 +36,11 @@ export function TableView({ items, onItemClick, isLoading }: TableViewProps) {
   // Mobile view: stacked cards
   if (isMobile) {
     return (
-      <div className='space-y-3'>
-        {items.map((item) => (
-          <TableRowMobile
-            key={item.id}
-            item={item}
-            onClick={() => onItemClick?.(item)}
-          />
+      <div className='space-y-3' dir={isRTL ? 'rtl' : 'ltr'}>
+        {items.map((item, index) => (
+          <AnimatedContainer key={item.id} delay={index * 0.05}>
+            <TableRowMobile item={item} onClick={() => onItemClick?.(item)} />
+          </AnimatedContainer>
         ))}
       </div>
     );
@@ -44,79 +48,90 @@ export function TableView({ items, onItemClick, isLoading }: TableViewProps) {
 
   // Desktop view: full table
   return (
-    <div
-      className={cn(
-        'overflow-hidden rounded-xl',
-        'border-border border',
-        'bg-card'
-      )}
-    >
-      <div className='overflow-x-auto'>
-        <table className='w-full' role='table'>
-          <thead>
-            <tr
-              className={cn(
-                'border-border bg-card border-b',
-                'text-muted-foreground text-left text-sm font-medium'
-              )}
-            >
-              <th className='min-w-[280px] px-4 py-3' scope='col'>
-                <div className='flex items-center gap-1.5'>Name</div>
-              </th>
-              <th
-                className='hidden min-w-[120px] px-4 py-3 md:table-cell'
-                scope='col'
+    <AnimatedContainer delay={0.1}>
+      <div
+        className={cn(
+          'overflow-hidden rounded-xl',
+          'border-border border',
+          'bg-card'
+        )}
+        dir={isRTL ? 'rtl' : 'ltr'}
+      >
+        <div className='overflow-x-auto'>
+          <table className='w-full' role='table'>
+            <thead>
+              <tr
+                className={cn(
+                  'border-border bg-card border-b',
+                  'text-muted-foreground text-sm font-medium',
+                  isRTL ? 'text-right' : 'text-left'
+                )}
               >
-                Category
-              </th>
-              <th
-                className='hidden min-w-[100px] px-4 py-3 lg:table-cell'
-                scope='col'
-              >
-                Pricing
-              </th>
-              <th
-                className='hidden min-w-[140px] px-4 py-3 sm:table-cell'
-                scope='col'
-              >
-                Status
-              </th>
-              <th
-                className='hidden min-w-[80px] px-4 py-3 xl:table-cell'
-                scope='col'
-              >
-                Rating
-              </th>
-              <th
-                className='hidden min-w-[100px] px-4 py-3 xl:table-cell'
-                scope='col'
-              >
-                Usage
-              </th>
-              <th className='min-w-[80px] px-4 py-3' scope='col'>
-                <span className='sr-only'>Actions</span>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {items.map((item) => (
-              <TableRow
-                key={item.id}
-                item={item}
-                onClick={() => onItemClick?.(item)}
-              />
-            ))}
-          </tbody>
-        </table>
+                <th className='min-w-[280px] px-4 py-3' scope='col'>
+                  <div className='flex items-center gap-1.5'>{t('name')}</div>
+                </th>
+                <th
+                  className='hidden min-w-[120px] px-4 py-3 md:table-cell'
+                  scope='col'
+                >
+                  {t('category')}
+                </th>
+                <th
+                  className='hidden min-w-[100px] px-4 py-3 lg:table-cell'
+                  scope='col'
+                >
+                  {t('pricing')}
+                </th>
+                <th
+                  className='hidden min-w-[140px] px-4 py-3 sm:table-cell'
+                  scope='col'
+                >
+                  {t('status')}
+                </th>
+                <th
+                  className='hidden min-w-[80px] px-4 py-3 xl:table-cell'
+                  scope='col'
+                >
+                  {t('rating')}
+                </th>
+                <th
+                  className='hidden min-w-[100px] px-4 py-3 xl:table-cell'
+                  scope='col'
+                >
+                  {t('usage')}
+                </th>
+                <th className='min-w-[80px] px-4 py-3' scope='col'>
+                  <span className='sr-only'>{t('actions')}</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {items.map((item, index) => (
+                <TableRow
+                  key={item.id}
+                  item={item}
+                  onClick={() => onItemClick?.(item)}
+                  index={index}
+                />
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
+    </AnimatedContainer>
   );
 }
 
-function TableSkeleton({ isMobile }: { isMobile: boolean }) {
+function TableSkeleton({
+  isMobile,
+  isRTL
+}: {
+  isMobile: boolean;
+  isRTL: boolean;
+}) {
   if (isMobile) {
     return (
-      <div className='space-y-3'>
+      <div className='space-y-3' dir={isRTL ? 'rtl' : 'ltr'}>
         {Array.from({ length: 5 }).map((_, i) => (
           <div
             key={i}
@@ -156,24 +171,47 @@ function TableSkeleton({ isMobile }: { isMobile: boolean }) {
         'border-border/40 border',
         'bg-card/30'
       )}
+      dir={isRTL ? 'rtl' : 'ltr'}
     >
       <div className='overflow-x-auto'>
         <table className='w-full'>
           <thead>
             <tr className='bg-muted/30 border-border/40 border-b'>
-              <th className='px-4 py-3 text-left'>
+              <th
+                className={cn('px-4 py-3', isRTL ? 'text-right' : 'text-left')}
+              >
                 <Skeleton className='h-4 w-16' />
               </th>
-              <th className='hidden px-4 py-3 text-left md:table-cell'>
+              <th
+                className={cn(
+                  'hidden px-4 py-3 md:table-cell',
+                  isRTL ? 'text-right' : 'text-left'
+                )}
+              >
                 <Skeleton className='h-4 w-16' />
               </th>
-              <th className='hidden px-4 py-3 text-left lg:table-cell'>
+              <th
+                className={cn(
+                  'hidden px-4 py-3 lg:table-cell',
+                  isRTL ? 'text-right' : 'text-left'
+                )}
+              >
                 <Skeleton className='h-4 w-14' />
               </th>
-              <th className='hidden px-4 py-3 text-left sm:table-cell'>
+              <th
+                className={cn(
+                  'hidden px-4 py-3 sm:table-cell',
+                  isRTL ? 'text-right' : 'text-left'
+                )}
+              >
                 <Skeleton className='h-4 w-14' />
               </th>
-              <th className='hidden px-4 py-3 text-left xl:table-cell'>
+              <th
+                className={cn(
+                  'hidden px-4 py-3 xl:table-cell',
+                  isRTL ? 'text-right' : 'text-left'
+                )}
+              >
                 <Skeleton className='h-4 w-12' />
               </th>
               <th className='hidden px-4 py-3 text-left xl:table-cell'>
@@ -225,6 +263,10 @@ function TableSkeleton({ isMobile }: { isMobile: boolean }) {
 }
 
 function EmptyState() {
+  const t = useTranslations('filters');
+  const locale = useLocale();
+  const isRTL = locale === 'ar';
+
   return (
     <div
       className={cn(
@@ -233,6 +275,7 @@ function EmptyState() {
         'border-border rounded-xl border',
         'bg-card/50'
       )}
+      dir={isRTL ? 'rtl' : 'ltr'}
     >
       <div
         className={cn(
@@ -244,11 +287,10 @@ function EmptyState() {
         <PackageOpen className='text-foreground h-10 w-10' />
       </div>
       <h3 className='text-foreground mb-2 text-xl font-semibold'>
-        No results found
+        {t('noResultsFound')}
       </h3>
       <p className='text-muted-foreground max-w-md'>
-        Try adjusting your filters or search terms to find what you&apos;re
-        looking for.
+        {t('noResultsFoundDesc')}
       </p>
     </div>
   );
