@@ -2,6 +2,8 @@ import Providers from '@/components/layout/providers';
 import { Toaster } from '@/components/ui/sonner';
 import ThemeProvider from '@/components/layout/ThemeToggle/theme-provider';
 import { InitialLoader } from '@/components/initial-loader';
+import { AppReadyProvider } from '@/contexts/app-ready-context';
+import { GatedApp } from '@/components/layout/gated-app';
 import { cn } from '@/lib/utils';
 import type { Metadata, Viewport } from 'next';
 import NextTopLoader from 'nextjs-toploader';
@@ -59,24 +61,30 @@ export default async function RootLayout({
           'bg-background overflow-hidden overscroll-none font-sans antialiased'
         )}
       >
-        <NextTopLoader showSpinner={false} />
-        <NuqsAdapter>
-          <NextIntlClientProvider>
-            <ThemeProvider
-              attribute='class'
-              defaultTheme='system'
-              enableSystem
-              disableTransitionOnChange
-              enableColorScheme
-            >
-              <InitialLoader />
-              <Providers>
-                <Toaster />
-                {children}
-              </Providers>
-            </ThemeProvider>
-          </NextIntlClientProvider>
-        </NuqsAdapter>
+        <AppReadyProvider>
+          {/* Loader renders first and blocks all UI */}
+          <InitialLoader />
+          {/* Gate the rest of the app until ready */}
+          <GatedApp>
+            <NextTopLoader showSpinner={false} />
+            <NuqsAdapter>
+              <NextIntlClientProvider>
+                <ThemeProvider
+                  attribute='class'
+                  defaultTheme='system'
+                  enableSystem
+                  disableTransitionOnChange
+                  enableColorScheme
+                >
+                  <Providers>
+                    <Toaster />
+                    {children}
+                  </Providers>
+                </ThemeProvider>
+              </NextIntlClientProvider>
+            </NuqsAdapter>
+          </GatedApp>
+        </AppReadyProvider>
       </body>
     </html>
   );

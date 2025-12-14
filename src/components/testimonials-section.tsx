@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
@@ -11,6 +11,7 @@ interface Testimonial {
   id: number;
   text: string;
   avatar: string;
+  initials: string;
   username: string;
   role: string;
 }
@@ -29,6 +30,60 @@ const ROLES = [
   'Full Stack Developer',
   'Growth Hacker'
 ];
+
+// Avatar colors for fallback
+const AVATAR_COLORS = [
+  'bg-blue-500',
+  'bg-emerald-500',
+  'bg-violet-500',
+  'bg-amber-500',
+  'bg-rose-500',
+  'bg-cyan-500',
+  'bg-indigo-500',
+  'bg-teal-500',
+  'bg-orange-500',
+  'bg-pink-500',
+  'bg-sky-500',
+  'bg-lime-500'
+];
+
+function Avatar({
+  testimonial,
+  uniqueKey
+}: {
+  testimonial: Testimonial;
+  uniqueKey: string;
+}) {
+  const [imgError, setImgError] = useState(false);
+
+  if (imgError) {
+    return (
+      <div
+        className={cn(
+          'flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full text-sm font-semibold text-white',
+          AVATAR_COLORS[(testimonial.id - 1) % AVATAR_COLORS.length]
+        )}
+      >
+        {testimonial.initials}
+      </div>
+    );
+  }
+
+  return (
+    <div className='border-border/50 relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-full border'>
+      <Image
+        key={uniqueKey}
+        src={testimonial.avatar}
+        alt={testimonial.username}
+        fill
+        sizes='40px'
+        className='object-cover'
+        onError={() => setImgError(true)}
+        unoptimized
+      />
+    </div>
+  );
+}
 
 function TestimonialsColumn({
   testimonials,
@@ -79,15 +134,10 @@ function TestimonialsColumn({
                 className='flex items-center gap-3'
                 style={{ direction: isRTL ? 'rtl' : 'ltr' }}
               >
-                <div className='border-border/50 relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-full border'>
-                  <Image
-                    src={testimonial.avatar}
-                    alt={testimonial.username}
-                    fill
-                    sizes='40px'
-                    className='object-cover'
-                  />
-                </div>
+                <Avatar
+                  testimonial={testimonial}
+                  uniqueKey={`${testimonial.id}-${index}`}
+                />
                 <div className={isRTL ? 'text-right' : 'text-left'}>
                   <p className='text-foreground text-sm font-semibold'>
                     {testimonial.username}
@@ -105,6 +155,15 @@ function TestimonialsColumn({
   );
 }
 
+function getInitials(name: string): string {
+  return name
+    .split(' ')
+    .map((part) => part[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
+}
+
 export function TestimonialsSection() {
   const t = useTranslations('testimonials');
   const locale = useLocale();
@@ -114,12 +173,14 @@ export function TestimonialsSection() {
     return Array.from({ length: 12 }, (_, i) => {
       const gender = i % 2 === 0 ? 'women' : 'men';
       const photoIndex = Math.floor(i / 2) + 1;
+      const username = t(`testimonial${i + 1}.username`);
 
       return {
         id: i + 1,
         text: t(`testimonial${i + 1}.text`),
         avatar: `https://randomuser.me/api/portraits/${gender}/${photoIndex}.jpg`,
-        username: t(`testimonial${i + 1}.username`),
+        initials: getInitials(username),
+        username,
         role: ROLES[i]
       };
     });
