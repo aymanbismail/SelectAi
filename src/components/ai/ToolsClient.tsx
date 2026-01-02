@@ -208,7 +208,7 @@ function ToolsClientInner() {
               <p className='text-muted-foreground'>{t('description')}</p>
             </div>
           </div>
-          <Link href={`/${locale}/ai-tools/new`}>
+          <Link href={`/${locale}/tools/new`}>
             <Button
               className={cn(
                 'bg-primary hover:bg-primary/90',

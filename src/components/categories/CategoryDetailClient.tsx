@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { Suspense } from 'react';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import PageContainer from '@/components/layout/page-container';
 import { Button } from '@/components/ui/button';
@@ -24,7 +24,7 @@ import {
 } from '@/mock/data/categories';
 import { mockTools } from '@/mock/data/tools';
 import { mockAgents } from '@/mock/data/agents';
-import { ArrowLeft, Sparkles, Bot } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Sparkles, Bot } from 'lucide-react';
 import Link from 'next/link';
 
 interface CategoryDetailClientProps {
@@ -107,10 +107,11 @@ function CategoryDetailClientInner({ slug, type }: CategoryDetailClientProps) {
   // Hooks must be called before any conditional returns
   const locale = useLocale();
   const isRTL = locale === 'ar';
+  const t = useTranslations('categoryDetailPage');
 
   // Get category info
   const category = getCategoryBySlug(slug, type);
-  const categoryName = getCategoryNameFromSlug(slug);
+  const categoryName = getCategoryNameFromSlug(slug, type);
 
   // Get items for this category
   const allItems: AIItemBase[] = React.useMemo(() => {
@@ -192,27 +193,27 @@ function CategoryDetailClientInner({ slug, type }: CategoryDetailClientProps) {
 
   // Handle category not found
   if (!category) {
+    const BackArrow = isRTL ? ArrowRight : ArrowLeft;
     return (
       <PageContainer scrollable>
-        <div className='flex flex-1 flex-col items-center justify-center space-y-4 py-16'>
+        <div
+          className='flex flex-1 flex-col items-center justify-center space-y-4 py-16'
+          dir={isRTL ? 'rtl' : 'ltr'}
+        >
           <div className='text-6xl'>🔍</div>
           <h2 className='text-foreground text-xl font-semibold'>
-            Category not found
+            {t('notFound')}
           </h2>
-          <p className='text-muted-foreground'>
-            The category you&apos;re looking for doesn&apos;t exist.
-          </p>
+          <p className='text-muted-foreground'>{t('notFoundDescription')}</p>
           <Link
-            href={
-              type === 'tool' ? '/ai-tools/categories' : '/agents/categories'
-            }
+            href={`/${locale}/${type === 'tool' ? 'tools' : 'agents'}/categories`}
           >
             <Button
               variant='outline'
               className='border-border text-muted-foreground hover:border-border/80 hover:bg-accent hover:text-foreground bg-transparent'
             >
-              <ArrowLeft className='mr-2 h-4 w-4' />
-              Back to Categories
+              <BackArrow className={cn('h-4 w-4', isRTL ? 'ml-2' : 'mr-2')} />
+              {t('backToCategories')}
             </Button>
           </Link>
         </div>
@@ -222,8 +223,10 @@ function CategoryDetailClientInner({ slug, type }: CategoryDetailClientProps) {
 
   const isTools = type === 'tool';
   const Icon = isTools ? Sparkles : Bot;
-  const backUrl = isTools ? '/ai-tools/categories' : '/agents/categories';
-  const itemLabel = isTools ? 'tools' : 'agents';
+  const backUrl = `/${locale}/${isTools ? 'tools' : 'agents'}/categories`;
+  const itemLabel = isTools ? t('tools') : t('agents');
+  const itemLabelSingular = isTools ? t('tool') : t('agent');
+  const BackArrow = isRTL ? ArrowRight : ArrowLeft;
 
   return (
     <PageContainer scrollable>
@@ -236,8 +239,8 @@ function CategoryDetailClientInner({ slug, type }: CategoryDetailClientProps) {
           href={backUrl}
           className='text-muted-foreground hover:text-foreground flex w-fit items-center gap-2 text-sm transition-colors'
         >
-          <ArrowLeft className='h-4 w-4' />
-          Back to Categories
+          <BackArrow className='h-4 w-4' />
+          {t('backToCategories')}
         </Link>
 
         {/* Category Header */}
@@ -263,7 +266,7 @@ function CategoryDetailClientInner({ slug, type }: CategoryDetailClientProps) {
                     variant='secondary'
                     className='border-amber-500/20 bg-amber-500/10 text-amber-500'
                   >
-                    Featured
+                    {t('featured')}
                   </Badge>
                 )}
               </div>
@@ -276,7 +279,7 @@ function CategoryDetailClientInner({ slug, type }: CategoryDetailClientProps) {
             variant='outline'
             className='border-border text-foreground px-3 py-1 text-sm'
           >
-            <Icon className='mr-1.5 h-4 w-4' />
+            <Icon className={cn('h-4 w-4', isRTL ? 'ml-1.5' : 'mr-1.5')} />
             {totalItems} {itemLabel}
           </Badge>
         </div>
@@ -296,8 +299,8 @@ function CategoryDetailClientInner({ slug, type }: CategoryDetailClientProps) {
           <div className='flex items-center gap-4'>
             <ViewToggle view={viewMode} onViewChange={handleViewChange} />
             <span className='text-muted-foreground text-sm'>
-              {totalItems}{' '}
-              {totalItems === 1 ? itemLabel.slice(0, -1) : itemLabel} found
+              {totalItems} {totalItems === 1 ? itemLabelSingular : itemLabel}{' '}
+              {t('found')}
             </span>
           </div>
           <RowsPerPageSelector

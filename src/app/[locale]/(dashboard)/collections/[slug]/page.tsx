@@ -617,7 +617,7 @@ export default function CollectionPage() {
                 )}
               >
                 <Button asChild variant='default'>
-                  <Link href={`/${locale}/ai-tools`}>
+                  <Link href={`/${locale}/tools`}>
                     {t('browseAllTools')}
                     <ExternalLink
                       className={cn('h-4 w-4', isRTL ? 'mr-2' : 'ml-2')}

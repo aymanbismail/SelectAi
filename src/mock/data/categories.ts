@@ -1,5 +1,14 @@
-// Mock data for categories - ready for API integration
+// Mock data for categories - using real counts from actual data
 // Future API: GET /api/categories?type=tool&with_counts=true&lang=en
+
+import {
+  getToolCountBySlug,
+  getAgentCountBySlug,
+  getTotalToolsCount,
+  getTotalAgentsCount,
+  toolCategoryConfigs,
+  agentCategoryConfigs
+} from '@/constants/categories';
 
 export type CategoryType = 'tool' | 'agent';
 
@@ -17,299 +26,146 @@ export interface Category {
   updated_at: string;
 }
 
-// Icon mapping for categories
+// Icon mapping for categories (emoji icons for display)
 export const categoryIcons: Record<string, string> = {
   // Tool categories
-  'text-ai': '✍️',
-  'image-ai': '🖼️',
-  'video-ai': '🎬',
-  'audio-ai': '🎵',
-  'code-ai': '💻',
-  'business-ai': '💼',
-  'research-ai': '🔬',
-  'design-ai': '🎨',
-  'marketing-ai': '📈',
-  'productivity-ai': '⚡',
+  text: '✍️',
+  image: '🖼️',
+  video: '🎬',
+  audio: '🎵',
+  code: '💻',
+  business: '💼',
+  research: '🔬',
+  design: '🎨',
+  marketing: '📈',
+  productivity: '⚡',
   // Agent categories
-  'coding-agent': '👨‍💻',
-  'research-agent': '🔍',
-  'writing-agent': '📝',
-  'data-agent': '📊',
-  'customer-support-agent': '💬',
-  'sales-agent': '🤝',
+  coding: '👨‍💻',
+  writing: '📝',
+  data: '📊',
+  'customer-support': '💬',
+  sales: '🤝',
   'personal-assistant': '🤖',
-  'creative-agent': '🎭',
-  'workflow-agent': '⚙️',
-  'analytics-agent': '📉'
+  creative: '🎭',
+  workflow: '⚙️',
+  analytics: '📉'
 };
 
-// Mock Tool Categories
-export const mockToolCategories: Category[] = [
-  {
-    id: 'cat-tool-1',
-    slug: 'text-ai',
-    name: 'Text AI',
-    description:
-      'AI tools for text generation, summarization, translation, and natural language processing.',
-    icon: '✍️',
-    type: 'tool',
-    tools_count: 156,
-    is_featured: true,
-    created_at: '2024-01-01',
-    updated_at: '2024-12-01'
-  },
-  {
-    id: 'cat-tool-2',
-    slug: 'image-ai',
-    name: 'Image AI',
-    description:
-      'Generate, edit, and enhance images using advanced AI models and creative tools.',
-    icon: '🖼️',
-    type: 'tool',
-    tools_count: 89,
-    is_featured: true,
-    created_at: '2024-01-01',
-    updated_at: '2024-12-01'
-  },
-  {
-    id: 'cat-tool-3',
-    slug: 'video-ai',
-    name: 'Video AI',
-    description:
-      'AI-powered video creation, editing, transcription, and enhancement tools.',
-    icon: '🎬',
-    type: 'tool',
-    tools_count: 45,
-    is_featured: true,
-    created_at: '2024-01-01',
-    updated_at: '2024-12-01'
-  },
-  {
-    id: 'cat-tool-4',
-    slug: 'audio-ai',
-    name: 'Audio AI',
-    description:
-      'Voice synthesis, music generation, audio editing, and speech recognition tools.',
-    icon: '🎵',
-    type: 'tool',
-    tools_count: 67,
-    is_featured: false,
-    created_at: '2024-01-01',
-    updated_at: '2024-12-01'
-  },
-  {
-    id: 'cat-tool-5',
-    slug: 'code-ai',
-    name: 'Code AI',
-    description:
-      'AI assistants for coding, debugging, code review, and software development.',
-    icon: '💻',
-    type: 'tool',
-    tools_count: 112,
-    is_featured: true,
-    created_at: '2024-01-01',
-    updated_at: '2024-12-01'
-  },
-  {
-    id: 'cat-tool-6',
-    slug: 'business-ai',
-    name: 'Business AI',
-    description:
-      'Enterprise AI solutions for automation, analytics, and business intelligence.',
-    icon: '💼',
-    type: 'tool',
-    tools_count: 78,
-    is_featured: false,
-    created_at: '2024-01-01',
-    updated_at: '2024-12-01'
-  },
-  {
-    id: 'cat-tool-7',
-    slug: 'research-ai',
-    name: 'Research AI',
-    description:
-      'AI tools for academic research, literature review, and scientific analysis.',
-    icon: '🔬',
-    type: 'tool',
-    tools_count: 34,
-    is_featured: false,
-    created_at: '2024-01-01',
-    updated_at: '2024-12-01'
-  },
-  {
-    id: 'cat-tool-8',
-    slug: 'design-ai',
-    name: 'Design AI',
-    description:
-      'AI-powered design tools for graphics, UI/UX, and creative workflows.',
-    icon: '🎨',
-    type: 'tool',
-    tools_count: 56,
-    is_featured: true,
-    created_at: '2024-01-01',
-    updated_at: '2024-12-01'
-  },
-  {
-    id: 'cat-tool-9',
-    slug: 'marketing-ai',
-    name: 'Marketing AI',
-    description:
-      'AI solutions for marketing automation, content creation, and campaign optimization.',
-    icon: '📈',
-    type: 'tool',
-    tools_count: 91,
-    is_featured: false,
-    created_at: '2024-01-01',
-    updated_at: '2024-12-01'
-  },
-  {
-    id: 'cat-tool-10',
-    slug: 'productivity-ai',
-    name: 'Productivity AI',
-    description:
-      'AI assistants for task management, scheduling, and workflow optimization.',
-    icon: '⚡',
-    type: 'tool',
-    tools_count: 124,
-    is_featured: true,
-    created_at: '2024-01-01',
-    updated_at: '2024-12-01'
-  }
+// Tool category descriptions
+const toolCategoryDescriptions: Record<string, string> = {
+  text: 'AI tools for text generation, summarization, translation, and natural language processing.',
+  image:
+    'Generate, edit, and enhance images using advanced AI models and creative tools.',
+  video:
+    'AI-powered video creation, editing, transcription, and enhancement tools.',
+  audio:
+    'Voice synthesis, music generation, audio editing, and speech recognition tools.',
+  code: 'AI assistants for coding, debugging, code review, and software development.',
+  business:
+    'Enterprise AI solutions for automation, analytics, and business intelligence.',
+  research:
+    'AI tools for academic research, literature review, and scientific analysis.',
+  design:
+    'AI-powered design tools for graphics, UI/UX, and creative workflows.',
+  marketing:
+    'AI solutions for marketing automation, content creation, and campaign optimization.',
+  productivity:
+    'AI assistants for task management, scheduling, and workflow optimization.'
+};
+
+// Agent category descriptions
+const agentCategoryDescriptions: Record<string, string> = {
+  coding:
+    'Autonomous AI agents that can write, debug, and deploy code independently.',
+  research:
+    'AI agents that conduct research, gather information, and synthesize findings.',
+  writing:
+    'Autonomous writing agents for content creation, editing, and publishing.',
+  data: 'AI agents for data analysis, transformation, and pipeline automation.',
+  'customer-support':
+    'AI agents that handle customer inquiries, support tickets, and service requests.',
+  sales:
+    'Autonomous sales agents for lead generation, outreach, and deal closing.',
+  'personal-assistant':
+    'AI assistants for scheduling, reminders, and personal task management.',
+  creative:
+    'AI agents for creative tasks like design, art generation, and content ideation.',
+  workflow: 'AI agents that automate complex workflows and business processes.',
+  analytics:
+    'AI agents for business analytics, reporting, and data-driven insights.'
+};
+
+// Slug to display name mapping
+const toolSlugToName: Record<string, string> = {
+  text: 'Text AI',
+  image: 'Image AI',
+  video: 'Video AI',
+  audio: 'Audio AI',
+  code: 'Code AI',
+  business: 'Business AI',
+  research: 'Research AI',
+  design: 'Design AI',
+  marketing: 'Marketing AI',
+  productivity: 'Productivity AI'
+};
+
+const agentSlugToName: Record<string, string> = {
+  coding: 'Coding Agent',
+  research: 'Research Agent',
+  writing: 'Writing Agent',
+  data: 'Data Agent',
+  'customer-support': 'Customer Support Agent',
+  sales: 'Sales Agent',
+  'personal-assistant': 'Personal Assistant',
+  creative: 'Creative Agent',
+  workflow: 'Workflow Agent',
+  analytics: 'Analytics Agent'
+};
+
+// Featured categories (first 5 of each)
+const featuredToolSlugs = ['text', 'image', 'video', 'code', 'design'];
+const featuredAgentSlugs = [
+  'coding',
+  'research',
+  'writing',
+  'customer-support',
+  'personal-assistant'
 ];
 
-// Mock Agent Categories
-export const mockAgentCategories: Category[] = [
-  {
-    id: 'cat-agent-1',
-    slug: 'coding-agent',
-    name: 'Coding Agent',
+// Generate Tool Categories with REAL counts
+export const mockToolCategories: Category[] = toolCategoryConfigs.map(
+  (config, index) => ({
+    id: `cat-tool-${index + 1}`,
+    slug: config.slug,
+    name: toolSlugToName[config.slug] || config.slug,
     description:
-      'Autonomous AI agents that can write, debug, and deploy code independently.',
-    icon: '👨‍💻',
-    type: 'agent',
-    agents_count: 28,
-    is_featured: true,
+      toolCategoryDescriptions[config.slug] || 'AI tools for various tasks.',
+    icon: categoryIcons[config.slug] || '🔧',
+    type: 'tool' as CategoryType,
+    tools_count: getToolCountBySlug(config.slug), // REAL COUNT
+    is_featured: featuredToolSlugs.includes(config.slug),
     created_at: '2024-01-01',
     updated_at: '2024-12-01'
-  },
-  {
-    id: 'cat-agent-2',
-    slug: 'research-agent',
-    name: 'Research Agent',
+  })
+);
+
+// Generate Agent Categories with REAL counts
+export const mockAgentCategories: Category[] = agentCategoryConfigs.map(
+  (config, index) => ({
+    id: `cat-agent-${index + 1}`,
+    slug: config.slug,
+    name: agentSlugToName[config.slug] || config.slug,
     description:
-      'AI agents that conduct research, gather information, and synthesize findings.',
-    icon: '🔍',
-    type: 'agent',
-    agents_count: 19,
-    is_featured: true,
+      agentCategoryDescriptions[config.slug] ||
+      'AI agents for various workflows.',
+    icon: categoryIcons[config.slug] || '🤖',
+    type: 'agent' as CategoryType,
+    agents_count: getAgentCountBySlug(config.slug), // REAL COUNT
+    is_featured: featuredAgentSlugs.includes(config.slug),
     created_at: '2024-01-01',
     updated_at: '2024-12-01'
-  },
-  {
-    id: 'cat-agent-3',
-    slug: 'writing-agent',
-    name: 'Writing Agent',
-    description:
-      'Autonomous writing agents for content creation, editing, and publishing.',
-    icon: '📝',
-    type: 'agent',
-    agents_count: 35,
-    is_featured: true,
-    created_at: '2024-01-01',
-    updated_at: '2024-12-01'
-  },
-  {
-    id: 'cat-agent-4',
-    slug: 'data-agent',
-    name: 'Data Agent',
-    description:
-      'AI agents for data analysis, transformation, and pipeline automation.',
-    icon: '📊',
-    type: 'agent',
-    agents_count: 22,
-    is_featured: false,
-    created_at: '2024-01-01',
-    updated_at: '2024-12-01'
-  },
-  {
-    id: 'cat-agent-5',
-    slug: 'customer-support-agent',
-    name: 'Customer Support Agent',
-    description:
-      'AI agents that handle customer inquiries, support tickets, and service requests.',
-    icon: '💬',
-    type: 'agent',
-    agents_count: 41,
-    is_featured: true,
-    created_at: '2024-01-01',
-    updated_at: '2024-12-01'
-  },
-  {
-    id: 'cat-agent-6',
-    slug: 'sales-agent',
-    name: 'Sales Agent',
-    description:
-      'Autonomous sales agents for lead generation, outreach, and deal closing.',
-    icon: '🤝',
-    type: 'agent',
-    agents_count: 18,
-    is_featured: false,
-    created_at: '2024-01-01',
-    updated_at: '2024-12-01'
-  },
-  {
-    id: 'cat-agent-7',
-    slug: 'personal-assistant',
-    name: 'Personal Assistant',
-    description:
-      'AI assistants for scheduling, reminders, and personal task management.',
-    icon: '🤖',
-    type: 'agent',
-    agents_count: 56,
-    is_featured: true,
-    created_at: '2024-01-01',
-    updated_at: '2024-12-01'
-  },
-  {
-    id: 'cat-agent-8',
-    slug: 'creative-agent',
-    name: 'Creative Agent',
-    description:
-      'AI agents for creative tasks like design, art generation, and content ideation.',
-    icon: '🎭',
-    type: 'agent',
-    agents_count: 33,
-    is_featured: false,
-    created_at: '2024-01-01',
-    updated_at: '2024-12-01'
-  },
-  {
-    id: 'cat-agent-9',
-    slug: 'workflow-agent',
-    name: 'Workflow Agent',
-    description:
-      'AI agents that automate complex workflows and business processes.',
-    icon: '⚙️',
-    type: 'agent',
-    agents_count: 27,
-    is_featured: true,
-    created_at: '2024-01-01',
-    updated_at: '2024-12-01'
-  },
-  {
-    id: 'cat-agent-10',
-    slug: 'analytics-agent',
-    name: 'Analytics Agent',
-    description:
-      'AI agents for business analytics, reporting, and data-driven insights.',
-    icon: '📉',
-    type: 'agent',
-    agents_count: 15,
-    is_featured: false,
-    created_at: '2024-01-01',
-    updated_at: '2024-12-01'
-  }
-];
+  })
+);
 
 // Combined mock data
 export const mockCategories: Category[] = [
@@ -336,18 +192,12 @@ export function searchCategories(
   );
 }
 
-// Aggregate stats
+// Aggregate stats - using REAL counts
 export const categoryStats = {
-  totalToolCategories: mockToolCategories.length,
-  totalAgentCategories: mockAgentCategories.length,
-  totalTools: mockToolCategories.reduce(
-    (sum, cat) => sum + (cat.tools_count || 0),
-    0
-  ),
-  totalAgents: mockAgentCategories.reduce(
-    (sum, cat) => sum + (cat.agents_count || 0),
-    0
-  )
+  totalToolCategories: toolCategoryConfigs.length,
+  totalAgentCategories: agentCategoryConfigs.length,
+  totalTools: getTotalToolsCount(), // REAL COUNT
+  totalAgents: getTotalAgentsCount() // REAL COUNT
 };
 
 // Helper function to get a single category by slug
@@ -367,7 +217,10 @@ export function getCategoryById(id: string): Category | undefined {
 }
 
 // Map category slug to category name (for filtering tools/agents)
-export function getCategoryNameFromSlug(slug: string): string {
-  const category = getCategoryBySlug(slug);
+export function getCategoryNameFromSlug(
+  slug: string,
+  type?: CategoryType
+): string {
+  const category = getCategoryBySlug(slug, type);
   return category?.name || '';
 }

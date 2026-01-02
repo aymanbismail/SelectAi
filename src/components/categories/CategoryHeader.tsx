@@ -36,7 +36,7 @@ export function CategoryHeader({
 
   const Icon = isTools ? Sparkles : Bot;
   const requestUrl = isTools
-    ? `/${locale}/ai-tools/categories/new`
+    ? `/${locale}/tools/categories/new`
     : `/${locale}/agents/categories/new`;
 
   return (

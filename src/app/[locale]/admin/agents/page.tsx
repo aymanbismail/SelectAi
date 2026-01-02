@@ -36,7 +36,7 @@ export default async function Page(props: pageProps) {
             description='Find the best AI Agent for your needs.'
           />
           <Link
-            href='/ai-tools/new'
+            href='/agents/new'
             className={cn(buttonVariants(), 'text-xs md:text-sm')}
           >
             <IconPlus className='mr-2 h-4 w-4' /> Request New Agent

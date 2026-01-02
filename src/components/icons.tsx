@@ -33,7 +33,27 @@ import {
   IconX,
   IconLayoutKanban,
   IconBrandGithub,
-  IconMessages
+  IconMessages,
+  // New icons for categories
+  IconVideo,
+  IconMusic,
+  IconCode,
+  IconBriefcase,
+  IconMicroscope,
+  IconPalette,
+  IconTrendingUp,
+  IconBolt,
+  IconTerminal,
+  IconEdit,
+  IconChartBar,
+  IconMessageCircle,
+  IconCurrencyDollar,
+  IconSparkles,
+  IconGitBranch,
+  IconChartPie,
+  IconBrain,
+  IconRobot,
+  IconWand
 } from '@tabler/icons-react';
 
 export type Icon = React.ComponentType<IconProps>;
@@ -72,5 +92,29 @@ export const Icons = {
   twitter: IconBrandTwitter,
   check: IconCheck,
   chat: IconMessages,
-  search: IconSearch
+  search: IconSearch,
+  // Category icons - Tools
+  fileText: IconFileText,
+  image: IconPhoto,
+  video: IconVideo,
+  audio: IconMusic,
+  code: IconCode,
+  briefcase: IconBriefcase,
+  microscope: IconMicroscope,
+  palette: IconPalette,
+  trendingUp: IconTrendingUp,
+  zap: IconBolt,
+  // Category icons - Agents
+  terminal: IconTerminal,
+  edit: IconEdit,
+  barChart: IconChartBar,
+  messageCircle: IconMessageCircle,
+  dollarSign: IconCurrencyDollar,
+  sparkles: IconSparkles,
+  gitBranch: IconGitBranch,
+  pieChart: IconChartPie,
+  // Additional icons
+  brain: IconBrain,
+  robot: IconRobot,
+  wand: IconWand
 };

@@ -37,7 +37,7 @@ export function HeroCTASection() {
               </p>
 
               {/* CTA Button */}
-              <Link href='/ai-tools'>
+              <Link href='/tools'>
                 <Button
                   size='lg'
                   className='bg-primary text-primary-foreground hover:bg-primary/90 rounded-full px-8 py-6 text-base font-semibold shadow-xl transition-colors duration-300 sm:px-10 sm:py-7 sm:text-lg'

@@ -13,7 +13,7 @@ import { Badge } from '@/components/ui/badge';
 import { buttonVariants } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-import { demoCategories } from '@/constants/data';
+import { mockToolCategories } from '@/mock/data/categories';
 import { Icons } from '@/components/icons';
 import PageContainer from '@/components/layout/page-container';
 import { CategoriesPageSkeleton } from '@/components/layout/categories-skeleton';
@@ -33,7 +33,9 @@ export default function CategoriesPage() {
   }, []);
 
   if (isLoading) {
-    return <CategoriesPageSkeleton categoriesCount={demoCategories.length} />;
+    return (
+      <CategoriesPageSkeleton categoriesCount={mockToolCategories.length} />
+    );
   }
   return (
     <PageContainer scrollable={false}>
@@ -57,7 +59,7 @@ export default function CategoriesPage() {
             <ScrollArea className='h-full w-full'>
               <div className='p-4'>
                 <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
-                  {demoCategories.map((category) => (
+                  {mockToolCategories.map((category) => (
                     <Link
                       key={category.id}
                       href={`/${category.name}`}
@@ -99,7 +101,7 @@ export default function CategoriesPage() {
                   <Card className='from-primary/5 to-card @container/card bg-gradient-to-t shadow-xs'>
                     <CardHeader className='text-center'>
                       <CardTitle className='text-primary text-2xl font-semibold tabular-nums @[250px]/card:text-3xl'>
-                        {demoCategories.length}
+                        {mockToolCategories.length}
                       </CardTitle>
                       <CardDescription>Total Categories</CardDescription>
                     </CardHeader>

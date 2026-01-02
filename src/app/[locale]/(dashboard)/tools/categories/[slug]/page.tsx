@@ -20,7 +20,7 @@ interface CategoryDetailPageProps {
 /**
  * Tool Category Detail Page - Server Component
  * Displays all tools within a specific category
- * Route: /ai-tools/categories/[slug]
+ * Route: /tools/categories/[slug]
  */
 export default async function ToolCategoryDetailPage({
   params,

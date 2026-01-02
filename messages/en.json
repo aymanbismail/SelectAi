@@ -73,7 +73,17 @@
     "social": "Social",
     "news": "News",
     "weather": "Weather",
-    "food": "Food"
+    "food": "Food",
+    "textAi": "Text",
+    "imageAi": "Image",
+    "videoAi": "Video",
+    "audioAi": "Audio",
+    "codeAi": "Code",
+    "businessAi": "Business",
+    "researchAi": "Research",
+    "designAi": "Design",
+    "marketingAi": "Marketing",
+    "productivityAi": "Productivity"
   },
   "agentCategories": {
     "conversational": "Conversational",
@@ -83,7 +93,17 @@
     "customer-service": "Customer Service",
     "research": "Research",
     "scheduling": "Scheduling",
-    "monitoring": "Monitoring"
+    "monitoring": "Monitoring",
+    "codingAgent": "Coding",
+    "researchAgent": "Research",
+    "writingAgent": "Writing",
+    "dataAgent": "Data",
+    "customerSupportAgent": "Customer Support",
+    "salesAgent": "Sales",
+    "personalAssistant": "Personal Assistant",
+    "creativeAgent": "Creative",
+    "workflowAgent": "Workflow",
+    "analyticsAgent": "Analytics"
   },
   "chat": {
     "title": "Discover the best AI tool for your task",
@@ -324,6 +344,17 @@
     "noCategoriesFoundDesc": "Try adjusting your search or filters to find what you're looking for.",
     "searchCategories": "Search categories..."
   },
+  "categoryDetailPage": {
+    "notFound": "Category not found",
+    "notFoundDescription": "The category you're looking for doesn't exist.",
+    "backToCategories": "Back to Categories",
+    "featured": "Featured",
+    "tools": "tools",
+    "tool": "tool",
+    "agents": "agents",
+    "agent": "agent",
+    "found": "found"
+  },
   "collectionDetail": {
     "backToCollections": "Back to Collections",
     "backToExplore": "Back to Explore",
@@ -383,5 +414,11 @@
     "34": "AI-enhanced marketing & sales automation platform",
     "35": "Noise cancellation & meeting assistant",
     "36": "AI meeting transcription & note‑taking assistant"
+  },
+  "notFound": {
+    "title": "Page Not Found",
+    "description": "Sorry, the page you are looking for doesn't exist or has been moved.",
+    "goBack": "Go Back",
+    "backToHome": "Back to Home"
   }
 }

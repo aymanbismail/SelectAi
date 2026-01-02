@@ -589,7 +589,7 @@ function FeaturedToolsSection() {
           icon={Sparkles}
           title={t('featuredTools')}
           description={t('featuredToolsDescription')}
-          action={{ label: t('viewAll'), href: '/ai-tools' }}
+          action={{ label: t('viewAll'), href: '/tools' }}
           delay={0.1}
         />
 
@@ -688,7 +688,7 @@ function BrowseByCategoriesSection() {
           {categories.map((category, index) => (
             <AnimatedContainer key={category.id} delay={0.15 + index * 0.05}>
               <Link
-                href={`/${locale}/ai-tools?category=${encodeURIComponent(category.name)}`}
+                href={`/${locale}/tools?category=${encodeURIComponent(category.name)}`}
                 className='block h-full'
               >
                 <div

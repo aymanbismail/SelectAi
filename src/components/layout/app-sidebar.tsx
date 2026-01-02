@@ -30,12 +30,11 @@ import {
   useSidebar
 } from '@/components/ui/sidebar';
 import { UserAvatarProfile } from '@/components/user-avatar-profile';
+import { getAiToolsNavItems, getAiAgentsNavItems } from '@/constants/data';
 import {
-  getAiToolsNavItems,
-  getAiAgentsNavItems,
-  getAiToolsAdditionalCategories,
-  getAiAgentsAdditionalCategories
-} from '@/constants/data';
+  getToolCategoriesForSidebar,
+  getAgentCategoriesForSidebar
+} from '@/constants/categories';
 import {
   SidebarNavSkeleton,
   SidebarCategoriesSkeleton
@@ -177,38 +176,30 @@ export default function AppSidebar() {
 
   // Build translation objects for tool categories
   const toolCategoryTranslations: Record<string, string> = {
-    design: tToolCat('design'),
-    marketing: tToolCat('marketing'),
-    productivity: tToolCat('productivity'),
-    development: tToolCat('development'),
-    analytics: tToolCat('analytics'),
-    finance: tToolCat('finance'),
-    communication: tToolCat('communication'),
-    education: tToolCat('education'),
-    health: tToolCat('health'),
-    travel: tToolCat('travel'),
-    photography: tToolCat('photography'),
-    music: tToolCat('music'),
-    gaming: tToolCat('gaming'),
-    security: tToolCat('security'),
-    automation: tToolCat('automation'),
-    ecommerce: tToolCat('ecommerce'),
-    social: tToolCat('social'),
-    news: tToolCat('news'),
-    weather: tToolCat('weather'),
-    food: tToolCat('food')
+    textAi: tToolCat('textAi'),
+    imageAi: tToolCat('imageAi'),
+    videoAi: tToolCat('videoAi'),
+    audioAi: tToolCat('audioAi'),
+    codeAi: tToolCat('codeAi'),
+    businessAi: tToolCat('businessAi'),
+    researchAi: tToolCat('researchAi'),
+    designAi: tToolCat('designAi'),
+    marketingAi: tToolCat('marketingAi'),
+    productivityAi: tToolCat('productivityAi')
   };
 
   // Build translation objects for agent categories
   const agentCategoryTranslations: Record<string, string> = {
-    conversational: tAgentCat('conversational'),
-    automation: tAgentCat('automation'),
-    analysis: tAgentCat('analysis'),
-    content: tAgentCat('content'),
-    'customer-service': tAgentCat('customer-service'),
-    research: tAgentCat('research'),
-    scheduling: tAgentCat('scheduling'),
-    monitoring: tAgentCat('monitoring')
+    codingAgent: tAgentCat('codingAgent'),
+    researchAgent: tAgentCat('researchAgent'),
+    writingAgent: tAgentCat('writingAgent'),
+    dataAgent: tAgentCat('dataAgent'),
+    customerSupportAgent: tAgentCat('customerSupportAgent'),
+    salesAgent: tAgentCat('salesAgent'),
+    personalAssistant: tAgentCat('personalAssistant'),
+    creativeAgent: tAgentCat('creativeAgent'),
+    workflowAgent: tAgentCat('workflowAgent'),
+    analyticsAgent: tAgentCat('analyticsAgent')
   };
 
   // Check if AI Tools is selected (id '1' is AI Tools, id '2' is AI Agents)
@@ -219,13 +210,13 @@ export default function AppSidebar() {
     ? getAiToolsNavItems(locale, navTranslations)
     : getAiAgentsNavItems(locale, navTranslations);
   const currentCategories = isAiToolsSelected
-    ? getAiToolsAdditionalCategories(locale, toolCategoryTranslations)
-    : getAiAgentsAdditionalCategories(locale, agentCategoryTranslations);
+    ? getToolCategoriesForSidebar(locale, toolCategoryTranslations)
+    : getAgentCategoriesForSidebar(locale, agentCategoryTranslations);
   const categoryLabel = isAiToolsSelected
     ? tSidebar('toolsCategories')
     : tSidebar('agentsCategories');
   const categoryUrl = isAiToolsSelected
-    ? `/${locale}/ai-tools/categories`
+    ? `/${locale}/tools/categories`
     : `/${locale}/agents/categories`;
 
   // Simulate loading navigation items when tenant changes
@@ -420,7 +411,7 @@ export default function AppSidebar() {
                     </Link>
                   </SidebarGroupLabel>
                   <div className='relative min-h-0 flex-1'>
-                    <div className='categories-scrollbar absolute inset-0 overflow-y-auto pr-2 pb-2'>
+                    <div className='categories-scrollbar absolute inset-0 overflow-y-auto pb-2 ltr:pr-2 rtl:pl-2'>
                       <SidebarMenu className='space-y-1'>
                         {currentCategories.map((category: NavItem) => {
                           const CategoryIcon = category.icon
@@ -434,11 +425,19 @@ export default function AppSidebar() {
                                 isActive={pathname === category.url}
                                 className='hover:bg-sidebar-accent hover:text-sidebar-accent-foreground data-[active=true]:bg-sidebar-accent/60 data-[active=true]:border-sidebar-accent/20 w-full justify-start transition-all duration-200 data-[active=true]:border data-[active=true]:backdrop-blur-sm'
                               >
-                                <Link href={category.url!}>
-                                  <CategoryIcon className='h-4 w-4' />
-                                  <span className='group-data-[collapsible=icon]:hidden'>
+                                <Link
+                                  href={category.url!}
+                                  className='flex w-full items-center gap-2'
+                                >
+                                  <CategoryIcon className='h-4 w-4 shrink-0' />
+                                  <span className='flex-1 truncate group-data-[collapsible=icon]:hidden'>
                                     {category.title}
                                   </span>
+                                  {category.count !== undefined && (
+                                    <span className='bg-muted text-muted-foreground shrink-0 rounded-full px-2 py-0.5 text-xs font-medium group-data-[collapsible=icon]:hidden'>
+                                      {category.count}
+                                    </span>
+                                  )}
                                 </Link>
                               </SidebarMenuButton>
                             </SidebarMenuItem>
@@ -455,7 +454,7 @@ export default function AppSidebar() {
         // Small viewport: Single scrollable container
         <SidebarContent className='sidebar-content-transition flex flex-col overflow-x-hidden bg-transparent'>
           <div className='min-h-0 flex-1'>
-            <div className='categories-scrollbar sidebar-scrollable-container h-full overflow-y-auto pr-2 pb-2'>
+            <div className='categories-scrollbar sidebar-scrollable-container h-full overflow-y-auto pb-2 ltr:pr-2 rtl:pl-2'>
               {/* Navigation Items */}
               {isLoadingNavItems ? (
                 <SidebarNavSkeleton navItemsCount={3} />
@@ -605,11 +604,19 @@ export default function AppSidebar() {
                               isActive={pathname === category.url}
                               className='hover:bg-sidebar-accent hover:text-sidebar-accent-foreground data-[active=true]:bg-sidebar-accent/60 data-[active=true]:border-sidebar-accent/20 w-full justify-start transition-all duration-200 data-[active=true]:border data-[active=true]:backdrop-blur-sm'
                             >
-                              <Link href={category.url!}>
-                                <CategoryIcon className='h-4 w-4' />
-                                <span className='group-data-[collapsible=icon]:hidden'>
+                              <Link
+                                href={category.url!}
+                                className='flex w-full items-center gap-2'
+                              >
+                                <CategoryIcon className='h-4 w-4 shrink-0' />
+                                <span className='flex-1 truncate group-data-[collapsible=icon]:hidden'>
                                   {category.title}
                                 </span>
+                                {category.count !== undefined && (
+                                  <span className='bg-muted text-muted-foreground shrink-0 rounded-full px-2 py-0.5 text-xs font-medium group-data-[collapsible=icon]:hidden'>
+                                    {category.count}
+                                  </span>
+                                )}
                               </Link>
                             </SidebarMenuButton>
                           </SidebarMenuItem>
@@ -639,7 +646,7 @@ export default function AppSidebar() {
                       user={user}
                     />
                   )}
-                  <IconChevronsDown className='ml-auto size-4 transition-transform duration-200 group-data-[collapsible=icon]:hidden' />
+                  <IconChevronsDown className='size-4 transition-transform duration-200 group-data-[collapsible=icon]:hidden ltr:ml-auto rtl:mr-auto' />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
               <DropdownMenuContent

@@ -13,7 +13,7 @@ import { Badge } from '@/components/ui/badge';
 import { buttonVariants } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-import { aiAgentsCategories } from '@/constants/data';
+import { aiAgentsCategories } from '@/constants/categories';
 import { Icons } from '@/components/icons';
 import PageContainer from '@/components/layout/page-container';
 import { CategoriesPageSkeleton } from '@/components/layout/categories-skeleton';

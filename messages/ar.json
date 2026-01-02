@@ -73,7 +73,17 @@
     "social": "اجتماعي",
     "news": "أخبار",
     "weather": "طقس",
-    "food": "طعام"
+    "food": "طعام",
+    "textAi": "النصوص",
+    "imageAi": "الصور",
+    "videoAi": "الفيديو",
+    "audioAi": "الصوت",
+    "codeAi": "البرمجة",
+    "businessAi": "الأعمال",
+    "researchAi": "البحث",
+    "designAi": "التصميم",
+    "marketingAi": "التسويق",
+    "productivityAi": "الإنتاجية"
   },
   "agentCategories": {
     "conversational": "محادثة",
@@ -83,7 +93,17 @@
     "customer-service": "خدمة العملاء",
     "research": "بحث",
     "scheduling": "جدولة",
-    "monitoring": "مراقبة"
+    "monitoring": "مراقبة",
+    "codingAgent": "البرمجة",
+    "researchAgent": "البحث",
+    "writingAgent": "الكتابة",
+    "dataAgent": "البيانات",
+    "customerSupportAgent": "دعم العملاء",
+    "salesAgent": "المبيعات",
+    "personalAssistant": "المساعد الشخصي",
+    "creativeAgent": "الإبداع",
+    "workflowAgent": "سير العمل",
+    "analyticsAgent": "التحليلات"
   },
   "chat": {
     "title": "اكتشف ادارة الذكاء الاصطناعي الافضل لمهتمك",
@@ -324,6 +344,17 @@
     "noCategoriesFoundDesc": "حاول تعديل البحث أو الفلاتر للعثور على ما تبحث عنه.",
     "searchCategories": "ابحث في الفئات..."
   },
+  "categoryDetailPage": {
+    "notFound": "الفئة غير موجودة",
+    "notFoundDescription": "الفئة التي تبحث عنها غير موجودة.",
+    "backToCategories": "العودة للفئات",
+    "featured": "مميز",
+    "tools": "أدوات",
+    "tool": "أداة",
+    "agents": "وكلاء",
+    "agent": "وكيل",
+    "found": "تم العثور على"
+  },
   "collectionDetail": {
     "backToCollections": "العودة للمجموعات",
     "backToExplore": "العودة للاستكشاف",
@@ -383,5 +414,11 @@
     "34": "منصة أتمتة تسويق ومبيعات محسنة بالذكاء الاصطناعي",
     "35": "إلغاء ضوضاء ذكي ومساعد اجتماعات لتحسين التواصل",
     "36": "مساعد نسخ اجتماعات وتدوين ملاحظات ذكي"
+  },
+  "notFound": {
+    "title": "الصفحة غير موجودة",
+    "description": "عذراً، الصفحة التي تبحث عنها غير موجودة أو تم نقلها.",
+    "goBack": "رجوع",
+    "backToHome": "العودة للرئيسية"
   }
 }

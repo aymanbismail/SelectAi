@@ -1,5 +1,5 @@
 import PageContainer from '@/components/layout/page-container';
-import { aiAgentsCategories } from '@/constants/data';
+import { aiAgentsCategories } from '@/constants/categories';
 import { notFound } from 'next/navigation';
 
 export default async function CategoryPage({

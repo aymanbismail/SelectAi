@@ -30,7 +30,7 @@ export function CategoryCard({
     category.type === 'tool' ? t('exploreTools') : t('exploreAgents');
   const href =
     category.type === 'tool'
-      ? `/${locale}/ai-tools/categories/${category.slug}`
+      ? `/${locale}/tools/categories/${category.slug}`
       : `/${locale}/agents/categories/${category.slug}`;
 
   // Staggered animation: 0.05s delay per card

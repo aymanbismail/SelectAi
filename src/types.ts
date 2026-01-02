@@ -16,4 +16,5 @@ export interface NavItem {
     text: string;
     variant?: 'default' | 'secondary' | 'destructive' | 'outline';
   };
+  count?: number; // Real count of items in this category
 }

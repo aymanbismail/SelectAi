@@ -36,7 +36,7 @@ export default async function Page(props: pageProps) {
             description='Find the best AI tools for your needs.'
           />
           <Link
-            href='/ai-tools/new'
+            href='/tools/new'
             className={cn(buttonVariants(), 'text-xs md:text-sm')}
           >
             <IconPlus className='mr-2 h-4 w-4' /> Request New Tool

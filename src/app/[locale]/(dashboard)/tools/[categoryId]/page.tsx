@@ -3,7 +3,7 @@ import { buttonVariants } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
 import { Separator } from '@/components/ui/separator';
 import { DataTableSkeleton } from '@/components/ui/table/data-table-skeleton';
-import { demoCategories } from '@/constants/data';
+import { mockToolCategories } from '@/mock/data/categories';
 import { searchParamsCache } from '@/lib/searchparams';
 import { cn } from '@/lib/utils';
 import { IconPlus } from '@tabler/icons-react';
@@ -25,7 +25,7 @@ export async function generateMetadata({
 }) {
   const { categoryId } = await params;
 
-  const category = demoCategories.find(
+  const category = mockToolCategories.find(
     (cat) => cat.name === categoryId || cat.id.toString() === categoryId
   );
 
@@ -51,7 +51,7 @@ export default async function CategoryPage({
   // Allow nested RSCs to access the search params (in a type-safe way)
   searchParamsCache.parse(searchParamsData);
 
-  const category = demoCategories.find(
+  const category = mockToolCategories.find(
     (cat) => cat.name === categoryId || cat.id.toString() === categoryId
   );
 

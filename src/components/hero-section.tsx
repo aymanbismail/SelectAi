@@ -69,7 +69,7 @@ export function HeroSection() {
                 className='w-full max-w-xs px-6 text-sm sm:w-auto sm:px-8 sm:text-base'
               >
                 <Link
-                  href={`/${locale}/ai-tools`}
+                  href={`/${locale}/tools`}
                   className='flex items-center justify-center'
                 >
                   <span>{t('exploreButton')}</span>
@@ -82,9 +82,7 @@ export function HeroSection() {
                 size='lg'
                 className='w-full max-w-xs px-6 text-sm sm:w-auto sm:px-8 sm:text-base'
               >
-                <Link href={`/${locale}/ai-tools/new`}>
-                  {t('requestButton')}
-                </Link>
+                <Link href={`/${locale}/tools/new`}>{t('requestButton')}</Link>
               </Button>
             </div>
           </AnimatedContainer>
