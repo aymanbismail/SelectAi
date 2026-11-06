@@ -13,16 +13,22 @@ import './theme.css';
 import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
+import { JsonLd } from '@/components/seo/json-ld';
+import { buildLocaleLayoutMetadata, toAppLocale } from '@/lib/seo';
 
 const META_THEME_COLORS = {
   light: '#ffffff',
   dark: '#09090b'
 };
 
-export const metadata: Metadata = {
-  title: 'Select Ai',
-  description: 'Find the best AI tools for your task'
-};
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  return buildLocaleLayoutMetadata(toAppLocale(locale));
+}
 
 export const viewport: Viewport = {
   themeColor: META_THEME_COLORS.light
@@ -61,6 +67,7 @@ export default async function RootLayout({
           'bg-background overflow-hidden overscroll-none font-sans antialiased'
         )}
       >
+        <JsonLd locale={toAppLocale(locale)} />
         <AppReadyProvider>
           {/* Loader renders first and blocks all UI */}
           <InitialLoader />

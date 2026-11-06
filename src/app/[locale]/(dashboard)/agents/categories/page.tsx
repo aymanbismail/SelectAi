@@ -1,10 +1,23 @@
+import type { Metadata } from 'next';
+
+import { buildPageMetadata, toAppLocale } from '@/lib/seo';
 import { CategoryClient } from '@/components/categories';
 
-export const metadata = {
-  title: 'Agent Categories - SelectAI',
-  description:
-    'Explore our wide range of AI agent categories to find exactly what you need.'
-};
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+
+  return buildPageMetadata({
+    locale: toAppLocale(locale),
+    path: '/agents/categories',
+    title: 'Agent Categories - SelectAI',
+    description:
+      'Explore our wide range of AI agent categories to find exactly what you need.'
+  });
+}
 
 /**
  * Agent Categories Page - Server Component

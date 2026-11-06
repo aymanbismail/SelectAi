@@ -8,6 +8,8 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.1-06B6D4?style=flat-square&logo=tailwindcss)](https://tailwindcss.com/)
 [![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](./LICENSE)
 
+**Live:** [https://selectai.aymanismail.com](https://selectai.aymanismail.com) &nbsp;·&nbsp; [English](https://selectai.aymanismail.com/en) &nbsp;·&nbsp; [العربية](https://selectai.aymanismail.com/ar)
+
 ## 🌟 Features
 
 ### Design & UX
@@ -101,6 +103,22 @@
    # Copy the example env file
    cp env.example.txt .env
    ```
+
+   The only variable that affects URLs is `NEXT_PUBLIC_SITE_URL`. It is the
+   single source of truth for every absolute URL the app emits (canonical
+   tags, hreflang alternates, Open Graph/Twitter tags, `sitemap.xml`,
+   `robots.txt`, JSON-LD and the web manifest). It defaults to the production
+   origin `https://selectai.aymanismail.com`, so local development works
+   without setting it; point it at `http://localhost:3000` if you want
+   locally generated URLs to match your dev server.
+
+   ```env
+   NEXT_PUBLIC_SITE_URL=https://selectai.aymanismail.com
+   ```
+
+   > `NEXT_PUBLIC_*` variables are baked in at build time. `sitemap.xml`,
+   > `robots.txt` and `manifest.webmanifest` are prerendered, so this value
+   > must be set during `next build`, not only at runtime.
 
 4. **Configure Sentry (optional)**
 
@@ -311,11 +329,25 @@ Replace assets in `public/assets/` while maintaining the same file names, or upd
 3. **Add Environment Variables**
 
    - Navigate to Project Settings → Environment Variables
+   - Set `NEXT_PUBLIC_SITE_URL` to `https://selectai.aymanismail.com` for the
+     Production environment (and to the preview origin for Preview, if you
+     want preview deployments to self-reference). Redeploy after changing it —
+     the value is read at build time
    - Add Sentry credentials (optional)
 
-4. **Deploy**
+4. **Configure the custom domain**
+
+   - Project Settings → Domains → add `selectai.aymanismail.com`
+   - Add the DNS record Vercel shows for the subdomain
+   - Keep the previous auto-generated Vercel domain attached and set it to
+     redirect to `selectai.aymanismail.com` so existing links and indexed
+     pages do not break
+
+5. **Deploy**
    - Vercel deploys automatically on push
-   - Production URL: `https://your-project.vercel.app`
+   - Production URL: `https://selectai.aymanismail.com`
+   - Locale entry points: `/en` and `/ar`; `/` redirects to the default
+     locale (`en`)
 
 ### Other Platforms
 
@@ -336,13 +368,14 @@ Generates an optimized production build in `.next/` directory.
 
 ## 🔧 Environment Variables
 
-| Variable                      | Description                                           | Required |
-| ----------------------------- | ----------------------------------------------------- | -------- |
-| `NEXT_PUBLIC_SENTRY_DSN`      | Sentry Data Source Name for error tracking            | No       |
-| `NEXT_PUBLIC_SENTRY_ORG`      | Sentry organization slug                              | No       |
-| `NEXT_PUBLIC_SENTRY_PROJECT`  | Sentry project name                                   | No       |
-| `SENTRY_AUTH_TOKEN`           | Sentry authentication token for source maps           | No       |
-| `NEXT_PUBLIC_SENTRY_DISABLED` | Disable Sentry in development (`"true"` or `"false"`) | No       |
+| Variable                      | Description                                                                                                                                                                                                                                      | Required |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------- |
+| `NEXT_PUBLIC_SITE_URL`        | Public origin, no trailing slash. Single source of truth for `metadataBase`, canonical URLs, hreflang alternates, Open Graph/Twitter URLs, `sitemap.xml`, `robots.txt`, JSON-LD and the manifest. Defaults to `https://selectai.aymanismail.com` | No       |
+| `NEXT_PUBLIC_SENTRY_DSN`      | Sentry Data Source Name for error tracking                                                                                                                                                                                                       | No       |
+| `NEXT_PUBLIC_SENTRY_ORG`      | Sentry organization slug                                                                                                                                                                                                                         | No       |
+| `NEXT_PUBLIC_SENTRY_PROJECT`  | Sentry project name                                                                                                                                                                                                                              | No       |
+| `SENTRY_AUTH_TOKEN`           | Sentry authentication token for source maps                                                                                                                                                                                                      | No       |
+| `NEXT_PUBLIC_SENTRY_DISABLED` | Disable Sentry in development (`"true"` or `"false"`)                                                                                                                                                                                            | No       |
 
 > **Note:** Authentication (Clerk) has been temporarily disabled during Laravel migration. Auth variables are not currently required.
 

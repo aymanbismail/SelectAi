@@ -1,9 +1,14 @@
 import type { Metadata } from 'next';
 import '@/app/[locale]/globals.css';
 
+import { siteConfig } from '@/config/site';
+import { absoluteUrl } from '@/lib/seo';
+
 export const metadata: Metadata = {
-  title: 'Select AI',
-  description: 'Find the best AI tools for your task'
+  // Single source of truth for every relative URL Next.js resolves.
+  metadataBase: new URL(absoluteUrl()),
+  title: siteConfig.title,
+  description: siteConfig.description
 };
 
 export default function RootLayout({

@@ -1,3 +1,6 @@
+import type { Metadata } from 'next';
+
+import { buildPageMetadata, toAppLocale } from '@/lib/seo';
 import { CategoryDetailClient } from '@/components/categories';
 import { getCategoryBySlug } from '@/mock/data/categories';
 import { notFound } from 'next/navigation';
@@ -44,8 +47,10 @@ export default async function AgentCategoryDetailPage({
 /**
  * Generate metadata for the category detail page
  */
-export async function generateMetadata({ params }: CategoryDetailPageProps) {
-  const { slug } = await params;
+export async function generateMetadata({
+  params
+}: CategoryDetailPageProps): Promise<Metadata> {
+  const { locale, slug } = await params;
   const category = getCategoryBySlug(slug, 'agent');
 
   if (!category) {
@@ -54,8 +59,10 @@ export async function generateMetadata({ params }: CategoryDetailPageProps) {
     };
   }
 
-  return {
+  return buildPageMetadata({
+    locale: toAppLocale(locale),
+    path: `/agents/categories/${slug}`,
     title: `${category.name} Agents - SelectAI`,
     description: category.description
-  };
+  });
 }

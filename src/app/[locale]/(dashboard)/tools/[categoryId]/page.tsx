@@ -1,3 +1,6 @@
+import type { Metadata } from 'next';
+
+import { buildPageMetadata, toAppLocale } from '@/lib/seo';
 import PageContainer from '@/components/layout/page-container';
 import { buttonVariants } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
@@ -21,9 +24,9 @@ type pageProps = {
 export async function generateMetadata({
   params
 }: {
-  params: Promise<{ categoryId: string }>;
-}) {
-  const { categoryId } = await params;
+  params: Promise<{ categoryId: string; locale: string }>;
+}): Promise<Metadata> {
+  const { categoryId, locale } = await params;
 
   const category = mockToolCategories.find(
     (cat) => cat.name === categoryId || cat.id.toString() === categoryId
@@ -35,10 +38,12 @@ export async function generateMetadata({
     };
   }
 
-  return {
+  return buildPageMetadata({
+    locale: toAppLocale(locale),
+    path: `/tools/${categoryId}`,
     title: `${category.name.charAt(0).toUpperCase() + category.name.slice(1).replace('-', ' ')} - Select AI`,
     description: category.description
-  };
+  });
 }
 
 export default async function CategoryPage({
